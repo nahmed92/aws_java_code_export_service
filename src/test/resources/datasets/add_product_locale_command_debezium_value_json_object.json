@@ -1,0 +1,16 @@
+{
+    "after": null,
+    "patch": "{\"$v\" : 1,\"$set\" : {\"de_DE\" : { }}}",
+    "source": {
+        "version": "0.8.0.Final",
+        "name": "burraq",
+        "rs": "rs0",
+        "ns": "product-specifications-service.specifications",
+        "sec": 1537957133,
+        "ord": 1,
+        "h": 2628579017336370000,
+        "initsync": false
+    },
+    "op": "u",
+    "ts_ms": 1537957133435
+}

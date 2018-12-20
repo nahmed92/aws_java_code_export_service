@@ -1,0 +1,26 @@
+{
+    "after": null,
+    "patch": "{ \"$set\": {\"en_US.6\": { \"exception\": \"BNF\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1403081023954         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ExceptionAttribute\"     },\"en_US.10\": { \"value\": \"Red\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.11\": { \"value\": \"Green\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.12\": { \"unit\": \"kg\", \"value\": \"0.5\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1403081023954         }, \"_class\": \"com.etilize.burraq.pspecs.specification.UnitAttribute\"     },\"en_US.20\": [         {     \"value\": \"White\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1538745205578             },     \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"         },         {     \"value\": \"Black\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1538745205578             },     \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"         }     ],\"en_US.21\": [         {     \"value\": \"Orange\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1538745205578             },     \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"         },         {     \"value\": \"Purple\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1538745205578             },     \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"         }     ],\"en_US.22\": [         {     \"unit\": \"kg\",     \"value\": \"0.5\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1403081023954             },     \"_class\": \"com.etilize.burraq.pspecs.specification.UnitAttribute\"         },         {     \"unit\": \"kg\",     \"value\": \"1.25\",     \"lastModifiedBy\": \"user123\",     \"lastModifiedDate\": {         \"$date\": 1403081023954             },     \"_class\": \"com.etilize.burraq.pspecs.specification.UnitAttribute\"         }     ] }, \"$push\": {\"en_US.20\": { \"value\": \"Gray\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.21\": { \"value\": \"Gray\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.22\": { \"unit\": \"kg\", \"value\": \"0.75\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1403081023954         }, \"_class\": \"com.etilize.burraq.pspecs.specification.UnitAttribute\"     } }, \"$unset\": {\"en_US.11\": true }, \"$pull\": {\"en_US.20\": { \"value\": \"White\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.21\": { \"value\": \"Purple\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1538745205578         }, \"_class\": \"com.etilize.burraq.pspecs.specification.ValueAttribute\"     },\"en_US.22\": { \"unit\": \"kg\", \"value\": \"1.25\", \"lastModifiedBy\": \"user123\", \"lastModifiedDate\": {     \"$date\": 1403081023954         }, \"_class\": \"com.etilize.burraq.pspecs.specification.UnitAttribute\"     } }  }",
+    "source": {
+        "version": {
+            "string": "0.8.0.Final"
+        },
+        "name": "burraq",
+        "rs": "rs0",
+        "ns": "product-specifications-service.specifications",
+        "sec": 1538376487,
+        "ord": 1,
+        "h": {
+            "long": 4058464717448861000
+        },
+        "initsync": {
+            "boolean": false
+        }
+    },
+    "op": {
+        "string": "u"
+    },
+    "ts_ms": {
+        "long": 1403081023954
+    }
+}

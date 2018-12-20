@@ -28,17 +28,28 @@
 
 package com.etilize.burraq.eas.config;
 
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.etilize.burraq.eas.kafka.debezium.DebeziumMessageParser;
+import com.google.gson.JsonParser;
+
 /**
- * Discovery client for Api Aggregator
+ * General configurations related to Bean dependencies etc.
  *
  * @author Affan Hasan
  * @since 1.0
  */
 @Configuration
-@EnableEurekaClient
-public class DiscoveryClientConfig {
+public class DebeziumConfig {
 
+    /**
+     * Produces an instance of {@link DebeziumMessageParser}
+     *
+     * @return {@link DebeziumMessageParser}
+     */
+    @Bean
+    public DebeziumMessageParser debeziumMessageParser() {
+        return new DebeziumMessageParser();
+    }
 }
