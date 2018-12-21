@@ -26,19 +26,19 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.config;
-
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.context.annotation.Configuration;
+package com.etilize.burraq.eas.kafka.debezium;
 
 /**
- * Discovery client for Api Aggregator
+ * Contains {@link String} constants used for Debezium based message manipulation in {@link MessageReceiver}.
  *
  * @author Affan Hasan
  * @since 1.0
  */
-@Configuration
-@EnableEurekaClient
-public class DiscoveryClientConfig {
+public interface DebeziumMessageKeys {
 
+    String OPERATION_CREATE = "c"; // Create operation.
+
+    String OPERATION_UPDATE = "u"; // Update operation.
+
+    String OPERATION_REMOVE = "r"; // Remove operation.
 }

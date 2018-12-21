@@ -1,0 +1,26 @@
+{
+    "after": null,
+    "patch": "{\"$v\" : 1,\"$set\" : {\"de_DE.9\" : {\"value\" : \"Red\",\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1538745205578},\"_class\" : \"com.etilize.burraq.pspecs.specification.ValueAttribute\"}}}",
+    "source": {
+        "version": {
+            "string": "0.7.5"
+        },
+        "name": "PSPECS",
+        "rs": "rs0",
+        "ns": "product-specifications-service.specifications",
+        "sec": 1538745205,
+        "ord": 1,
+        "h": {
+            "long": -8028014689002013000
+        },
+        "initsync": {
+            "boolean": false
+        }
+    },
+    "op": {
+        "string": "u"
+    },
+    "ts_ms": {
+        "long": 1538745205590
+    }
+}

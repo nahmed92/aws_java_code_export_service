@@ -1,13 +1,27 @@
 spring:
+  application:
+    name: product-specifications-search-service
   profiles:
     active: test
-
+  kafka:
+    consumer:
+      properties:
+         schema.registry.url: http://localhost:8081
+      group-id: product-specifications-search-service
+      auto-offset-reset: earliest
+      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
 management:
   endpoint:
     shutdown:
       enabled: true
 server:
   port: 0
+
+---
+kafka:
+  topic:
+    pspecs: burraq.product-specifications-service.specifications
 
 ---
 spring:

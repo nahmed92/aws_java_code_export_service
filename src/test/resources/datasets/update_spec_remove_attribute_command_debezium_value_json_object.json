@@ -1,0 +1,26 @@
+{
+    "after": null,
+    "patch": "{\"$v\" : 1,\"$unset\" : {\"de_DE.4\" : true}}",
+    "source": {
+        "version": {
+            "string": "0.8.0.Final"
+        },
+        "name": "burraq",
+        "rs": "rs0",
+        "ns": "product-specifications-service.specifications",
+        "sec": 1538376787,
+        "ord": 1,
+        "h": {
+            "long": -7555016428369688000
+        },
+        "initsync": {
+            "boolean": false
+        }
+    },
+    "op": {
+        "string": "u"
+    },
+    "ts_ms": {
+        "long": 1538376787454
+    }
+}

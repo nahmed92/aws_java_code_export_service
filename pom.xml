@@ -26,7 +26,15 @@
         <sonar.host.url>http://sonar.etilizepak.com</sonar.host.url>
         <docker.repo.url>repo.etilizepak.com:444</docker.repo.url>
         <docker.image.prefix>etilize</docker.image.prefix>
+        <log4j.version>2.9.1</log4j.version>
+        <avro.version>1.8.2</avro.version>
+
         <spring-cloud.version>Finchley.RC2</spring-cloud.version>
+        <jackson.version>2.9.3</jackson.version>
+        <avro-utils-version>1.0.0-SNAPSHOT</avro-utils-version>
+        <spring-cloud-stream-dependency.version>Elmhurst.RELEASE</spring-cloud-stream-dependency.version>
+        <kafka-avro-serializer.version>2.0.1</kafka-avro-serializer.version>
+        <discovery.client.version>1.4.4.RELEASE</discovery.client.version>
     </properties>
 
     <inceptionYear>2018</inceptionYear>
@@ -38,6 +46,13 @@
 
     <dependencyManagement>
       <dependencies>
+	 <dependency>
+	  <groupId>org.springframework.cloud</groupId>
+	  <artifactId>spring-cloud-stream-dependencies</artifactId>
+	  <version>${spring-cloud-stream-dependency.version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+	</dependency>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-dependencies</artifactId>
@@ -49,6 +64,23 @@
     </dependencyManagement>
 
     <dependencies>
+    <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.6</version>
+      </dependency>
+      <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>${kafka-avro-serializer.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -103,6 +135,44 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>${avro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.etilize.avro</groupId>
+			<artifactId>avro-utils</artifactId>
+			<version>${avro-utils-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-schema</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-avro</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-all</artifactId>
@@ -138,6 +208,37 @@
             <artifactId>openpojo</artifactId>
             <version>0.8.4</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.davidmarquis</groupId>
+            <artifactId>fluent-interface-proxy</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.12.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>${discovery.client.version}</version>
         </dependency>
     </dependencies>
 
