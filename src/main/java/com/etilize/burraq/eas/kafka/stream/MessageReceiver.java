@@ -26,12 +26,12 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.debezium;
+package com.etilize.burraq.eas.kafka.stream;
 
+import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.OPERATION_UPDATE;
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
-import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.*;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 
@@ -42,9 +42,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
+import com.etilize.burraq.eas.kafka.debezium.DebeziumMessageParser;
 import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
 
 /**
@@ -55,6 +58,9 @@ import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
  */
 @Service
 public class MessageReceiver {
+
+    @Autowired
+    private AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -71,13 +77,34 @@ public class MessageReceiver {
     }
 
     /**
+     * Process {@link UpdateTextTranslationEvent}
+     *
+     * @param message {@link Message<byte[]>} message of type byte array
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.tas}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getUpdateTextTranslationEventListenerContainerFactory")
+    public void processUpdateTextTranslationEvent(final Message<byte[]> message) {
+        final String contentType = message.getHeaders() //
+                .get("contentType") //
+                .toString(); //
+        if (contentType.contains("updatetexttranslationevent")) {
+            final UpdateTextTranslationEvent updateTextTranslationEvent = (UpdateTextTranslationEvent) avroJsonSchemaRegistryClientMessageConverter.fromMessage(
+                    message, UpdateTextTranslationEvent.class);
+            logger.info("Received UpdateTextTranslationEvent [{}]",
+                    updateTextTranslationEvent);
+            //TODO: further processing needs to be implemented
+        } else if (contentType.contains("updateunittranslationevent")) {
+            //TODO: Implementation for UpdateUniteTranslationEvent required
+        }
+    }
+
+    /**
      * Process product specifications updates from product-specifications-service
      *
      * @param record {@link GenericData.Record}
      * @param key {@link String}
      * @throws IOException {@link IOException}
      */
-    @KafkaListener(topics = "${kafka.topic.pspecs}")
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pspecs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getProductSpecificationUpdatesMessageListenerContainerFactory")
     public void processProductSpecificationUpdates(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
             throws IOException {
