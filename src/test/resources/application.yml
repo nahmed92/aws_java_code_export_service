@@ -4,24 +4,21 @@ spring:
   profiles:
     active: test
   kafka:
+    bootstrap-servers: localhost:9092
     consumer:
       properties:
          schema.registry.url: http://localhost:8081
-      group-id: product-specifications-search-service
-      auto-offset-reset: earliest
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+         topic.pspecs: burraq.product-specifications-service.specifications
+         topic.tas: translation-service
+      group-id: export-aggregation-service
+info:
+  version: ${project.version}
 management:
   endpoint:
     shutdown:
       enabled: true
 server:
   port: 0
-
----
-kafka:
-  topic:
-    pspecs: burraq.product-specifications-service.specifications
 
 ---
 spring:

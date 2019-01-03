@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,29 +26,35 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.config;
+package com.etilize.burraq.eas.kafka.sream;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.Date;
 
-import com.etilize.burraq.eas.kafka.debezium.DebeziumMessageParser;
+import com.etilize.burraq.eas.kafka.stream.UpdateTextTranslationEvent;
+import com.fluentinterface.annotation.Constructs;
+import com.fluentinterface.builder.Builder;
 
 /**
- * General configurations related to Bean dependencies etc.
+ * Builder interface to create {@link UpdateTextTranslationEvent} fixtures
  *
  * @author Affan Hasan
  * @since 1.0
  */
-@Configuration
-public class DebeziumConfig {
+public interface UpdateTextTranslationEventBuilder
+        extends Builder<UpdateTextTranslationEvent> {
 
-    /**
-     * Produces an instance of {@link DebeziumMessageParser}
-     *
-     * @return {@link DebeziumMessageParser}
-     */
-    @Bean
-    public DebeziumMessageParser debeziumMessageParser() {
-        return new DebeziumMessageParser();
-    }
+    @Constructs
+    UpdateTextTranslationEventBuilder of(String source);
+
+    UpdateTextTranslationEventBuilder withLocaleId(String localeId);
+
+    UpdateTextTranslationEventBuilder withIndustryId(String indsutryId);
+
+    UpdateTextTranslationEventBuilder withValue(String value);
+
+    UpdateTextTranslationEventBuilder withTranslation(String Translation);
+
+    UpdateTextTranslationEventBuilder withPerformedBy(String performedBy);
+
+    UpdateTextTranslationEventBuilder withPerformedDate(Date performedDate);
 }
