@@ -93,7 +93,11 @@ public class MessageReceiver {
                     updateTextTranslationEvent);
             //TODO: further processing needs to be implemented
         } else if (contentType.contains("updateunittranslationevent")) {
-            //TODO: Implementation for UpdateUniteTranslationEvent required
+            final UpdateUnitTranslationEvent updateUnitTranslationEvent = (UpdateUnitTranslationEvent) avroJsonSchemaRegistryClientMessageConverter.fromMessage(
+                    message, UpdateUnitTranslationEvent.class);
+            logger.info("Received UpdateUnitTranslationEvent [{}]",
+                    updateUnitTranslationEvent);
+            //TODO: further processing needs to be implemented
         }
     }
 

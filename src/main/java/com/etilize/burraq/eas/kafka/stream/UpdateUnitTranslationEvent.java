@@ -37,12 +37,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 /**
- * Represents Text Translation Update Message that this service listens.
+ * Represents Unit Translation Update Message that this service listens.
  *
  * @author Affan Hasan
  * @Since 1.0
  */
-public class UpdateTextTranslationEvent extends Message {
+public class UpdateUnitTranslationEvent extends Message {
 
     /**
      * Locale
@@ -52,33 +52,26 @@ public class UpdateTextTranslationEvent extends Message {
     private String localeId;
 
     /**
-     * Industry Id
+     * English Unit value
      */
     @JsonProperty(required = true)
-    @JsonPropertyDescription("Industry Id.")
-    private String industryId;
-
-    /**
-     * English Text value
-     */
-    @JsonProperty(required = true)
-    @JsonPropertyDescription("English Text value.")
+    @JsonPropertyDescription("Unit value in English.")
     private String value;
 
     /**
      * Translation
      */
     @JsonProperty(required = true)
-    @JsonPropertyDescription("Translation For The English Text.")
+    @JsonPropertyDescription("Translation For The unit value in English.")
     private String translation;
 
     /**
-     * Constructor for creating an instance of {@link UpdateTextTranslationEvent}
+     * Constructor for creating an instance of {@link UpdateUnitTranslationEvent}
      *
      * @param source the source which created this message
      */
     @JsonCreator
-    public UpdateTextTranslationEvent(@JsonProperty("source") final String source) {
+    public UpdateUnitTranslationEvent(@JsonProperty("source") final String source) {
         super(source);
     }
 
@@ -101,25 +94,7 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Returns industry id
-     *
-     * @return {@link String} industry id
-     */
-    public String getIndustryId() {
-        return industryId;
-    }
-
-    /**
-     * Sets product localeId value
-     *
-     * @param value {@link String} product localeId
-     */
-    public void setIndustryId(final String industryId) {
-        this.industryId = industryId;
-    }
-
-    /**
-     * Sets English text value
+     * Sets unit value in English
      *
      * @param value {@link String} text
      */
@@ -128,7 +103,7 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Returns value
+     * Returns English value for value
      *
      * @return {@link String} value
      */
@@ -137,7 +112,7 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Sets Translation
+     * Sets translation for English unit value
      *
      * @param value {@link String} Translation
      */
@@ -146,7 +121,7 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Returns Translation
+     * Returns translation for English unit value
      *
      * @return {@link String} Translation
      */
@@ -165,14 +140,13 @@ public class UpdateTextTranslationEvent extends Message {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof UpdateTextTranslationEvent)) {
+        if (!(obj instanceof UpdateUnitTranslationEvent)) {
             return false;
         }
-        final UpdateTextTranslationEvent event = (UpdateTextTranslationEvent) obj;
+        final UpdateUnitTranslationEvent event = (UpdateUnitTranslationEvent) obj;
         return new EqualsBuilder() //
                 .append(getSource(), event.getSource()) //
                 .append(getLocaleId(), event.getLocaleId()) //
-                .append(getIndustryId(), event.getIndustryId()) //
                 .append(getValue(), event.getValue()) //
                 .append(getTranslation(), event.getTranslation()) //
                 .append(getPerformedBy(), event.getPerformedBy()) //
@@ -188,7 +162,6 @@ public class UpdateTextTranslationEvent extends Message {
         return new HashCodeBuilder() //
                 .append(getSource()) //
                 .append(getLocaleId()) //
-                .append(getIndustryId()) //
                 .append(getValue()) //
                 .append(getTranslation()) //
                 .append(getPerformedBy()) //
@@ -204,7 +177,6 @@ public class UpdateTextTranslationEvent extends Message {
         return new ToStringBuilder(this) //
                 .append("Source", getSource()) //
                 .append("LocaleId", getLocaleId()) //
-                .append("IndustryId", getIndustryId()) //
                 .append("Value", getValue()) //
                 .append("Translation", getTranslation()) //
                 .append("PerformedBy", getPerformedBy()) //
