@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.sream;
+package com.etilize.burraq.eas.kafka.stream;
 
 import java.util.*;
 
