@@ -102,6 +102,16 @@ public class MessageReceiver {
     }
 
     /**
+     * Process barcode-service originated messages
+     *
+     * @param message {@link Message<String>} message of type {@link String}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.bacs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
+    public void processBarcodeMessages(final Message<String> message) {
+        logger.info("Received message from barcode-service [{}]", message);
+    }
+
+    /**
      * Process product specifications updates from product-specifications-service
      *
      * @param record {@link GenericData.Record}

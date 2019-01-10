@@ -34,7 +34,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,6 +96,24 @@ public class KafkaListenerContainerConfig {
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put("schema.registry.url", schemaRegistryURL);
         final ConcurrentKafkaListenerContainerFactory<byte[], byte[]> cklcf = new ConcurrentKafkaListenerContainerFactory<>();
+        cklcf.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
+        return cklcf;
+    }
+
+    /**
+     * Produces {@link ConcurrentKafkaListenerContainerFactory} instance for {@link String} messages
+     *
+     * @return {@link ConcurrentKafkaListenerContainerFactory} instance
+     */
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> getStringMessagesListenerContainerFactory() {
+        final Map<String, Object> props = new HashMap<>();
+        props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBootStrapServer);
+        props.put(GROUP_ID_CONFIG, kafkaGroupId);
+        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        final ConcurrentKafkaListenerContainerFactory<String, String> cklcf = new ConcurrentKafkaListenerContainerFactory<>();
         cklcf.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
         return cklcf;
     }

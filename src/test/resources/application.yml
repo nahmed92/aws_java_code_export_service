@@ -4,12 +4,13 @@ spring:
   profiles:
     active: test
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
     consumer:
       properties:
          schema.registry.url: http://localhost:8081
          topic.pspecs: burraq.product-specifications-service.specifications
          topic.tas: translation-service
+         topic.bacs: barcode-service
       group-id: export-aggregation-service
 info:
   version: ${project.version}
