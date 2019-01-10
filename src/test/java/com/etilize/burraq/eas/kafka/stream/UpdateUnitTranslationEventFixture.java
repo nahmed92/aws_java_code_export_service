@@ -26,50 +26,49 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.sream;
+package com.etilize.burraq.eas.kafka.stream;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.etilize.burraq.eas.kafka.stream.UpdateTextTranslationEvent;
+import com.etilize.burraq.eas.kafka.stream.UpdateUnitTranslationEvent;
 import com.fluentinterface.ReflectionBuilder;
 
 /**
- * Test fixture for {@link UpdateTextTranslationEvent}
+ * Test fixture for {@link UpdateUnitTranslationEvent}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class UpdateTextTranslationEventFixture {
+public class UpdateUnitTranslationEventFixture {
 
     /**
-     * Returns a builder for {@link UpdateTextTranslationEvent}
+     * Returns a builder for {@link UpdateUnitTranslationEvent}
      *
-     * @return {@link UpdateTextTranslationEventBuilder} instance.
+     * @return {@link UpdateUnitTranslationEventBuilder} instance.
      */
-    static UpdateTextTranslationEventBuilder aMessage() {
+    static UpdateUnitTranslationEventBuilder aMessage() {
         return ReflectionBuilder.implementationFor(
-                UpdateTextTranslationEventBuilder.class).create();
+                UpdateUnitTranslationEventBuilder.class).create();
     }
 
     /**
-     * Returns an {@link UpdateTextTranslationEvent} instance initialized with default values.
+     * Returns an {@link UpdateUnitTranslationEvent} instance initialized with default values.
      *
-     * @return {@link UpdateTextTranslationEvent} instance.
+     * @return {@link UpdateUnitTranslationEvent} instance.
      * @throws ParseException
      */
-    public static UpdateTextTranslationEvent createWithDefaults() {
+    public static UpdateUnitTranslationEvent createWithDefaults() {
         Date date;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(
                     "2017-08-11T08:10:47.321-0000");
             return aMessage() //
                     .of("translation-service") //
-                    .withIndustryId("industry123") //
-                    .withLocaleId("de_DE") //
-                    .withValue("Green") //
-                    .withTranslation("Gruen") //
+                    .withLocaleId("ar_KSA") //
+                    .withValue("Kg") //
+                    .withTranslation("كيلو غرام") //
                     .withPerformedBy("burraq@etilizepak.com") //
                     .withPerformedDate(date) //
                     .build();

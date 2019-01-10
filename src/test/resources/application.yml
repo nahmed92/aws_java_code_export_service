@@ -11,6 +11,7 @@ spring:
          topic.pspecs: burraq.product-specifications-service.specifications
          topic.tas: translation-service
          topic.bacs: barcode-service
+         topic.pcs: product-code-service
       group-id: export-aggregation-service
 info:
   version: ${project.version}
