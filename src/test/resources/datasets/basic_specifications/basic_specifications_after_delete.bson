@@ -1,0 +1,24 @@
+{
+   "basic_specifications":[
+      {
+         "id":{
+            "S":"product123-en"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"en"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}

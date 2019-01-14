@@ -33,7 +33,23 @@ eureka:
 ---
 spring:
   profiles: dev
+  data:
+    dynamodb:
+      read-capacity-units: 1
+      write-capacity-units: 1
+      access-key: dev-access-key
+      secret-key: dev-secret-key
+      ddl:
+        enabled: true
 
 ---
 spring:
   profiles: docker
+  data:
+    dynamodb:
+      read-capacity-units: 1
+      write-capacity-units: 1
+      access-key: dev-access-key
+      secret-key: dev-secret-key
+      ddl:
+        enabled: true

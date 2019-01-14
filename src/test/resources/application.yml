@@ -1,6 +1,6 @@
 spring:
   application:
-    name: product-specifications-search-service
+    name: export-aggregation-service
   profiles:
     active: test
   kafka:
@@ -26,7 +26,21 @@ server:
 ---
 spring:
   profiles: test
+  data:
+    dynamodb:
+      read-capacity-units: 1
+      write-capacity-units: 1
+      ddl:
+        enabled: true 
+  
 eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+amazon:
+  dynamodb:
+    endpoint: http://localhost:8000
+  aws:
+    accesskey: test1
+    secretkey: test231    
+    

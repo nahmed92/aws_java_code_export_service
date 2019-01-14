@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,41 +26,36 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.test;
+package com.etilize.burraq.eas.specification;
 
-import static com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule.DynamoDbRuleBuilder.*;
-
-import org.junit.BeforeClass;
-import org.junit.Rule;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
-import com.github.wonwoo.dynamodb.test.autoconfigure.AutoConfigureDynamo;
-import com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule;
-
-import org.springframework.kafka.test.context.EmbeddedKafka;
+import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
+import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
+import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
 /**
- * Base class for integration tests
+ * This class implements repository test cases for {@link DetailedSpecificationRepository}.
  *
- * @author Faisal Feroz
+ * @author Umar Zubair
  * @since 1.0
- *
  */
-
-@EmbeddedKafka
-@AutoConfigureDynamo
-public abstract class AbstractIntegrationTest extends AbstractTest {
+@UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
+public class SpecificationServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
-    protected ApplicationContext context;
+    private SpecificationService service;
 
-    @Rule
-    public DynamoDbRule dynamoDbRule = newDynamoDbRule().defaultSpringDynamoDb();
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        System.setProperty("sqlite4java.library.path", "native-libs");
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_create.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldCreateNewDetailedSpecification() {
+        service.createProduct("product1234", "industryId123", "categoryId123");
     }
-
 }

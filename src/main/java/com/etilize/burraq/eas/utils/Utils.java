@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,41 +26,30 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.test;
-
-import static com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule.DynamoDbRuleBuilder.*;
-
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
-import com.github.wonwoo.dynamodb.test.autoconfigure.AutoConfigureDynamo;
-import com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule;
-
-import org.springframework.kafka.test.context.EmbeddedKafka;
+package com.etilize.burraq.eas.utils;
 
 /**
- * Base class for integration tests
- *
- * @author Faisal Feroz
- * @since 1.0
+ * It contains utility methods.
+ * @author Umar Zubair
  *
  */
+public final class Utils {
 
-@EmbeddedKafka
-@AutoConfigureDynamo
-public abstract class AbstractIntegrationTest extends AbstractTest {
+    private static final String PRODUCTID_LOCALE = "%s-%s";
 
-    @Autowired
-    protected ApplicationContext context;
-
-    @Rule
-    public DynamoDbRule dynamoDbRule = newDynamoDbRule().defaultSpringDynamoDb();
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        System.setProperty("sqlite4java.library.path", "native-libs");
+    /**
+     * It is required for sonar.
+     */
+    private Utils() {
     }
 
+    /**
+     * It returns productId-localeId whoch is used as id
+     * @param productId product id
+     * @param localeId locale id
+     * @return productId-localeId
+     */
+    public static String generateId(final String productId, final String localeId) {
+        return String.format(PRODUCTID_LOCALE, productId, localeId);
+    }
 }

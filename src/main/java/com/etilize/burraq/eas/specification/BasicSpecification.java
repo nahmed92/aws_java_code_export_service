@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,41 +26,24 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.test;
+package com.etilize.burraq.eas.specification;
 
-import static com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule.DynamoDbRuleBuilder.*;
+import static com.etilize.burraq.eas.specification.BasicSpecification.*;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
-import com.github.wonwoo.dynamodb.test.autoconfigure.AutoConfigureDynamo;
-import com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule;
-
-import org.springframework.kafka.test.context.EmbeddedKafka;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 /**
- * Base class for integration tests
+ * This class represents POJO for basic specifications.
  *
- * @author Faisal Feroz
+ * @author Umar Zubair
  * @since 1.0
- *
  */
+@DynamoDBTable(tableName = TABLE_NAME)
+public class BasicSpecification extends Specification {
 
-@EmbeddedKafka
-@AutoConfigureDynamo
-public abstract class AbstractIntegrationTest extends AbstractTest {
+    public static final String TABLE_NAME = "basic_specifications";
 
-    @Autowired
-    protected ApplicationContext context;
+    public BasicSpecification() {
 
-    @Rule
-    public DynamoDbRule dynamoDbRule = newDynamoDbRule().defaultSpringDynamoDb();
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        System.setProperty("sqlite4java.library.path", "native-libs");
     }
-
 }

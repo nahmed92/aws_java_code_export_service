@@ -35,6 +35,7 @@
         <spring-cloud-stream-dependency.version>Elmhurst.RELEASE</spring-cloud-stream-dependency.version>
         <kafka-avro-serializer.version>2.0.1</kafka-avro-serializer.version>
         <discovery.client.version>1.4.4.RELEASE</discovery.client.version>
+        <dynamodb.spring.boot.version>1.0.2-SNAPSHOT</dynamodb.spring.boot.version>
     </properties>
 
     <inceptionYear>2018</inceptionYear>
@@ -45,22 +46,22 @@
     </organization>
 
     <dependencyManagement>
-      <dependencies>
-	 <dependency>
-	  <groupId>org.springframework.cloud</groupId>
-	  <artifactId>spring-cloud-stream-dependencies</artifactId>
-	  <version>${spring-cloud-stream-dependency.version}</version>
-          <type>pom</type>
-          <scope>import</scope>
-	</dependency>
-        <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-dependencies</artifactId>
-          <version>${spring-cloud.version}</version>
-          <type>pom</type>
-          <scope>import</scope>
-        </dependency>
-      </dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream-dependency.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -125,6 +126,7 @@
         <dependency>
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          <version>${discovery.client.version}</version>
         </dependency>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
@@ -136,49 +138,65 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.wonwoo</groupId>
+            <artifactId>dynamodb-spring-boot-starter</artifactId>
+            <version>${dynamodb.spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl.contrib</groupId>
+            <artifactId>querydsl-dynamodb</artifactId>
+            <version>4.0.8</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro</artifactId>
-			<version>${avro.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.etilize.avro</groupId>
-			<artifactId>avro-utils</artifactId>
-			<version>${avro-utils-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-schema</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-avro</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.etilize.avro</groupId>
+            <artifactId>avro-utils</artifactId>
+            <version>${avro-utils-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-avro</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-all</artifactId>
@@ -242,9 +260,28 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <version>${discovery.client.version}</version>
+            <groupId>com.github.wonwoo</groupId>
+            <artifactId>dynamodb-spring-boot-starter-test</artifactId>
+            <version>${dynamodb.spring.boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.npathai</groupId>
+            <artifactId>hamcrest-optional</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>DynamoDBLocal</artifactId>
+            <version>1.11.86</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lordofthejars</groupId>
+            <artifactId>nosqlunit-dynamodb</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -258,7 +295,6 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.4.0.905</version>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
@@ -286,6 +322,24 @@
                     <author>Affan Hasan</author>
                     <targetPackage>com.etilize.burraq.eas</targetPackage>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>test</includeScope>
+                            <includeTypes>so,dll,dylib</includeTypes>
+                            <outputDirectory>${project.basedir}/native-libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
@@ -335,13 +389,12 @@
                         <excludes>
                             <exclude>**/*IT.java</exclude>
                         </excludes>
-                        <workingDirectory>${project.build.directory}</workingDirectory>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.4.0.905</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings
                     only. It has no influence on the Maven build itself. -->

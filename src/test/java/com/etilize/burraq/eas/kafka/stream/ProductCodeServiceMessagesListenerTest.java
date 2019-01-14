@@ -41,9 +41,9 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.rule.KafkaEmbedded;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
-import com.etilize.burraq.eas.test.AbstractSpringKafkaTest;
+import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 
-public class ProductCodeServiceMessagesListenerTest extends AbstractSpringKafkaTest {
+public class ProductCodeServiceMessagesListenerTest extends AbstractIntegrationTest {
 
     @Autowired
     private KafkaEmbedded kafkaEmbedded;
