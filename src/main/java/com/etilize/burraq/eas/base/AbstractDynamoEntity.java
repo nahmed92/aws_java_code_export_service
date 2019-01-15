@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,41 +26,45 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.test;
+package com.etilize.burraq.eas.base;
 
-import static com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule.DynamoDbRuleBuilder.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.hateoas.Identifiable;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
-import com.github.wonwoo.dynamodb.test.autoconfigure.AutoConfigureDynamo;
-import com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule;
-
-import org.springframework.kafka.test.context.EmbeddedKafka;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 /**
- * Base class for integration tests
+ * Base class for Dynamo entity implementations. {@link DynamoDBTable} annotation is
+ * required on parent class due to the issues described
+ * <a href="https://github.com/aws/aws-sdk-java/issues/832">here</a>
  *
- * @author Faisal Feroz
- * @since 1.0
- *
+ * @param <ID> Identifiable ID
+ * @author Aqeela Hemani
  */
+@DynamoDBTable(tableName = "abc")
+public abstract class AbstractDynamoEntity implements Identifiable<String> {
 
-@EmbeddedKafka
-@AutoConfigureDynamo
-public abstract class AbstractIntegrationTest extends AbstractTest {
+    @Id
+    @DynamoDBHashKey
+    private String id;
 
-    @Autowired
-    protected ApplicationContext context;
-
-    @Rule
-    public DynamoDbRule dynamoDbRule = newDynamoDbRule().defaultSpringDynamoDb();
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        System.setProperty("sqlite4java.library.path", "native-libs");
+    @Override
+    public String getId() {
+        return id;
     }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    @Override
+    public abstract boolean equals(Object object);
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract String toString();
 
 }

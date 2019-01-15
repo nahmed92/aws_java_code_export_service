@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,17 +26,32 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.test;
+package com.etilize.burraq.eas.converter;
 
-import org.springframework.kafka.test.context.EmbeddedKafka;
+import java.util.Date;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 
 /**
- * Base class for Spring Kafka related testing
+ * It converts Date to Long, service stores date in long format
+ * @author Umar Zubair
  *
- * @author Affan Hasan
- * @since 1.0
  */
-@EmbeddedKafka
-public abstract class AbstractSpringKafkaTest extends AbstractTest {
+public class DateConverter implements DynamoDBTypeConverter<Long, Date> {
 
+    @Override
+    public Long convert(final Date date) {
+        if (date != null) {
+            return date.getTime();
+        }
+        return null;
+    }
+
+    @Override
+    public Date unconvert(final Long timeStamp) {
+        if (timeStamp != null) {
+            return new Date(timeStamp);
+        }
+        return null;
+    }
 }

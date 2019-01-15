@@ -110,7 +110,7 @@ public class MessageReceiver {
     public void processBarcodeMessages(final Message<String> message) {
         logger.info("Received message from barcode-service [{}]", message);
     }
-    
+
     /**
      * Process product-code-service originated messages
      *
@@ -120,7 +120,7 @@ public class MessageReceiver {
     public void processProductCodeServiceMessages(final Message<String> message) {
         logger.info("Received message from product-code-service [{}]", message);
     }
-    
+
     /**
      * Process product-accessory-service originated messages
      *
