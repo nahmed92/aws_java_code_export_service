@@ -26,20 +26,47 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.specification.status;
 
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+import static com.etilize.burraq.eas.utils.Utils.*;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
- * It represents dynamodb repository for {@link DetailedSpecification}.
- *
+ * It implements {@link SpecificationStatusService}
  * @author Umar Zubair
  * @since 1.0
  */
-@EnableScan
-@RestResource(exported = false)
-public interface DetailedSpecificationRepository
-        extends DynamoDBCrudRepository<DetailedSpecification, String> {
+@Service
+public class SpecificationStatusServiceImpl implements SpecificationStatusService {
+
+    private final SpecificationStatusRepository repository;
+
+    /**
+     * Constructs with dependencies
+     * @param repository {@link SpecificationStatusRepository}
+     */
+    @Autowired
+    public SpecificationStatusServiceImpl(
+            final SpecificationStatusRepository repository) {
+        Assert.notNull(repository, "repository should not be null.");
+        this.repository = repository;
+    }
+
+    @Override
+    public void save(final String productId, final String localeId,
+            final String statusId) {
+        final String id = generateId(productId, localeId);
+        final SpecificationStatus status = new SpecificationStatus();
+        status.setId(id);
+        status.setLocaleId(localeId);
+        status.setStatusId(statusId);
+        status.setProductId(productId);
+        status.setLastUpdateDate(new Date());
+        repository.save(status);
+    }
 }

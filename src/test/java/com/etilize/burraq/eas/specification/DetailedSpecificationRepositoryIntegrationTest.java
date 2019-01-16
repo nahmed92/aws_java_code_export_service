@@ -116,7 +116,7 @@ public class DetailedSpecificationRepositoryIntegrationTest
         specs.setAttributes(attributes);
         specs.setCategoryId("categoryId123");
         specs.setIndustryId("industryId123");
-        specs.setLocaleId(LOCALE_EN);
+        specs.setLocaleId("en");
         specs.setProductId("product1234");
         specs.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.save(specs);

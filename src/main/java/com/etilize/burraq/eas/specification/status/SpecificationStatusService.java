@@ -26,20 +26,21 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
-
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+package com.etilize.burraq.eas.specification.status;
 
 /**
- * It represents dynamodb repository for {@link DetailedSpecification}.
- *
+ * It contains business logic to maintain specification status.
  * @author Umar Zubair
  * @since 1.0
  */
-@EnableScan
-@RestResource(exported = false)
-public interface DetailedSpecificationRepository
-        extends DynamoDBCrudRepository<DetailedSpecification, String> {
+public interface SpecificationStatusService {
+
+    /**
+     * It add/update record with productId-localeId.
+     * @param productId product id
+     * @param localeId locale id
+     * @param statusId status id
+     */
+    void save(String productId, String localeId, String statusId);
+
 }

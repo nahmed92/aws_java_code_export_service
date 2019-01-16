@@ -1,0 +1,21 @@
+{
+   "media_statuses":[
+      {
+         "id":{
+            "S":"product123-en"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"en"
+         },
+         "statusId":{
+            "S":"PUBLISHED"
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}

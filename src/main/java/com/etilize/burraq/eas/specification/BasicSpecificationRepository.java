@@ -30,7 +30,6 @@ package com.etilize.burraq.eas.specification;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
@@ -40,7 +39,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
  * @since 1.0
  */
 @EnableScan
-@EnableScanCount
 @RestResource(exported = false)
 public interface BasicSpecificationRepository
         extends DynamoDBCrudRepository<BasicSpecification, String> {
