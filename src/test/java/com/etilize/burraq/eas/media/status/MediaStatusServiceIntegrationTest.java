@@ -26,20 +26,36 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.media.status;
 
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
+import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
+import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
 /**
- * It represents dynamodb repository for {@link DetailedSpecification}.
+ * This class implements repository test cases for {@link MediaStatusService}.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@EnableScan
-@RestResource(exported = false)
-public interface DetailedSpecificationRepository
-        extends DynamoDBCrudRepository<DetailedSpecification, String> {
+@UsingDataSet(locations = "/datasets/media_statuses/media_statuses.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
+public class MediaStatusServiceIntegrationTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private MediaStatusService service;
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_statuses/media_statuses_after_create.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldSaveMediaStatus() {
+        service.save("product123", "en_UK", "NEW");
+    }
 }

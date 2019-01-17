@@ -26,10 +26,11 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.media.status;
+
+import static com.etilize.burraq.eas.media.status.MediaStatus.*;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -37,32 +38,31 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.etilize.burraq.eas.base.AbstractDynamoEntity;
 
 /**
- * This class represents POJO for detailed specifications.
+ * This class represents POJO for media status.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public abstract class Specification extends AbstractDynamoEntity {
+@DynamoDBTable(tableName = TABLE_NAME)
+public class MediaStatus extends AbstractDynamoEntity {
+
+    public static final String TABLE_NAME = "media_statuses";
 
     private String productId;
 
     private String localeId;
 
-    private String categoryId;
-
-    private String industryId;
-
-    private Map<String, Object> attributes;
+    private String statusId;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
 
-    public Specification() {
+    public MediaStatus() {
 
     }
 
@@ -95,46 +95,17 @@ public abstract class Specification extends AbstractDynamoEntity {
     }
 
     /**
-     * @return the categoryId
+     * @return the statusId
      */
-    public String getCategoryId() {
-        return categoryId;
+    public String getStatusId() {
+        return statusId;
     }
 
     /**
-     * @param categoryId the categoryId to set
+     * @param statusId the statusId to set
      */
-    public void setCategoryId(final String categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    /**
-     * @return the industryId
-     */
-    public String getIndustryId() {
-        return industryId;
-    }
-
-    /**
-     * @param industryId the industryId to set
-     */
-    public void setIndustryId(final String industryId) {
-        this.industryId = industryId;
-    }
-
-    /**
-     * @return the attributes
-     */
-    @DynamoDBIgnore
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * @param attributes the attributes to set
-     */
-    public void setAttributes(final Map<String, Object> attributes) {
-        this.attributes = attributes;
+    public void setStatusId(final String statusId) {
+        this.statusId = statusId;
     }
 
     /**
@@ -161,13 +132,13 @@ public abstract class Specification extends AbstractDynamoEntity {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Specification)) {
+        if (!(obj instanceof MediaStatus)) {
             return false;
         }
-        final Specification specs = (Specification) obj;
+        final MediaStatus status = (MediaStatus) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), specs.getProductId()) //
-                .append(getLocaleId(), specs.getLocaleId()) //
+                .append(getProductId(), status.getProductId()) //
+                .append(getLocaleId(), status.getLocaleId()) //
                 .isEquals();
     }
 
@@ -185,9 +156,7 @@ public abstract class Specification extends AbstractDynamoEntity {
                 .append("Id", getId()) //
                 .append("ProductId", productId) //
                 .append("LocaleId", localeId) //
-                .append("CategoryId", categoryId) //
-                .append("IndustryId", industryId) //
-                .append("Attributes", attributes) //
+                .append("Status", statusId) //
                 .append("LastUpdateDate", lastUpdateDate) //
                 .toString();
     }

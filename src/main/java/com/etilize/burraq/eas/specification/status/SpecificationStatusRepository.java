@@ -26,20 +26,21 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.specification.status;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
- * It represents dynamodb repository for {@link DetailedSpecification}.
+ * It represents dynamodb repository for {@link SpecificationStatus}.
  *
  * @author Umar Zubair
  * @since 1.0
  */
 @EnableScan
 @RestResource(exported = false)
-public interface DetailedSpecificationRepository
-        extends DynamoDBCrudRepository<DetailedSpecification, String> {
+public interface SpecificationStatusRepository
+        extends DynamoDBCrudRepository<SpecificationStatus, String> {
+
 }

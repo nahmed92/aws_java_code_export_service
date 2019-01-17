@@ -40,7 +40,7 @@ import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
 /**
- * This class implements repository test cases for {@link DetailedSpecificationRepository}.
+ * This class implements repository test cases for {@link SpecificationService}.
  *
  * @author Umar Zubair
  * @since 1.0

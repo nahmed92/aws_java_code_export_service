@@ -34,7 +34,6 @@
         <avro-utils-version>1.0.0-SNAPSHOT</avro-utils-version>
         <spring-cloud-stream-dependency.version>Elmhurst.RELEASE</spring-cloud-stream-dependency.version>
         <kafka-avro-serializer.version>2.0.1</kafka-avro-serializer.version>
-        <discovery.client.version>1.4.4.RELEASE</discovery.client.version>
         <dynamodb.spring.boot.version>1.0.2-SNAPSHOT</dynamodb.spring.boot.version>
     </properties>
 
@@ -124,9 +123,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-          <version>${discovery.client.version}</version>
         </dependency>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
@@ -295,6 +297,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.4.0.905</version>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
@@ -384,7 +387,7 @@
                                 <value>en</value>
                             </property>
                         </systemProperties>
-                        <forkMode>once</forkMode>
+                        <forkMode>never</forkMode>
                         <failIfNoTests>false</failIfNoTests>
                         <excludes>
                             <exclude>**/*IT.java</exclude>
