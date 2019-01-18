@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.accessory;
+package com.etilize.burraq.eas.customer.code;
 
 import static com.etilize.burraq.eas.utils.Utils.*;
 
@@ -41,32 +41,34 @@ import com.etilize.burraq.eas.locale.LocaleService;
 import com.google.common.collect.Sets;
 
 /**
- * It implements {@link AccessoryService}
+ * It implements {@link CustomerCodeService}
  *
  * @author Umar Zubair
  * @since 1.0
  */
 @Service
-public class AccessoryServiceImpl implements AccessoryService {
+public class CustomerCodeServiceImpl implements CustomerCodeService {
+
+    private static final String CUSTOMER_ID_IS_REQUIRED = "customerId is required";
 
     private static final String PRODUCT_ID_IS_REQUIRED = "productId is required";
 
     private static final String MARKET_ID_IS_REQUIRED = "marketId is required";
 
-    private static final String ACCESSORY_PRODUCT_ID_IS_REQUIRED = "accessoryProductId is required";
+    private static final String CODE_IS_REQUIRED = "code is required";
 
-    private final AccessoryRepository repository;
+    private final CustomerCodeRepository repository;
 
     private final LocaleService localeService;
 
     /**
      * Constructs with dependencies
      *
-     * @param repository {@link AccessoryRepository}
+     * @param repository {@link CustomerCodeRepository}
      * @param localeService {@link LocaleService}
      */
     @Autowired
-    public AccessoryServiceImpl(final AccessoryRepository repository,
+    public CustomerCodeServiceImpl(final CustomerCodeRepository repository,
             final LocaleService localeService) {
         Assert.notNull(repository, "repository should not be null.");
         Assert.notNull(localeService, "localeService should not be null.");
@@ -75,44 +77,46 @@ public class AccessoryServiceImpl implements AccessoryService {
     }
 
     @Override
-    public void save(final String productId, final String marketId,
-            final String accessoryProductId) {
+    public void save(final String productId, final String marketId, final String code,
+            final String customerId) {
         Assert.hasText(productId, PRODUCT_ID_IS_REQUIRED);
         Assert.hasText(marketId, MARKET_ID_IS_REQUIRED);
-        Assert.hasText(accessoryProductId, ACCESSORY_PRODUCT_ID_IS_REQUIRED);
+        Assert.hasText(code, CODE_IS_REQUIRED);
+        Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
 
         final List<String> locales = localeService.getLocalesForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
-            final Accessory accessory = new Accessory();
-            accessory.setId(id);
-            accessory.setLocaleId(localeId);
-            accessory.setProductId(productId);
-            accessory.setAccessoryProducts(
-                    Sets.newHashSet(generateId(accessoryProductId, localeId)));
-            accessory.setLastUpdateDate(new Date());
-            repository.link(accessory);
+            final CustomerCode customerCode = new CustomerCode();
+            customerCode.setId(id);
+            customerCode.setLocaleId(localeId);
+            customerCode.setProductId(productId);
+            customerCode.setCustomerId(customerId);
+            customerCode.setCodes(Sets.newHashSet(code));
+            customerCode.setLastUpdateDate(new Date());
+            repository.link(customerCode);
         });
     }
 
     @Override
-    public void delete(final String productId, final String marketId,
-            final String accessoryProductId) {
+    public void delete(final String productId, final String marketId, final String code,
+            final String customerId) {
         Assert.hasText(productId, PRODUCT_ID_IS_REQUIRED);
         Assert.hasText(marketId, MARKET_ID_IS_REQUIRED);
-        Assert.hasText(accessoryProductId, ACCESSORY_PRODUCT_ID_IS_REQUIRED);
+        Assert.hasText(code, CODE_IS_REQUIRED);
+        Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
 
         final List<String> locales = localeService.getLocalesForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
-            final Accessory accessory = new Accessory();
-            accessory.setId(id);
-            accessory.setLocaleId(localeId);
-            accessory.setProductId(productId);
-            accessory.setAccessoryProducts(
-                    Sets.newHashSet(generateId(accessoryProductId, localeId)));
-            accessory.setLastUpdateDate(new Date());
-            repository.unlink(accessory);
+            final CustomerCode customerCode = new CustomerCode();
+            customerCode.setId(id);
+            customerCode.setLocaleId(localeId);
+            customerCode.setProductId(productId);
+            customerCode.setCustomerId(customerId);
+            customerCode.setCodes(Sets.newHashSet(code));
+            customerCode.setLastUpdateDate(new Date());
+            repository.unlink(customerCode);
         });
     }
 

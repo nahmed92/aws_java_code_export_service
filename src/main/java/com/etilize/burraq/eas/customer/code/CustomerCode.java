@@ -26,11 +26,12 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.customer.code;
 
-import static com.etilize.burraq.eas.specification.status.SpecificationStatus.*;
+import static com.etilize.burraq.eas.customer.code.CustomerCode.*;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -45,27 +46,29 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 
 /**
- * This class represents POJO for specification status.
+ * This class represents POJO for product customer code.
  *
  * @author Umar Zubair
  * @since 1.0
  */
 @DynamoDBTable(tableName = TABLE_NAME)
-public class SpecificationStatus {
+public class CustomerCode {
 
-    public static final String TABLE_NAME = "specification_statuses";
+    public static final String TABLE_NAME = "customer_codes";
 
     @Id
-    private SpecificationStatusId specificationStatusId;
+    private CustomerCodeId customerCodeId;
+
+    private String productId;
 
     private String localeId;
 
-    private String statusId;
+    private Set<String> codes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
 
-    public SpecificationStatus() {
+    public CustomerCode() {
 
     }
 
@@ -74,36 +77,63 @@ public class SpecificationStatus {
      */
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
-        return specificationStatusId != null ? specificationStatusId.getId() : null;
+        return customerCodeId != null ? customerCodeId.getId() : null;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
+        if (customerCodeId == null) {
+            customerCodeId = new CustomerCodeId();
         }
-        specificationStatusId.setId(id);
+        customerCodeId.setId(id);
+    }
+
+    /**
+     * @return the customerId
+     */
+    @DynamoDBRangeKey(attributeName = "customerId")
+    public String getCustomerId() {
+        return customerCodeId != null ? customerCodeId.getCustomerId() : null;
+    }
+
+    /**
+     * @param customerId the customerId to set
+     */
+    public void setCustomerId(final String customerId) {
+        if (customerCodeId == null) {
+            customerCodeId = new CustomerCodeId();
+        }
+        customerCodeId.setCustomerId(customerId);
+    }
+
+    /**
+     * @return the codes
+     */
+    public Set<String> getCodes() {
+        return codes;
+    }
+
+    /**
+     * @param codes the codes to set
+     */
+    public void setCodes(final Set<String> codes) {
+        this.codes = codes;
     }
 
     /**
      * @return the productId
      */
-    @DynamoDBRangeKey(attributeName = "productId")
     public String getProductId() {
-        return specificationStatusId != null ? specificationStatusId.getProductId()
-                : null;
+        return productId;
     }
 
     /**
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
-        }
-        specificationStatusId.setProductId(productId);
+        this.productId = productId;
     }
 
     /**
@@ -118,20 +148,6 @@ public class SpecificationStatus {
      */
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
-    }
-
-    /**
-     * @return the statusId
-     */
-    public String getStatusId() {
-        return statusId;
-    }
-
-    /**
-     * @param statusId the statusId to set
-     */
-    public void setStatusId(final String statusId) {
-        this.statusId = statusId;
     }
 
     /**
@@ -158,21 +174,21 @@ public class SpecificationStatus {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SpecificationStatus)) {
+        if (!(obj instanceof CustomerCode)) {
             return false;
         }
-        final SpecificationStatus status = (SpecificationStatus) obj;
+        final CustomerCode customerCode = (CustomerCode) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), status.getProductId()) //
-                .append(getLocaleId(), status.getLocaleId()) //
+                .append(getId(), customerCode.getId()) //
+                .append(getCustomerId(), customerCode.getCustomerId()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getProductId()) //
-                .append(getLocaleId()) //
+                .append(getId()) //
+                .append(getCustomerId()) //
                 .toHashCode();
     }
 
@@ -180,9 +196,10 @@ public class SpecificationStatus {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("Id", getId()) //
-                .append("ProductId", getProductId()) //
+                .append("CustomerId", getCustomerId()) //
+                .append("ProductId", productId) //
                 .append("LocaleId", localeId) //
-                .append("Status", statusId) //
+                .append("Codes", codes) //
                 .append("LastUpdateDate", lastUpdateDate) //
                 .toString();
     }

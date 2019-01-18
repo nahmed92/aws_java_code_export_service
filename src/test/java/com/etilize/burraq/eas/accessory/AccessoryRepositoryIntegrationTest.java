@@ -65,40 +65,38 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
 
     @Test
     public void shouldFindAccessoryById() {
-        final Optional<Accessory> specification = repository.findById(
-                "productId123-en_US");
-        assertThat(specification, isPresentAnd(notNullValue()));
-        assertThat(specification.get().getId(), is("productId123-en_US"));
-        assertThat(specification.get().getProductId(), is("productId123"));
-        assertThat(specification.get().getLocaleId(), is("en_US"));
-        assertThat(specification.get().getAccessoryProducts(), containsInAnyOrder(
+        final Optional<Accessory> accessory = repository.findById("productId123-en_US");
+        assertThat(accessory, isPresentAnd(notNullValue()));
+        assertThat(accessory.get().getId(), is("productId123-en_US"));
+        assertThat(accessory.get().getProductId(), is("productId123"));
+        assertThat(accessory.get().getLocaleId(), is("en_US"));
+        assertThat(accessory.get().getAccessoryProducts(), containsInAnyOrder(
                 "accessoryProductId12-en_US", "accessoryProductId123-en_US"));
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/accessories/accessories_after_creating.bson")
     public void shouldCreateNewAccessory() {
-        final Accessory specs = new Accessory();
-        specs.setId("productId1234-en_US");
-        specs.setLocaleId("en_US");
-        specs.setProductId("productId1234");
-        specs.setAccessoryProducts(Sets.newHashSet("accessoryProductId1234-en_US"));
-        specs.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
-        repository.save(specs);
-
+        final Accessory accessory = new Accessory();
+        accessory.setId("productId1234-en_US");
+        accessory.setLocaleId("en_US");
+        accessory.setProductId("productId1234");
+        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId1234-en_US"));
+        accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.save(accessory);
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/accessories/accessories_after_update.bson")
     public void shouldUpdateAccessory() {
-        final Accessory specs = new Accessory();
-        specs.setId("productId123-en_US");
-        specs.setLocaleId("en_US");
-        specs.setProductId("productId123");
-        specs.setAccessoryProducts(Sets.newHashSet("accessoryProductId12-en_US",
+        final Accessory accessory = new Accessory();
+        accessory.setId("productId123-en_US");
+        accessory.setLocaleId("en_US");
+        accessory.setProductId("productId123");
+        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId12-en_US",
                 "accessoryProductId1234-en_US"));
-        specs.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
-        repository.save(specs);
+        accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.save(accessory);
     }
 
     @Test
@@ -106,4 +104,29 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
     public void shouldDeleteAccessoryById() {
         repository.deleteById("productId123-en_US");
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/accessories/accessories_after_creating.bson")
+    public void shouldLinkNewAccessory() {
+        final Accessory accessory = new Accessory();
+        accessory.setId("productId1234-en_US");
+        accessory.setLocaleId("en_US");
+        accessory.setProductId("productId1234");
+        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId1234-en_US"));
+        accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.link(accessory);
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/accessories/accessories_after_unlink_one_record.bson")
+    public void shouldUnlinkAccessory() {
+        final Accessory accessory = new Accessory();
+        accessory.setId("productId123-en_US");
+        accessory.setLocaleId("en_US");
+        accessory.setProductId("productId123");
+        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId123-en_US"));
+        accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.unlink(accessory);
+    }
+
 }

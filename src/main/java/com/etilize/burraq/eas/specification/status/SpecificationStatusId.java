@@ -28,126 +28,53 @@
 
 package com.etilize.burraq.eas.specification.status;
 
-import static com.etilize.burraq.eas.specification.status.SpecificationStatus.*;
-
-import java.util.Date;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 
 /**
- * This class represents POJO for specification status.
+ * This class represents ID for POJO for product specs status.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@DynamoDBTable(tableName = TABLE_NAME)
-public class SpecificationStatus {
+public class SpecificationStatusId {
 
-    public static final String TABLE_NAME = "specification_statuses";
+    private String id;
 
-    @Id
-    private SpecificationStatusId specificationStatusId;
-
-    private String localeId;
-
-    private String statusId;
-
-    @DateTimeFormat(iso = ISO.DATE_TIME)
-    private Date lastUpdateDate;
-
-    public SpecificationStatus() {
-
-    }
+    private String productId;
 
     /**
      * @return the id
      */
-    @DynamoDBHashKey(attributeName = "id")
+    @DynamoDBHashKey
     public String getId() {
-        return specificationStatusId != null ? specificationStatusId.getId() : null;
+        return id;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
-        }
-        specificationStatusId.setId(id);
+        this.id = id;
     }
 
     /**
      * @return the productId
      */
-    @DynamoDBRangeKey(attributeName = "productId")
+    @DynamoDBRangeKey
     public String getProductId() {
-        return specificationStatusId != null ? specificationStatusId.getProductId()
-                : null;
+        return productId;
     }
 
     /**
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
-        }
-        specificationStatusId.setProductId(productId);
-    }
-
-    /**
-     * @return the localeId
-     */
-    public String getLocaleId() {
-        return localeId;
-    }
-
-    /**
-     * @param localeId the localeId to set
-     */
-    public void setLocaleId(final String localeId) {
-        this.localeId = localeId;
-    }
-
-    /**
-     * @return the statusId
-     */
-    public String getStatusId() {
-        return statusId;
-    }
-
-    /**
-     * @param statusId the statusId to set
-     */
-    public void setStatusId(final String statusId) {
-        this.statusId = statusId;
-    }
-
-    /**
-     * @return the lastUpdateDate
-     */
-    @DynamoDBTypeConverted(converter = com.etilize.burraq.eas.converter.DateConverter.class)
-    public Date getLastUpdateDate() {
-        return lastUpdateDate != null ? new Date(lastUpdateDate.getTime()) : null;
-    }
-
-    /**
-     * @param lastUpdateDate the lastUpdateDate to set
-     */
-    public void setLastUpdateDate(final Date lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate != null ? new Date(lastUpdateDate.getTime())
-                : null;
+        this.productId = productId;
     }
 
     @Override
@@ -158,21 +85,21 @@ public class SpecificationStatus {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SpecificationStatus)) {
+        if (!(obj instanceof SpecificationStatusId)) {
             return false;
         }
-        final SpecificationStatus status = (SpecificationStatus) obj;
+        final SpecificationStatusId specificationStatusId = (SpecificationStatusId) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), status.getProductId()) //
-                .append(getLocaleId(), status.getLocaleId()) //
+                .append(getId(), specificationStatusId.getId()) //
+                .append(getProductId(), specificationStatusId.getProductId()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
+                .append(getId()) //
                 .append(getProductId()) //
-                .append(getLocaleId()) //
                 .toHashCode();
     }
 
@@ -181,9 +108,6 @@ public class SpecificationStatus {
         return new ToStringBuilder(this) //
                 .append("Id", getId()) //
                 .append("ProductId", getProductId()) //
-                .append("LocaleId", localeId) //
-                .append("Status", statusId) //
-                .append("LastUpdateDate", lastUpdateDate) //
                 .toString();
     }
 }

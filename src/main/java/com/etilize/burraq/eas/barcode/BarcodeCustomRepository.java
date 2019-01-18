@@ -26,49 +26,28 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+package com.etilize.burraq.eas.barcode;
 
 /**
- * Implements {@link LocaleService}
+ * It is for customized repository tasks.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@Service
-public class LocaleServiceImpl implements LocaleService {
-
-    private final LocaleServiceClient localeServiceClient;
+public interface BarcodeCustomRepository {
 
     /**
-     * Constructor with required dependencies.
+     * It adds a code in existing or new record.
      *
-     * @param localeServiceClient locale service client
+     * @param barcode {@link Barcode}
      */
-    @Autowired
-    public LocaleServiceImpl(final LocaleServiceClient localeServiceClient) {
-        Assert.notNull(localeServiceClient, "localeServiceClient can not be null.");
-        this.localeServiceClient = localeServiceClient;
-    }
+    void link(Barcode barcode);
 
-    @Override
-    public List<String> getLocalesForMarket(final String market) {
-        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
-                null, 0, 20, null).getContent();
-        final List<String> localeStrs = locales.stream().map(
-                locale -> StringUtils.substringAfterLast(
-                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
-                                Collectors.toList());
-        return localeStrs;
-    }
+    /**
+     * It remove a code in existing or new record.
+     *
+     * @param barcode {@link Barcode}
+     */
+    void unlink(Barcode barcode);
+
 }

@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Feign client for locale-service
  *
  * @author Umar Zubair
- * @version 1.0
+ * @since 1.0
  */
 @Component
 @FeignClient("locale-service")

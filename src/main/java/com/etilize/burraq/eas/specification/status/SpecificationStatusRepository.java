@@ -28,6 +28,8 @@
 
 package com.etilize.burraq.eas.specification.status;
 
+import java.util.List;
+
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -41,6 +43,12 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface SpecificationStatusRepository
-        extends DynamoDBCrudRepository<SpecificationStatus, String> {
+        extends DynamoDBCrudRepository<SpecificationStatus, SpecificationStatusId> {
 
+    /**
+     * It return all records matching with productId
+     * @param productId productId
+     * @return List<SpecificationStatus>
+     */
+    List<SpecificationStatus> findAllByProductId(String productId);
 }

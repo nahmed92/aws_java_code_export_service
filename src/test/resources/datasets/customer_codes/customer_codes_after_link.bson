@@ -1,0 +1,40 @@
+{
+   "customer_codes":[
+      {
+         "id":{
+            "S":"productId123-en_US"
+         },
+         "customerId":{
+            "S":"customerId123"
+         },
+         "productId":{
+            "S":"productId123"
+         },
+         "localeId":{
+            "S":"en_US"
+         },
+         "codes":  { "SS" :["code12","code123", "code1234"]},
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "id":{
+            "S":"productId123-fr_US"
+         },
+         "customerId":{
+            "S":"customerId123"
+         },
+         "productId":{
+            "S":"productId123"
+         },
+         "localeId":{
+            "S":"fr_US"
+         },
+         "codes":  { "SS" :["code12","code123", "code1234"]},
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}
