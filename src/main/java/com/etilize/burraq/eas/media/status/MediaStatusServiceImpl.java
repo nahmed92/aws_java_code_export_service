@@ -38,16 +38,24 @@ import org.springframework.util.Assert;
 
 /**
  * It implements {@link MediaStatusService}
+ *
  * @author Umar Zubair
  * @since 1.0
  */
 @Service
 public class MediaStatusServiceImpl implements MediaStatusService {
 
+    private static final String PRODICTID_IS_REQUIRED = "productId is required";
+
+    private static final String STATUSID_IS_REQUIRED = "statusId is required";
+
+    private static final String LOCALEID_IS_REQUIRED = "localeId is required";
+
     private final MediaStatusRepository repository;
 
     /**
      * Constructs with dependencies
+     *
      * @param repository {@link MediaStatusRepository}
      */
     @Autowired
@@ -59,6 +67,10 @@ public class MediaStatusServiceImpl implements MediaStatusService {
     @Override
     public void save(final String productId, final String localeId,
             final String statusId) {
+        Assert.hasText(productId, PRODICTID_IS_REQUIRED);
+        Assert.hasText(localeId, LOCALEID_IS_REQUIRED);
+        Assert.hasText(statusId, STATUSID_IS_REQUIRED);
+
         final String id = generateId(productId, localeId);
         final MediaStatus status = new MediaStatus();
         status.setId(id);

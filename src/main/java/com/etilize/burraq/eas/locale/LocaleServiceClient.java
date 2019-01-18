@@ -26,23 +26,50 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.locale;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * It contains business logic to maintain media status.
+ * Feign client for locale-service
  *
  * @author Umar Zubair
- * @since 1.0
+ * @version 1.0
  */
-public interface MediaStatusService {
+@Component
+@FeignClient("locale-service")
+public interface LocaleServiceClient {
 
     /**
-     * It add/update record with productId-localeId.
+     * Method to get locale by id
      *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @param id the locale id
+     * @return locale
      */
-    void save(String productId, String localeId, String statusId);
+    @GetMapping("/locales/{id}")
+    Resource<Locale> findById(@PathVariable("id") String id);
 
+    /**
+     * Method to get locales
+     *
+     * @param market market
+     * @param language language
+     * @param page Page number
+     * @param size Number of locales per page
+     * @param sort Sort by key
+     * @return locales
+     */
+    @GetMapping("/locales")
+    PagedResources<Resource<Locale>> findBy(
+            @RequestParam(value = "market", required = false) String market,
+            @RequestParam(value = "language", required = false) String language,
+            @RequestParam(value = "page", required = false) int page,
+            @RequestParam(value = "size", required = false) int size,
+            @RequestParam(value = "sort", required = false) String sort);
 }

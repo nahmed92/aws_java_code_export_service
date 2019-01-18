@@ -26,23 +26,35 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.validation;
+
+import org.springframework.data.rest.webmvc.support.ExceptionMessage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
- * It contains business logic to maintain media status.
+ * This class handles exception for Controllers
  *
- * @author Umar Zubair
+ * @author Sidra Zia
  * @since 1.0
  */
-public interface MediaStatusService {
+@ControllerAdvice
+public class FeignClientExceptionHandler {
 
     /**
-     * It add/update record with productId-localeId.
+     * This method handles FeignClientException. It sets error message and status in
+     * response entity
      *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @param e the feign client exception
+     * @return a response entity
      */
-    void save(String productId, String localeId, String statusId);
+    @ExceptionHandler(FeignClientException.class)
+    public ResponseEntity<ExceptionMessage> handleFeignException(
+            final FeignClientException e) {
+        return new ResponseEntity<ExceptionMessage>(new ExceptionMessage(e),
+                HttpStatus.valueOf(e.getStatus()));
+    }
 
 }

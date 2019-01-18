@@ -26,23 +26,50 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.validation;
 
 /**
- * It contains business logic to maintain media status.
+ * This is Feign client exception class which extends RuntimeException
  *
- * @author Umar Zubair
- * @since 1.0
+ * @author Sidra Zia
+ * @version 1.0
  */
-public interface MediaStatusService {
+public class FeignClientException extends RuntimeException {
 
     /**
-     * It add/update record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * generated serial version id
      */
-    void save(String productId, String localeId, String statusId);
+    private static final long serialVersionUID = 3723405171891236310L;
+
+    private final int status;
+
+    private final String message;
+
+    /**
+     * Default constructor to initialize exception class
+     *
+     * @param message Error message of the exception
+     * @param status Error code of the message
+     */
+    public FeignClientException(final String message, final int status) {
+        super(message);
+        this.status = status;
+        this.message = message;
+    }
+
+    /**
+     * @return the errorCode
+     */
+    public final int getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the message
+     */
+    @Override
+    public final String getMessage() {
+        return message;
+    }
 
 }

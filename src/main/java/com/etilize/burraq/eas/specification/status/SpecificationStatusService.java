@@ -30,6 +30,7 @@ package com.etilize.burraq.eas.specification.status;
 
 /**
  * It contains business logic to maintain specification status.
+ *
  * @author Umar Zubair
  * @since 1.0
  */
@@ -37,6 +38,7 @@ public interface SpecificationStatusService {
 
     /**
      * It add/update record with productId-localeId.
+     *
      * @param productId product id
      * @param localeId locale id
      * @param statusId status id

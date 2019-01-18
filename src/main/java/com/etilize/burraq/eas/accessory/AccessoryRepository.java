@@ -26,23 +26,21 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.accessory;
+
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
- * It contains business logic to maintain media status.
+ * It represents dynamodb repository for {@link Accessory}.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public interface MediaStatusService {
-
-    /**
-     * It add/update record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
-     */
-    void save(String productId, String localeId, String statusId);
+@EnableScan
+@RestResource(exported = false)
+public interface AccessoryRepository
+        extends DynamoDBCrudRepository<Accessory, String>, AccessoryCustomRepository {
 
 }

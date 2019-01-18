@@ -1,0 +1,19 @@
+{
+   "accessories":[
+      {
+         "id":{
+            "S":"productId123-fr_US"
+         },
+         "productId":{
+            "S":"productId123"
+         },
+         "localeId":{
+            "S":"fr_US"
+         },
+         "accessoryProducts":  { "SS" :["accessoryProductId12-fr_US","accessoryProductId123-fr_US"]},
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}

@@ -26,23 +26,33 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.config;
+
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.etilize.burraq.eas.validation.FeignErrorDecoder;
+
+import feign.codec.ErrorDecoder;
 
 /**
- * It contains business logic to maintain media status.
+ * This class handles Feign configurations and decoders
  *
  * @author Umar Zubair
- * @since 1.0
+ * @version 1.0
  */
-public interface MediaStatusService {
+@Configuration
+@EnableFeignClients(basePackages = "com.etilize.burraq.eas")
+public class FeignConfig {
 
     /**
-     * It add/update record with productId-localeId.
+     * This method provides bean to decode feign errors
      *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @return errorDecoder
      */
-    void save(String productId, String localeId, String statusId);
-
+    @Bean
+    public ErrorDecoder feignErrorDecoder() {
+        return new FeignErrorDecoder();
+    }
 }
