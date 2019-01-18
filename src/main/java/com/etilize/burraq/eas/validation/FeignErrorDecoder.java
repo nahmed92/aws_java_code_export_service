@@ -26,23 +26,48 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.validation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+
+import feign.Response;
+import feign.codec.ErrorDecoder;
 
 /**
- * It contains business logic to maintain media status.
+ * This class implements {@link ErrorDecoder} and decodes Feign errors
  *
- * @author Umar Zubair
- * @since 1.0
+ * @author Sidra Zia
+ * @version 1.0
  */
-public interface MediaStatusService {
+public class FeignErrorDecoder implements ErrorDecoder {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * It add/update record with productId-localeId.
+     * decodes Feign erroneous response
      *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @param methodKey the method name of feign client that was invoked for request
+     * @param response the response returned
+     * @return feignClientException
      */
-    void save(String productId, String localeId, String statusId);
-
+    @Override
+    public FeignClientException decode(final String methodKey, final Response response) {
+        final int errorCode = response.status();
+        String errorReason = response.reason();
+        if (errorReason == null) {
+            if (HttpStatus.NOT_FOUND.value() == errorCode) {
+                errorReason = "Requested resource is not found";
+            } else if (HttpStatus.UNAUTHORIZED.value() == errorCode) {
+                errorReason = "You are not authorized to access requested resource";
+            } else {
+                errorReason = "Could not complete requested operation";
+            }
+        }
+        logger.error("Error :: {}, Error Code :: {}, request :: {}, response :: {}",
+                errorReason, errorCode, response.request().toString(),
+                response.toString());
+        return new FeignClientException(errorReason, errorCode);
+    }
 }

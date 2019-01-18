@@ -1,0 +1,34 @@
+{
+   "accessories":[
+      {
+         "id":{
+            "S":"productId123-en_US"
+         },
+         "productId":{
+            "S":"productId123"
+         },
+         "localeId":{
+            "S":"en_US"
+         },
+         "accessoryProducts":  { "SS" :["accessoryProductId12-en_US","accessoryProductId123-en_US","accessoryProductId1234-en_US"]},
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "id":{
+            "S":"productId123-fr_US"
+         },
+         "productId":{
+            "S":"productId123"
+         },
+         "localeId":{
+            "S":"fr_US"
+         },
+         "accessoryProducts":  { "SS" :["accessoryProductId12-fr_US","accessoryProductId123-fr_US","accessoryProductId1234-fr_US"]},
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}

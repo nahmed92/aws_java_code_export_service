@@ -37,10 +37,3 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-amazon:
-  dynamodb:
-    endpoint: http://localhost:8000
-  aws:
-    accesskey: test1
-    secretkey: test231    
-    

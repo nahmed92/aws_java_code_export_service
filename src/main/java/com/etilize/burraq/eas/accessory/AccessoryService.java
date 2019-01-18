@@ -26,23 +26,32 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.accessory;
 
 /**
- * It contains business logic to maintain media status.
+ * It contains business logic to maintain product accessories.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public interface MediaStatusService {
+public interface AccessoryService {
 
     /**
-     * It add/update record with productId-localeId.
+     * It add/update record to add accessoryProductId with productId-localeId for all locales for market.
      *
      * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @param marketId market id
+     * @param accessoryProductId accessory product id
      */
-    void save(String productId, String localeId, String statusId);
+    void save(String productId, String marketId, String accessoryProductId);
+
+    /**
+     * It deletes accessoryProductId for all productId-localeId for all locales for market.
+     *
+     * @param productId product id
+     * @param marketId market id
+     * @param accessoryProductId accessory product id
+     */
+    void delete(String productId, String marketId, String accessoryProductId);
 
 }

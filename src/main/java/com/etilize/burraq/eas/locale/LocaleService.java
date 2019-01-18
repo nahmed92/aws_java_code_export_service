@@ -26,23 +26,22 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.locale;
+
+import java.util.List;
 
 /**
- * It contains business logic to maintain media status.
+ * It contains locale specific services.
  *
  * @author Umar Zubair
- * @since 1.0
+ *
  */
-public interface MediaStatusService {
+public interface LocaleService {
 
     /**
-     * It add/update record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * Returns locale ids for market
+     * @param market market
+     * @return locale ids
      */
-    void save(String productId, String localeId, String statusId);
-
+    List<String> getLocalesForMarket(String market);
 }

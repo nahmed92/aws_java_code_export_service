@@ -38,16 +38,24 @@ import org.springframework.util.Assert;
 
 /**
  * It implements {@link SpecificationStatusService}
+ *
  * @author Umar Zubair
  * @since 1.0
  */
 @Service
 public class SpecificationStatusServiceImpl implements SpecificationStatusService {
 
+    private static final String PRODICTID_IS_REQUIRED = "productId is required";
+
+    private static final String STATUSID_IS_REQUIRED = "statusId is required";
+
+    private static final String LOCALEID_IS_REQUIRED = "localeId is required";
+
     private final SpecificationStatusRepository repository;
 
     /**
      * Constructs with dependencies
+     *
      * @param repository {@link SpecificationStatusRepository}
      */
     @Autowired
@@ -60,6 +68,10 @@ public class SpecificationStatusServiceImpl implements SpecificationStatusServic
     @Override
     public void save(final String productId, final String localeId,
             final String statusId) {
+        Assert.hasText(productId, PRODICTID_IS_REQUIRED);
+        Assert.hasText(localeId, LOCALEID_IS_REQUIRED);
+        Assert.hasText(statusId, STATUSID_IS_REQUIRED);
+
         final String id = generateId(productId, localeId);
         final SpecificationStatus status = new SpecificationStatus();
         status.setId(id);

@@ -26,23 +26,49 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.media.status;
+package com.etilize.burraq.eas.locale;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
- * It contains business logic to maintain media status.
+ * Implements {@link LocaleService}
  *
  * @author Umar Zubair
- * @since 1.0
+ *
  */
-public interface MediaStatusService {
+@Service
+public class LocaleServiceImpl implements LocaleService {
+
+    private final LocaleServiceClient localeServiceClient;
 
     /**
-     * It add/update record with productId-localeId.
+     * Constructor with required dependencies.
      *
-     * @param productId product id
-     * @param localeId locale id
-     * @param statusId status id
+     * @param localeServiceClient locale service client
      */
-    void save(String productId, String localeId, String statusId);
+    @Autowired
+    public LocaleServiceImpl(final LocaleServiceClient localeServiceClient) {
+        Assert.notNull(localeServiceClient, "localeServiceClient can not be null.");
+        this.localeServiceClient = localeServiceClient;
+    }
 
+    @Override
+    public List<String> getLocalesForMarket(final String market) {
+        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
+                null, 0, 20, null).getContent();
+        final List<String> localeStrs = locales.stream().map(
+                locale -> StringUtils.substringAfterLast(
+                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
+                                Collectors.toList());
+        return localeStrs;
+    }
 }
