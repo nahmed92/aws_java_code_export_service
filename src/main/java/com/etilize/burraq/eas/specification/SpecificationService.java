@@ -30,17 +30,27 @@ package com.etilize.burraq.eas.specification;
 
 /**
  * It contains business logic to maintain detailed and basic specifications.
- * @author Umar Zubair
  *
+ * @author Umar Zubair
+ * @since 1.0
  */
 public interface SpecificationService {
 
     /**
-     * It added record with productId-localeId.
+     * It added record with productId-en.
+     *
      * @param productId product id
      * @param industryId industry id
      * @param categoryId category id
      */
     void createProduct(String productId, String industryId, String categoryId);
+
+    /**
+     * It added record with productId-localeId.
+     *
+     * @param productId product id
+     * @param localeId locale id
+     */
+    void addLocale(String productId, String localeId);
 
 }

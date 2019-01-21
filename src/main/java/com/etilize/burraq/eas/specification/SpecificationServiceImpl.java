@@ -42,8 +42,9 @@ import com.google.common.collect.Maps;
 
 /**
  * It implements {@link SpecificationService}
- * @author Umar Zubair
  *
+ * @author Umar Zubair
+ * @since 1.0
  */
 @Service
 public class SpecificationServiceImpl implements SpecificationService {
@@ -54,6 +55,7 @@ public class SpecificationServiceImpl implements SpecificationService {
 
     /**
      * Constructs with dependencies
+     *
      * @param basicSpecificationRepository basicSpecificationRepository
      * @param detailedSpecificationRepository detailedSpecificationRepository
      */
@@ -87,6 +89,52 @@ public class SpecificationServiceImpl implements SpecificationService {
             detailedSpecificationRepository.save(detialedSpecs);
             basicSpecificationRepository.save(getBasicSpecification(detialedSpecs));
         }
+    }
+
+    @Override
+    public void addLocale(final String productId, final String localeId) {
+        if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
+            final String id = generateId(productId, localeId);
+            final Optional<DetailedSpecification> detailedSpecsForEN = getDetailedSpecification(
+                    productId, LOCALE_EN);
+            if (detailedSpecsForEN.isPresent()) {
+                final DetailedSpecification detialedSpecs = new DetailedSpecification();
+                detialedSpecs.setId(id);
+                //TODO: do translation where required
+                detialedSpecs.setAttributes(detailedSpecsForEN.get().getAttributes());
+                detialedSpecs.setCategoryId(detailedSpecsForEN.get().getCategoryId());
+                detialedSpecs.setIndustryId(detailedSpecsForEN.get().getIndustryId());
+                detialedSpecs.setLocaleId(localeId);
+                detialedSpecs.setProductId(productId);
+                detialedSpecs.setLastUpdateDate(new Date());
+                detailedSpecificationRepository.save(detialedSpecs);
+            }
+
+            final Optional<BasicSpecification> basicSpecsForEN = getBasicSpecification(
+                    productId, LOCALE_EN);
+            if (basicSpecsForEN.isPresent()) {
+                final BasicSpecification basicSpecs = new BasicSpecification();
+                basicSpecs.setId(id);
+                //TODO: do translation where required
+                basicSpecs.setAttributes(basicSpecsForEN.get().getAttributes());
+                basicSpecs.setCategoryId(basicSpecsForEN.get().getCategoryId());
+                basicSpecs.setIndustryId(basicSpecsForEN.get().getIndustryId());
+                basicSpecs.setLocaleId(localeId);
+                basicSpecs.setProductId(productId);
+                basicSpecs.setLastUpdateDate(new Date());
+                basicSpecificationRepository.save(basicSpecs);
+            }
+        }
+    }
+
+    private Optional<DetailedSpecification> getDetailedSpecification(
+            final String productId, final String localeId) {
+        return detailedSpecificationRepository.findById(generateId(productId, localeId));
+    }
+
+    private Optional<BasicSpecification> getBasicSpecification(final String productId,
+            final String localeId) {
+        return basicSpecificationRepository.findById(generateId(productId, localeId));
     }
 
     private BasicSpecification getBasicSpecification(final Specification specs) {
