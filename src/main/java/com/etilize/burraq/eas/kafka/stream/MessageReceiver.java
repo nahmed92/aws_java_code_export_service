@@ -138,7 +138,7 @@ public class MessageReceiver {
      * @param key {@link String}
      * @throws IOException {@link IOException}
      */
-    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pspecs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getProductSpecificationUpdatesMessageListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pspecs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
     public void processProductSpecificationUpdates(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
             throws IOException {
@@ -184,6 +184,20 @@ public class MessageReceiver {
         }
     }
 
+    /**
+     * Process media updates from product-media-service
+     *
+     * @param record {@link GenericData.Record}
+     * @param key {@link ConsumerRecord<Object, String>}
+     * @throws IOException {@link IOException}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pms}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
+    public void processProductMediaServiceMessages(final GenericData.Record record,
+            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
+            throws IOException {
+    	logger.info("Received Media Message: [{}].", record);
+    }
+    
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,
             final GenericData.Record record) throws IOException {
         logger.info(
