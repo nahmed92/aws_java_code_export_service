@@ -83,12 +83,12 @@ public class KafkaListenerContainerConfig {
     }
 
     /**
-     * Produces {@link ConcurrentKafkaListenerContainerFactory} instance for {@link UpdateProductSpecificationMessage}
+     * Produces {@link ConcurrentKafkaListenerContainerFactory} instance for Debezium messages
      *
      * @return {@link ConcurrentKafkaListenerContainerFactory} instance
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<byte[], byte[]> getProductSpecificationUpdatesMessageListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<byte[], byte[]> getDebeziumMessagesListenerContainerFactory() {
         final Map<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBootStrapServer);
         props.put(GROUP_ID_CONFIG, kafkaGroupId);
