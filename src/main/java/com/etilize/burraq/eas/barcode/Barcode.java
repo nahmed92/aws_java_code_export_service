@@ -26,11 +26,12 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.barcode;
 
-import static com.etilize.burraq.eas.specification.status.SpecificationStatus.*;
+import static com.etilize.burraq.eas.barcode.Barcode.*;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -45,27 +46,29 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 
 /**
- * This class represents POJO for specification status.
+ * This class represents POJO for barcodes.
  *
  * @author Umar Zubair
  * @since 1.0
  */
 @DynamoDBTable(tableName = TABLE_NAME)
-public class SpecificationStatus {
+public class Barcode {
 
-    public static final String TABLE_NAME = "specification_statuses";
+    public static final String TABLE_NAME = "barcodes";
 
     @Id
-    private SpecificationStatusId specificationStatusId;
+    private BarcodeId barcodeId;
+
+    private String productId;
 
     private String localeId;
 
-    private String statusId;
+    private Map<String, String> codes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
 
-    public SpecificationStatus() {
+    public Barcode() {
 
     }
 
@@ -74,36 +77,63 @@ public class SpecificationStatus {
      */
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
-        return specificationStatusId != null ? specificationStatusId.getId() : null;
+        return barcodeId != null ? barcodeId.getId() : null;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
+        if (barcodeId == null) {
+            barcodeId = new BarcodeId();
         }
-        specificationStatusId.setId(id);
+        barcodeId.setId(id);
+    }
+
+    /**
+     * @return the type
+     */
+    @DynamoDBRangeKey(attributeName = "type")
+    public String getType() {
+        return barcodeId != null ? barcodeId.getType() : null;
+    }
+
+    /**
+     * @param type type to set
+     */
+    public void setType(final String type) {
+        if (barcodeId == null) {
+            barcodeId = new BarcodeId();
+        }
+        barcodeId.setType(type);
+    }
+
+    /**
+     * @return the codes
+     */
+    public Map<String, String> getCodes() {
+        return codes;
+    }
+
+    /**
+     * @param codes the codes to set
+     */
+    public void setCodes(final Map<String, String> codes) {
+        this.codes = codes;
     }
 
     /**
      * @return the productId
      */
-    @DynamoDBRangeKey(attributeName = "productId")
     public String getProductId() {
-        return specificationStatusId != null ? specificationStatusId.getProductId()
-                : null;
+        return productId;
     }
 
     /**
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
-        }
-        specificationStatusId.setProductId(productId);
+        this.productId = productId;
     }
 
     /**
@@ -118,20 +148,6 @@ public class SpecificationStatus {
      */
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
-    }
-
-    /**
-     * @return the statusId
-     */
-    public String getStatusId() {
-        return statusId;
-    }
-
-    /**
-     * @param statusId the statusId to set
-     */
-    public void setStatusId(final String statusId) {
-        this.statusId = statusId;
     }
 
     /**
@@ -158,21 +174,21 @@ public class SpecificationStatus {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SpecificationStatus)) {
+        if (!(obj instanceof Barcode)) {
             return false;
         }
-        final SpecificationStatus status = (SpecificationStatus) obj;
+        final Barcode customerCode = (Barcode) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), status.getProductId()) //
-                .append(getLocaleId(), status.getLocaleId()) //
+                .append(getId(), customerCode.getId()) //
+                .append(getType(), customerCode.getType()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getProductId()) //
-                .append(getLocaleId()) //
+                .append(getId()) //
+                .append(getType()) //
                 .toHashCode();
     }
 
@@ -180,9 +196,10 @@ public class SpecificationStatus {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("Id", getId()) //
-                .append("ProductId", getProductId()) //
+                .append("Type", getType()) //
+                .append("ProductId", productId) //
                 .append("LocaleId", localeId) //
-                .append("Status", statusId) //
+                .append("Codes", codes) //
                 .append("LastUpdateDate", lastUpdateDate) //
                 .toString();
     }

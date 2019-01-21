@@ -26,9 +26,10 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.barcode;
 
 import static org.hamcrest.MatcherAssert.*;
+
 import static org.hamcrest.Matchers.*;
 
 import java.text.ParseException;
@@ -51,29 +52,31 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO test for {@link SpecificationStatus}
+ * POJO test for {@link BarcodeId}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class SpecificationStatusPojoTest {
+public class BarcodeIdPojoTest {
 
     @Test
-    public void shouldValidateSpecificationStatusPOJO() {
+    public void shouldValidateBarcodeIdPOJO() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
+                .with(new SetterMustExistRule()) //
+                .with(new GetterMustExistRule()) //
                 .with(new NoPublicFieldsExceptStaticFinalRule()) //
                 .with(new NoStaticExceptFinalRule()) //
                 .with(new SetterTester()) //
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(SpecificationStatus.class));
+        validator.validate(PojoClassFactory.getPojoClass(BarcodeId.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(SpecificationStatus.class) //
+        EqualsVerifier.forClass(BarcodeId.class) //
                 .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
@@ -81,7 +84,7 @@ public class SpecificationStatusPojoTest {
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final SpecificationStatus status = new SpecificationStatus();
-        assertThat(ObjectUtils.identityToString(status), not(status.toString()));
+        final BarcodeId barcodeId = new BarcodeId();
+        assertThat(ObjectUtils.identityToString(barcodeId), not(barcodeId.toString()));
     }
 }

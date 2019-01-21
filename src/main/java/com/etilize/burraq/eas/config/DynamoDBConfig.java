@@ -26,49 +26,45 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
+package com.etilize.burraq.eas.config;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.socialsignin.spring.data.dynamodb.mapping.DynamoDBMappingContext;
+import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import com.etilize.burraq.eas.ExportAggregationApplication;
+import com.github.wonwoo.dynamodb.autoconfigure.CreateTable;
+import com.github.wonwoo.dynamodb.autoconfigure.DynamoDbMapping;
 
 /**
- * Implements {@link LocaleService}
+ * Houses dynamodb configurations
  *
- * @author Umar Zubair
+ * @author Sidra Zia
  * @since 1.0
  */
-@Service
-public class LocaleServiceImpl implements LocaleService {
+@Profile("!test")
+@Configuration
+@EnableDynamoDBRepositories(basePackageClasses = ExportAggregationApplication.class)
+public class DynamoDBConfig {
 
-    private final LocaleServiceClient localeServiceClient;
+    @Value("${spring.data.dynamodb.timeout}")
+    private int amazonDynamoDBTimeout;
 
     /**
-     * Constructor with required dependencies.
+     * Returns DynamoDb Mapping
      *
-     * @param localeServiceClient locale service client
+     * @param createTable instance of {@link CreateTable}
+     * @param context instance of {@link DynamoDBMappingContext}
+     * @return instance of {@link DynamoDbMapping}
      */
-    @Autowired
-    public LocaleServiceImpl(final LocaleServiceClient localeServiceClient) {
-        Assert.notNull(localeServiceClient, "localeServiceClient can not be null.");
-        this.localeServiceClient = localeServiceClient;
-    }
-
-    @Override
-    public List<String> getLocalesForMarket(final String market) {
-        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
-                null, 0, 20, null).getContent();
-        final List<String> localeStrs = locales.stream().map(
-                locale -> StringUtils.substringAfterLast(
-                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
-                                Collectors.toList());
-        return localeStrs;
+    @Bean
+    public DynamoDbMapping dynamoDbMapping(final CreateTable createTable,
+            final DynamoDBMappingContext context) {
+        final DynamoDbMapping mapping = new DynamoDbMapping(createTable, context);
+        mapping.setTimeoutSeconds(amazonDynamoDBTimeout);
+        return mapping;
     }
 }

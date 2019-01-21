@@ -26,49 +26,34 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+package com.etilize.burraq.eas.customer.code;
 
 /**
- * Implements {@link LocaleService}
+ * It contains business logic to maintain product customer codes.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@Service
-public class LocaleServiceImpl implements LocaleService {
-
-    private final LocaleServiceClient localeServiceClient;
+public interface CustomerCodeService {
 
     /**
-     * Constructor with required dependencies.
+     * It add/update record to add code with productId-localeId for all locales for market.
      *
-     * @param localeServiceClient locale service client
+     * @param productId product id
+     * @param marketId market id
+     * @param code code
+     * @param customerId customerId
      */
-    @Autowired
-    public LocaleServiceImpl(final LocaleServiceClient localeServiceClient) {
-        Assert.notNull(localeServiceClient, "localeServiceClient can not be null.");
-        this.localeServiceClient = localeServiceClient;
-    }
+    void save(String productId, String marketId, String code, String customerId);
 
-    @Override
-    public List<String> getLocalesForMarket(final String market) {
-        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
-                null, 0, 20, null).getContent();
-        final List<String> localeStrs = locales.stream().map(
-                locale -> StringUtils.substringAfterLast(
-                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
-                                Collectors.toList());
-        return localeStrs;
-    }
+    /**
+     * It deletes code for all productId-localeId for all locales for market.
+     *
+     * @param productId product id
+     * @param marketId market id
+     * @param code code
+     * @param customerId customerId
+     */
+    void delete(String productId, String marketId, String code, String customerId);
+
 }

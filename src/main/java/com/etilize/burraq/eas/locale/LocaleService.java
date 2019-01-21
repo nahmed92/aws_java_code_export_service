@@ -34,7 +34,7 @@ import java.util.List;
  * It contains locale specific services.
  *
  * @author Umar Zubair
- *
+ * @since 1.0
  */
 public interface LocaleService {
 

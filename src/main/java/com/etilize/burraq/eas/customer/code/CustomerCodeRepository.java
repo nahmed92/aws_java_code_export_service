@@ -26,49 +26,22 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
+package com.etilize.burraq.eas.customer.code;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
- * Implements {@link LocaleService}
+ * It represents dynamodb repository for {@link CustomerCode}.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@Service
-public class LocaleServiceImpl implements LocaleService {
+@EnableScan
+@RestResource(exported = false)
+public interface CustomerCodeRepository
+        extends DynamoDBPagingAndSortingRepository<CustomerCode, CustomerCodeId>,
+        CustomerCodeCustomRepository {
 
-    private final LocaleServiceClient localeServiceClient;
-
-    /**
-     * Constructor with required dependencies.
-     *
-     * @param localeServiceClient locale service client
-     */
-    @Autowired
-    public LocaleServiceImpl(final LocaleServiceClient localeServiceClient) {
-        Assert.notNull(localeServiceClient, "localeServiceClient can not be null.");
-        this.localeServiceClient = localeServiceClient;
-    }
-
-    @Override
-    public List<String> getLocalesForMarket(final String market) {
-        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
-                null, 0, 20, null).getContent();
-        final List<String> localeStrs = locales.stream().map(
-                locale -> StringUtils.substringAfterLast(
-                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
-                                Collectors.toList());
-        return localeStrs;
-    }
 }

@@ -42,6 +42,9 @@ spring:
       secret-key: dev-secret-key
       ddl:
         enabled: true
+      # https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html
+      regions: US_EAST_2
+      timeout: 60000
 
 ---
 spring:
@@ -54,3 +57,6 @@ spring:
       secret-key: dev-secret-key
       ddl:
         enabled: true
+      # https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html
+      regions: US_EAST_2
+      timeout: 60000

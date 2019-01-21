@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.accessory;
+package com.etilize.burraq.eas.customer.code;
 
 import java.util.List;
 
@@ -41,14 +41,16 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.google.common.collect.Lists;
 
 /**
- * It is implementation of {@link AccessoryCustomRepository}
+ * It is implementation of {@link CustomerCodeCustomRepository}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
+public class CustomerCodeRepositoryImpl implements CustomerCodeCustomRepository {
 
     private static final String ID = "id";
+
+    private static final String CUSTOMER_ID = "customerId";
 
     private static final String PRODUCT_ID = "productId";
 
@@ -56,7 +58,7 @@ public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
 
     private static final String LAST_UPDATE_DATE = "lastUpdateDate";
 
-    private static final String ACCESSORY_PRODUCTS = "accessoryProducts";
+    private static final String CODES = "codes";
 
     private final Table table;
 
@@ -66,44 +68,39 @@ public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
      * @param amazonDynamoDB amazonDynamoDB
      */
     @Autowired
-    public AccessoryRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
+    public CustomerCodeRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
         Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
         final DynamoDB db = new DynamoDB(amazonDynamoDB);
-        table = db.getTable(Accessory.TABLE_NAME);
+        table = db.getTable(CustomerCode.TABLE_NAME);
     }
 
-    /* (non-Javadoc)
-     * @see com.etilize.burraq.eas.accessories.AccessoryCustomRepository#link(com.etilize.burraq.eas.accessories.Accessory)
-     */
     @Override
-    public void link(final Accessory accessory) {
+    public void link(final CustomerCode customerCode) {
         final List<AttributeUpdate> attributeUpdates = Lists.newArrayList(
-                new AttributeUpdate(PRODUCT_ID).put(accessory.getProductId()),
-                new AttributeUpdate(LOCALE_ID).put(accessory.getLocaleId()),
+                new AttributeUpdate(PRODUCT_ID).put(customerCode.getProductId()),
+                new AttributeUpdate(LOCALE_ID).put(customerCode.getLocaleId()),
                 new AttributeUpdate(LAST_UPDATE_DATE).put(
-                        accessory.getLastUpdateDate().getTime()),
-                new AttributeUpdate(ACCESSORY_PRODUCTS).addElements(
-                        accessory.getAccessoryProducts().toArray()));
+                        customerCode.getLastUpdateDate().getTime()),
+                new AttributeUpdate(CODES).addElements(
+                        customerCode.getCodes().toArray()));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
-                accessory.getId()).withAttributeUpdate(attributeUpdates);
+                customerCode.getId(), CUSTOMER_ID,
+                customerCode.getCustomerId()).withAttributeUpdate(attributeUpdates);
         table.updateItem(updateItemSpec);
     }
 
-    /* (non-Javadoc)
-     * @see com.etilize.burraq.eas.accessories.AccessoryCustomRepository#unlink(com.etilize.burraq.eas.accessories.Accessory)
-     */
     @Override
-    public void unlink(final Accessory accessory) {
+    public void unlink(final CustomerCode customerCode) {
         final List<AttributeUpdate> attributeUpdates = Lists.newArrayList(
-                new AttributeUpdate(PRODUCT_ID).put(accessory.getProductId()),
-                new AttributeUpdate(LOCALE_ID).put(accessory.getLocaleId()),
+                new AttributeUpdate(PRODUCT_ID).put(customerCode.getProductId()),
+                new AttributeUpdate(LOCALE_ID).put(customerCode.getLocaleId()),
                 new AttributeUpdate(LAST_UPDATE_DATE).put(
-                        accessory.getLastUpdateDate().getTime()),
-                new AttributeUpdate(ACCESSORY_PRODUCTS).removeElements(
-                        accessory.getAccessoryProducts().toArray()));
+                        customerCode.getLastUpdateDate().getTime()),
+                new AttributeUpdate(CODES).removeElements(
+                        customerCode.getCodes().toArray()));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
-                accessory.getId()).withAttributeUpdate(attributeUpdates);
+                customerCode.getId(), CUSTOMER_ID,
+                customerCode.getCustomerId()).withAttributeUpdate(attributeUpdates);
         table.updateItem(updateItemSpec);
     }
-
 }

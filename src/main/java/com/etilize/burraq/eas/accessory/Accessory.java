@@ -136,10 +136,10 @@ public class Accessory extends AbstractDynamoEntity {
         if (!(obj instanceof Accessory)) {
             return false;
         }
-        final Accessory status = (Accessory) obj;
+        final Accessory accessory = (Accessory) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), status.getProductId()) //
-                .append(getLocaleId(), status.getLocaleId()) //
+                .append(getProductId(), accessory.getProductId()) //
+                .append(getLocaleId(), accessory.getLocaleId()) //
                 .isEquals();
     }
 
