@@ -45,7 +45,9 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
  * @author Umar Zubair
  * @since 1.0
  */
-@UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@UsingDataSet(locations = {
+    "/datasets/detailed_specifications/detailed_specifications.bson",
+    "/datasets/basic_specifications/basic_specifications.bson" }, loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
 public class SpecificationServiceIntegrationTest extends AbstractIntegrationTest {
 
@@ -53,9 +55,16 @@ public class SpecificationServiceIntegrationTest extends AbstractIntegrationTest
     private SpecificationService service;
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_create.bson")
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_after_create.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    public void shouldCreateNewDetailedSpecification() {
+    public void shouldCreateNewBasicAndDetailedSpecification() {
         service.createProduct("product1234", "industryId123", "categoryId123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_after_add_locale.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldAddLocaleForSpecification() {
+        service.addLocale("product123", "en_UK");
     }
 }

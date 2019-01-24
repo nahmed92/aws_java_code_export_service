@@ -81,7 +81,7 @@ public class BarcodeServiceIntegrationTest extends AbstractIntegrationTest {
         specsStatus2.setLocaleId("fr_US");
         specsStatus2.setProductId("productId123");
         when(specsStatusRepository.findAllByProductId("productId123")) //
-            .thenReturn(Lists.newArrayList(specsStatus1, specsStatus2));
+                .thenReturn(Lists.newArrayList(specsStatus1, specsStatus2));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class BarcodeServiceIntegrationTest extends AbstractIntegrationTest {
         specsStatus1.setLocaleId("en_US");
         specsStatus1.setProductId("productId1234");
         when(specsStatusRepository.findAllByProductId("productId1234")) //
-            .thenReturn(Lists.newArrayList(specsStatus1));
+                .thenReturn(Lists.newArrayList(specsStatus1));
         service.save("productId1234", "EAN", "code1234", "customerId1234");
         verify(specsStatusRepository).findAllByProductId("productId1234");
     }

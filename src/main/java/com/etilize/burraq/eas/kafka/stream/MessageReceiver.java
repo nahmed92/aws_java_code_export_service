@@ -195,9 +195,9 @@ public class MessageReceiver {
     public void processProductMediaServiceMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
             throws IOException {
-    	logger.info("Received Media Message: [{}].", record);
+        logger.info("Received Media Message: [{}].", record);
     }
-    
+
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,
             final GenericData.Record record) throws IOException {
         logger.info(
