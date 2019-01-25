@@ -16,7 +16,7 @@
          "codes":{
             "M":{
                "customerId12":{
-                  "SS":["code12","code14"]
+                  "SS":["code14"]
                },
                "customerId123":{
                   "SS":["code123"]
@@ -47,30 +47,6 @@
                },
                "customerId123":{
                   "SS":["code123"]
-               }
-            }
-         },
-         "lastUpdateDate":{
-            "N":1546528059097
-         }
-      },
-      {
-         "id":{
-            "S":"productId1234-en_US"
-         },
-         "type":{
-            "S":"EAN"
-         },
-         "productId":{
-            "S":"productId1234"
-         },
-         "localeId":{
-            "S":"en_US"
-         },
-         "codes":{
-            "M":{
-               "customerId1234":{
-                  "SS":["code1234"]
                }
             }
          },

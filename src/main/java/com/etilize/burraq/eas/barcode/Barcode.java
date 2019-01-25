@@ -32,6 +32,7 @@ import static com.etilize.burraq.eas.barcode.Barcode.*;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -63,7 +64,7 @@ public class Barcode {
 
     private String localeId;
 
-    private Map<String, String> codes;
+    private Map<String, Set<String>> codes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
@@ -111,14 +112,14 @@ public class Barcode {
     /**
      * @return the codes
      */
-    public Map<String, String> getCodes() {
+    public Map<String, Set<String>> getCodes() {
         return codes;
     }
 
     /**
      * @param codes the codes to set
      */
-    public void setCodes(final Map<String, String> codes) {
+    public void setCodes(final Map<String, Set<String>> codes) {
         this.codes = codes;
     }
 

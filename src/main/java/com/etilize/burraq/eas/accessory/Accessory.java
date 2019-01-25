@@ -58,7 +58,7 @@ public class Accessory extends AbstractDynamoEntity {
 
     private String localeId;
 
-    private Set<String> accessoryProducts;
+    private Set<String> accessoryProductIds;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
@@ -96,17 +96,17 @@ public class Accessory extends AbstractDynamoEntity {
     }
 
     /**
-     * @return the accessoryProducts
+     * @return the accessoryProductIds
      */
-    public Set<String> getAccessoryProducts() {
-        return accessoryProducts;
+    public Set<String> getAccessoryProductIds() {
+        return accessoryProductIds;
     }
 
     /**
-     * @param accessoryProducts the accessoryProducts to set
+     * @param accessoryProductIds the accessoryProductIds to set
      */
-    public void setAccessoryProducts(final Set<String> accessoryProducts) {
-        this.accessoryProducts = accessoryProducts;
+    public void setAccessoryProductIds(final Set<String> accessoryProductIds) {
+        this.accessoryProductIds = accessoryProductIds;
     }
 
     /**
@@ -157,7 +157,7 @@ public class Accessory extends AbstractDynamoEntity {
                 .append("Id", getId()) //
                 .append("ProductId", productId) //
                 .append("LocaleId", localeId) //
-                .append("AccessoryProducts", accessoryProducts) //
+                .append("AccessoryProductIds", accessoryProductIds) //
                 .append("LastUpdateDate", lastUpdateDate) //
                 .toString();
     }

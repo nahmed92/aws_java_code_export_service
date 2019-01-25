@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.*;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,15 +75,16 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
         assertThat(barcode.get().getProductId(), is("productId123"));
         assertThat(barcode.get().getType(), is("EAN"));
         assertThat(barcode.get().getLocaleId(), is("en_US"));
-        assertThat(barcode.get().getCodes().get("customerId12"), is("code12"));
-        assertThat(barcode.get().getCodes().get("customerId123"), is("code123"));
+        assertThat(barcode.get().getCodes().get("customerId12"),
+                containsInAnyOrder("code12", "code14"));
+        assertThat(barcode.get().getCodes().get("customerId123"), contains("code123"));
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_create_by_new_productid.bson")
     public void shouldCreateNewBarcodeByNewProductId() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId1234", "code1234");
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId1234", Sets.newHashSet("code1234"));
         final Barcode barcode = new Barcode();
         barcode.setId("productId1234-en_US");
         barcode.setType("EAN");
@@ -96,8 +98,8 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_create_by_new_type.bson")
     public void shouldCreateNewBarcodeByNewType() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId1234", "code1234");
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId1234", Sets.newHashSet("code1234"));
         final Barcode barcode = new Barcode();
         barcode.setId("productId123-en_US");
         barcode.setType("GTN");
@@ -111,8 +113,8 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_update.bson")
     public void shouldUpdateBarcode() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId123", "code123");
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId123", Sets.newHashSet("code123"));
         final Barcode barcode = new Barcode();
         barcode.setId("productId123-en_US");
         barcode.setType("EAN");
@@ -135,8 +137,8 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_create_by_new_productid.bson")
     public void shouldLinkBarcode() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId1234", "code1234");
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId1234", Sets.newHashSet("code1234"));
         final Barcode barcode = new Barcode();
         barcode.setId("productId1234-en_US");
         barcode.setType("EAN");
@@ -150,8 +152,39 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_link_one_record.bson")
     public void shouldLinkBarcodeWithExistingProduct() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId1234", "code1234");
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId1234", Sets.newHashSet("code1234"));
+        final Barcode barcode = new Barcode();
+        barcode.setId("productId123-en_US");
+        barcode.setType("EAN");
+        barcode.setLocaleId("en_US");
+        barcode.setProductId("productId123");
+        barcode.setCodes(codes);
+        barcode.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.link(barcode);
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_link_one_record_with_existing_product_and_customer.bson")
+    public void shouldLinkBarcodeWithExistingProductAndCustomer() {
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId123", Sets.newHashSet("code1234"));
+        final Barcode barcode = new Barcode();
+        barcode.setId("productId123-en_US");
+        barcode.setType("EAN");
+        barcode.setLocaleId("en_US");
+        barcode.setProductId("productId123");
+        barcode.setCodes(codes);
+        barcode.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.link(barcode);
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_link_multiple_codes_for_multiple_customers.bson")
+    public void shouldLinkMultipleBarcodesWithMultipleCustomersForExistingProduct() {
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId123", Sets.newHashSet("code1234", "code12345"));
+        codes.put("customerId1234", Sets.newHashSet("code1", "code2"));
         final Barcode barcode = new Barcode();
         barcode.setId("productId123-en_US");
         barcode.setType("EAN");
@@ -164,9 +197,9 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_unlink_one_record.bson")
-    public void shouldUnlinkBarcodeById() {
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put("customerId123", "code123");
+    public void shouldUnlinkBarcodeIfThereIsOnlyOneCodeForCustomer() {
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId123", Sets.newHashSet("code123"));
         final Barcode customerCode = new Barcode();
         customerCode.setId("productId123-en_US");
         customerCode.setType("EAN");
@@ -176,4 +209,35 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
         customerCode.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.unlink(customerCode);
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_unlink_one_code_for_one_record.bson")
+    public void shouldUnlinkOneBarcodeIfThereAreTwoCodesForCustomer() {
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId12", Sets.newHashSet("code12"));
+        final Barcode customerCode = new Barcode();
+        customerCode.setId("productId123-en_US");
+        customerCode.setType("EAN");
+        customerCode.setLocaleId("en_US");
+        customerCode.setProductId("productId123");
+        customerCode.setCodes(codes);
+        customerCode.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.unlink(customerCode);
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_unlink_all_codes_for_one_record.bson")
+    public void shouldUnlinkAllBarcodeIfThereAreTwoCodesForCustomer() {
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put("customerId12", Sets.newHashSet("code14", "code12"));
+        final Barcode customerCode = new Barcode();
+        customerCode.setId("productId123-en_US");
+        customerCode.setType("EAN");
+        customerCode.setLocaleId("en_US");
+        customerCode.setProductId("productId123");
+        customerCode.setCodes(codes);
+        customerCode.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
+        repository.unlink(customerCode);
+    }
+
 }

@@ -70,7 +70,7 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
         assertThat(accessory.get().getId(), is("productId123-en_US"));
         assertThat(accessory.get().getProductId(), is("productId123"));
         assertThat(accessory.get().getLocaleId(), is("en_US"));
-        assertThat(accessory.get().getAccessoryProducts(), containsInAnyOrder(
+        assertThat(accessory.get().getAccessoryProductIds(), containsInAnyOrder(
                 "accessoryProductId12-en_US", "accessoryProductId123-en_US"));
     }
 
@@ -81,7 +81,7 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
         accessory.setId("productId1234-en_US");
         accessory.setLocaleId("en_US");
         accessory.setProductId("productId1234");
-        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId1234-en_US"));
+        accessory.setAccessoryProductIds(Sets.newHashSet("accessoryProductId1234-en_US"));
         accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.save(accessory);
     }
@@ -93,7 +93,7 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
         accessory.setId("productId123-en_US");
         accessory.setLocaleId("en_US");
         accessory.setProductId("productId123");
-        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId12-en_US",
+        accessory.setAccessoryProductIds(Sets.newHashSet("accessoryProductId12-en_US",
                 "accessoryProductId1234-en_US"));
         accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.save(accessory);
@@ -112,7 +112,7 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
         accessory.setId("productId1234-en_US");
         accessory.setLocaleId("en_US");
         accessory.setProductId("productId1234");
-        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId1234-en_US"));
+        accessory.setAccessoryProductIds(Sets.newHashSet("accessoryProductId1234-en_US"));
         accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.link(accessory);
     }
@@ -124,7 +124,7 @@ public class AccessoryRepositoryIntegrationTest extends AbstractIntegrationTest 
         accessory.setId("productId123-en_US");
         accessory.setLocaleId("en_US");
         accessory.setProductId("productId123");
-        accessory.setAccessoryProducts(Sets.newHashSet("accessoryProductId123-en_US"));
+        accessory.setAccessoryProductIds(Sets.newHashSet("accessoryProductId123-en_US"));
         accessory.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
         repository.unlink(accessory);
     }

@@ -109,19 +109,21 @@ public class BarcodeRepositoryImpl implements BarcodeCustomRepository {
         final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, barcode.getLastUpdateDate().getTime());
-        final StringBuilder updateExp = new StringBuilder("set ");
+        final StringBuilder updateExp = new StringBuilder("add ");
         barcode.getCodes().keySet().forEach(key -> {
             nameMap.with("#customerId" + key, key);
-            valueMap.withString(":code" + key, barcode.getCodes().get(key));
-            updateExp.append("codes.#customerId" + key + "=:code" + key + ",");
+            valueMap.withStringSet(":code" + key, barcode.getCodes().get(key));
+            updateExp.append("codes.#customerId" + key + " :code" + key + ",");
         });
-        updateExp.append(String.format(" %s=%s", //
+        updateExp.deleteCharAt(updateExp.lastIndexOf(","));
+        updateExp.append(String.format(" SET %s=%s", //
                 LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
                 barcode.getId(), //
                 TYPE, barcode.getType()) //
                 .withUpdateExpression(updateExp.toString()) //
-                .withNameMap(nameMap).withValueMap(valueMap) //
+                .withNameMap(nameMap) //
+                .withValueMap(valueMap) //
                 .withConditionExpression("attribute_exists(codes)");
         table.updateItem(updateItemSpec);
     }
@@ -146,10 +148,11 @@ public class BarcodeRepositoryImpl implements BarcodeCustomRepository {
         final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, barcode.getLastUpdateDate().getTime());
-        final StringBuilder updateExp = new StringBuilder("REMOVE ");
+        final StringBuilder updateExp = new StringBuilder("DELETE ");
         barcode.getCodes().keySet().forEach(key -> {
             nameMap.with("#customerId" + key, key);
-            updateExp.append("codes.#customerId" + key + ",");
+            valueMap.withStringSet(":code" + key, barcode.getCodes().get(key));
+            updateExp.append("codes.#customerId" + key + " :code" + key + ",");
         });
         updateExp.deleteCharAt(updateExp.lastIndexOf(","));
         updateExp.append(String.format(" SET %s=%s", //
@@ -158,7 +161,9 @@ public class BarcodeRepositoryImpl implements BarcodeCustomRepository {
                 .withPrimaryKey(ID, barcode.getId(), //
                         TYPE, barcode.getType()) //
                 .withUpdateExpression(updateExp.toString()) //
-                .withNameMap(nameMap).withValueMap(valueMap);
+                .withNameMap(nameMap) //
+                .withValueMap(valueMap) //
+                .withConditionExpression("attribute_exists(codes)");
         table.updateItem(updateItemSpec);
     }
 }

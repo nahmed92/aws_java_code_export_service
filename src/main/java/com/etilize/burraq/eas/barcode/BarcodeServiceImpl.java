@@ -33,6 +33,7 @@ import static com.etilize.burraq.eas.utils.Utils.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ import org.springframework.util.Assert;
 import com.etilize.burraq.eas.specification.status.SpecificationStatus;
 import com.etilize.burraq.eas.specification.status.SpecificationStatusRepository;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * It implements {@link BarcodeService}
@@ -86,8 +88,8 @@ public class BarcodeServiceImpl implements BarcodeService {
         Assert.hasText(type, TYPE_IS_REQUIRED);
         Assert.hasText(code, CODE_IS_REQUIRED);
         Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put(customerId, code);
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put(customerId, Sets.newHashSet(code));
         final List<SpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                 productId);
         specsStatuses.forEach(specsStatus -> {
@@ -110,8 +112,8 @@ public class BarcodeServiceImpl implements BarcodeService {
         Assert.hasText(type, TYPE_IS_REQUIRED);
         Assert.hasText(code, CODE_IS_REQUIRED);
         Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
-        final Map<String, String> codes = Maps.newHashMap();
-        codes.put(customerId, code);
+        final Map<String, Set<String>> codes = Maps.newHashMap();
+        codes.put(customerId, Sets.newHashSet(code));
         final List<SpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                 productId);
         specsStatuses.forEach(specsStatus -> {

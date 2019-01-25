@@ -56,7 +56,7 @@ public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
 
     private static final String LAST_UPDATE_DATE = "lastUpdateDate";
 
-    private static final String ACCESSORY_PRODUCTS = "accessoryProducts";
+    private static final String ACCESSORY_PRODUCT_IDS = "accessoryProductIds";
 
     private final Table table;
 
@@ -82,8 +82,8 @@ public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
                 new AttributeUpdate(LOCALE_ID).put(accessory.getLocaleId()),
                 new AttributeUpdate(LAST_UPDATE_DATE).put(
                         accessory.getLastUpdateDate().getTime()),
-                new AttributeUpdate(ACCESSORY_PRODUCTS).addElements(
-                        accessory.getAccessoryProducts().toArray()));
+                new AttributeUpdate(ACCESSORY_PRODUCT_IDS).addElements(
+                        accessory.getAccessoryProductIds().toArray()));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
                 accessory.getId()).withAttributeUpdate(attributeUpdates);
         table.updateItem(updateItemSpec);
@@ -99,8 +99,8 @@ public class AccessoryRepositoryImpl implements AccessoryCustomRepository {
                 new AttributeUpdate(LOCALE_ID).put(accessory.getLocaleId()),
                 new AttributeUpdate(LAST_UPDATE_DATE).put(
                         accessory.getLastUpdateDate().getTime()),
-                new AttributeUpdate(ACCESSORY_PRODUCTS).removeElements(
-                        accessory.getAccessoryProducts().toArray()));
+                new AttributeUpdate(ACCESSORY_PRODUCT_IDS).removeElements(
+                        accessory.getAccessoryProductIds().toArray()));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
                 accessory.getId()).withAttributeUpdate(attributeUpdates);
         table.updateItem(updateItemSpec);

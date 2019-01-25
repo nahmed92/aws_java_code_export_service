@@ -16,7 +16,10 @@
          "codes":{
             "M":{
                "customerId123":{
-                  "S":"code123"
+                  "SS":["code123"]
+               },
+               "customerId12":{
+                  "SS":["code14"]
                }
             }
          },
@@ -40,7 +43,10 @@
 		 "codes":{
             "M":{
                "customerId123":{
-                  "S":"code123"
+                  "SS":["code123"]
+               },
+               "customerId12":{
+                  "SS":["code14"]
                }
             }
          },

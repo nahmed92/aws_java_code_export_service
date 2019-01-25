@@ -88,7 +88,7 @@ public class AccessoryServiceImpl implements AccessoryService {
             accessory.setId(id);
             accessory.setLocaleId(localeId);
             accessory.setProductId(productId);
-            accessory.setAccessoryProducts(
+            accessory.setAccessoryProductIds(
                     Sets.newHashSet(generateId(accessoryProductId, localeId)));
             accessory.setLastUpdateDate(new Date());
             repository.link(accessory);
@@ -109,7 +109,7 @@ public class AccessoryServiceImpl implements AccessoryService {
             accessory.setId(id);
             accessory.setLocaleId(localeId);
             accessory.setProductId(productId);
-            accessory.setAccessoryProducts(
+            accessory.setAccessoryProductIds(
                     Sets.newHashSet(generateId(accessoryProductId, localeId)));
             accessory.setLastUpdateDate(new Date());
             repository.unlink(accessory);
