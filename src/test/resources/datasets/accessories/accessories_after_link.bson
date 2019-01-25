@@ -10,7 +10,7 @@
          "localeId":{
             "S":"en_US"
          },
-         "accessoryProducts":  { "SS" :["accessoryProductId12-en_US","accessoryProductId123-en_US","accessoryProductId1234-en_US"]},
+         "accessoryProductIds":  { "SS" :["accessoryProductId12-en_US","accessoryProductId123-en_US","accessoryProductId1234-en_US"]},
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -25,7 +25,7 @@
          "localeId":{
             "S":"fr_US"
          },
-         "accessoryProducts":  { "SS" :["accessoryProductId12-fr_US","accessoryProductId123-fr_US","accessoryProductId1234-fr_US"]},
+         "accessoryProductIds":  { "SS" :["accessoryProductId12-fr_US","accessoryProductId123-fr_US","accessoryProductId1234-fr_US"]},
          "lastUpdateDate":{
             "N":1546528059097
          }
