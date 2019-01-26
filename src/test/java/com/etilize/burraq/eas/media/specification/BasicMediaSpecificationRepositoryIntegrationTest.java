@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.media.specification;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -45,27 +45,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
+import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
 /**
- * This class implements repository test cases for {@link BasicSpecificationRepository}.
+ * This class implements repository test cases for {@link BasicMediaSpecificationRepository}.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@UsingDataSet(locations = "/datasets/basic_specifications/basic_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@UsingDataSet(locations = "/datasets/basic_media_specifications/basic_media_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegrationTest {
+public class BasicMediaSpecificationRepositoryIntegrationTest
+        extends AbstractIntegrationTest {
 
     @Autowired
-    private BasicSpecificationRepository repository;
+    private BasicMediaSpecificationRepository repository;
 
     @Test
-    public void shouldFindAllBasicSpecifications() {
-        final List<BasicSpecification> specifications = Lists.newArrayList(
+    public void shouldFindAllBasicMediaSpecifications() {
+        final List<BasicMediaSpecification> specifications = Lists.newArrayList(
                 repository.findAll());
         assertThat(specifications, is(notNullValue()));
         assertThat(specifications, hasSize(2));
@@ -75,45 +77,42 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
                 isIn(Arrays.asList("product123")));
         assertThat(specifications.get(0).getLocaleId(),
                 isIn(Arrays.asList("en", "en_US")));
-        assertThat(specifications.get(0).getCategoryId(),
-                isIn(Arrays.asList("categoryId123")));
-        assertThat(specifications.get(0).getIndustryId(),
-                isIn(Arrays.asList("industryId123")));
+        assertThat(specifications.get(0).getAttributes(), notNullValue());
+        assertThat(specifications.get(0).getAttributes().get("maxId"), notNullValue());
+        assertThat(specifications.get(0).getAttributes().get("maxId"), is("http://abcd"));
         assertThat(specifications.get(1).getId(),
                 isIn(Arrays.asList("product123-en", "product123-en_US")));
         assertThat(specifications.get(1).getProductId(),
                 isIn(Arrays.asList("product123")));
         assertThat(specifications.get(1).getLocaleId(),
                 isIn(Arrays.asList("en", "en_US")));
-        assertThat(specifications.get(1).getCategoryId(),
-                isIn(Arrays.asList("categoryId123")));
-        assertThat(specifications.get(1).getIndustryId(),
-                isIn(Arrays.asList("industryId123")));
+        assertThat(specifications.get(1).getAttributes(), notNullValue());
+        assertThat(specifications.get(1).getAttributes().get("maxId"), notNullValue());
+        assertThat(specifications.get(1).getAttributes().get("maxId"),
+                is("http://abcde"));
     }
 
     @Test
-    public void shouldFindBasicSpecificationById() {
-        final Optional<BasicSpecification> specification = repository.findById(
+    public void shouldFindBasicMediaSpecificationById() {
+        final Optional<BasicMediaSpecification> specification = repository.findById(
                 "product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));
         assertThat(specification.get().getLocaleId(), is("en"));
-        assertThat(specification.get().getCategoryId(), is("categoryId123"));
-        assertThat(specification.get().getIndustryId(), is("industryId123"));
+        assertThat(specification.get().getAttributes(), notNullValue());
+        assertThat(specification.get().getAttributes().get("maxId"), notNullValue());
+        assertThat(specification.get().getAttributes().get("maxId"), is("http://abcd"));
     }
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/basic_specifications/basic_specifications_after_create.bson")
-    public void shouldCreateNewBasicSpecification() {
-        final Map<String, Object> attributes = Maps.newHashMap();
-        attributes.put("mfgId", "Sony");
-        attributes.put("mfgPartNoId", "XYZ");
-        final BasicSpecification specs = new BasicSpecification();
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_create.bson")
+    public void shouldCreateNewBasicMediaSpecification() {
+        final Map<String, String> attributes = Maps.newHashMap();
+        attributes.put("maxId", "http://abc");
+        final BasicMediaSpecification specs = new BasicMediaSpecification();
         specs.setId("product1234-en");
         specs.setAttributes(attributes);
-        specs.setCategoryId("categoryId123");
-        specs.setIndustryId("industryId123");
         specs.setLocaleId("en");
         specs.setProductId("product1234");
         specs.setLastUpdateDate(new Date(Long.valueOf("1546528059097")));
@@ -122,17 +121,45 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     }
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/basic_specifications/basic_specifications_after_update.bson")
-    public void shouldUpdateBasicSpecification() {
-        final BasicSpecification specs = repository.findById("product123-en_US").get();
-        specs.setCategoryId("categoryId1234");
-        specs.setIndustryId("industryId1234");
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_update.bson")
+    public void shouldUpdateBasicMediaSpecification() {
+        final BasicMediaSpecification specs = repository.findById(
+                "product123-en_US").get();
+        specs.getAttributes().put("maxId", "http://abc");
         repository.save(specs);
     }
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/basic_specifications/basic_specifications_after_delete.bson")
-    public void shouldDeleteBasicSpecificationById() {
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_delete.bson")
+    public void shouldDeleteBasicMediaSpecificationById() {
         repository.deleteById("product123-en_US");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_update_attribute_one_record.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeValueForId() {
+        repository.updateAttribute("product123-en_US", "maxId", "http://xy.png");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_add_attribute_one_record.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldAddAttributeValueForId() {
+        repository.updateAttribute("product123-en_US", "thumbnailId", "http://xy.png");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications_after_delete_attribute_one_record.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldRemoveAttributeValueForId() {
+        repository.removeAttribute("product123-en_US", "maxId");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/basic_media_specifications/basic_media_specifications.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldDoNothingOnRemoveAttributeWhichDoesNotExistForId() {
+        repository.removeAttribute("product123-en_US", "thumbnailId");
     }
 }

@@ -28,7 +28,6 @@
 
 package com.etilize.burraq.eas.specification;
 
-import static com.etilize.burraq.eas.ExportAggregationConstants.*;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -123,8 +122,8 @@ public class DetailedSpecificationRepositoryIntegrationTest
 
     }
 
-    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_update.bson")
     @Test
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_update.bson")
     public void shouldUpdateDetailedSpecification() {
         final DetailedSpecification specs = repository.findById("product123-en_US").get();
         specs.setCategoryId("categoryId1234");
@@ -132,8 +131,8 @@ public class DetailedSpecificationRepositoryIntegrationTest
         repository.save(specs);
     }
 
-    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_delete.bson")
     @Test
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_delete.bson")
     public void shouldDeleteDetailedSpecificationById() {
         repository.deleteById("product123-en_US");
     }

@@ -1,0 +1,46 @@
+{
+   "basic_media_specifications":[
+      {
+         "id":{
+            "S":"product123-en"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"en"
+         },
+         "attributes":{
+            "M":{
+              "maxId" : {
+                "S":"http://abcd"
+              }
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "id":{
+            "S":"product123-en_US"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"en_US"
+         },
+         "attributes":{
+            "M":{
+              "maxId" : {
+                "S":"http://xy.png"
+              }
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}

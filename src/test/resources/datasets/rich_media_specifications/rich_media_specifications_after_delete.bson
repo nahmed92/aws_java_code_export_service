@@ -1,0 +1,25 @@
+{
+   "rich_media_specifications":[
+      {
+         "id":{
+            "S":"product123-en"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"en"
+         },
+         "attributes":{
+            "M":{
+              "maxId" : {
+                "S":"http://abcd"
+              }
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}
