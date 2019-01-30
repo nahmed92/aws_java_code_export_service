@@ -45,4 +45,10 @@ public interface SpecificationStatusService {
      */
     void save(String productId, String localeId, String statusId);
 
+    /**
+     * It deletes all records matching productId.
+     *
+     * @param productId {@link String} productId.
+     */
+    void deleteAllByProductId(String productId);
 }

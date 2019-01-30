@@ -81,4 +81,13 @@ public class SpecificationStatusServiceImpl implements SpecificationStatusServic
         status.setLastUpdateDate(new Date());
         repository.save(status);
     }
+
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.specification.status.SpecificationStatusService#deleteAllByProductId(java.lang.String)
+     */
+    @Override
+    public void deleteAllByProductId(final String productId) {
+        Assert.notNull(productId, "productId is required.");
+        repository.deleteAllByProductId(productId);
+    }
 }

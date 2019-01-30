@@ -163,4 +163,10 @@ public class SpecificationStatusRepositoryIntegrationTest
         productStatusId.setProductId("product123");
         repository.deleteById(productStatusId);
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specification_statuses/specification_statuses_after_delete_by_product_id.bson")
+    public void shouldDeleteSpecificationStatusByProductId() {
+        repository.deleteAllByProductId("product123");
+    }
 }
