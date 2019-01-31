@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 - 2019 Etilize
+ * Copyright (C) 2018 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,36 +26,41 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.kafka.redis;
 
-import java.util.List;
-
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+import com.etilize.burraq.eas.kafka.stream.MessageReceiver;
 
 /**
- * It represents dynamodb repository for {@link SpecificationStatus}.
+ * Contains {@link public String} constants used for Kafka Connect Redis based
+ * message manipulation in {@link MessageReceiver}.
  *
- * @author Umar Zubair
+ * @author Affan Hasan
  * @since 1.0
  */
-@EnableScan
-@RestResource(exported = false)
-public interface SpecificationStatusRepository
-        extends DynamoDBCrudRepository<SpecificationStatus, SpecificationStatusId> {
+public interface KafkaConnectRedisMessageProperties {
 
-    /**
-     * It return all records matching with productId
-     * @param productId productId
-     * @return List<SpecificationStatus>
-     */
-    List<SpecificationStatus> findAllByProductId(String productId);
+    String ID = "id";
 
-    /**
-     * Deletes records by matching with productId.
-     *
-     * @param productId {@link String} productId
-     */
-    void deleteAllByProductId(String productId);
+    String KAFKA_RECEIVED_MESSAGE_KEY = "kafka_receivedMessageKey";
+
+    String HASH_MAP_SET_COMMAND = "HMSetCommand";
+
+    String SET_REMOVE_COMMAND = "SRemCommand";
+
+    String PRODUCT_ID = "productId";
+
+    String LOCALE_ID = "localeId";
+
+    String STATUS_ID = "statusId";
+
+    String MEMBERS = "members";
+
+    String PRODUCT_STATUSES = "product_statuses";
+
+    String KEY = "key";
+
+    String FIELDS = "fields";
+
+    String CLASS = "_class";
+
 }

@@ -58,4 +58,10 @@ public class SpecificationStatusServiceIntegrationTest extends AbstractIntegrati
     public void shouldSaveSpecificationStatus() {
         service.save("product123", "en_UK", "NEW");
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specification_statuses/specification_statuses_after_delete_by_product_id.bson")
+    public void shouldDeleteSpecificationStatusbyProductId() {
+        service.deleteAllByProductId("product123");
+    }
 }

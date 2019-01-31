@@ -28,8 +28,10 @@
 
 package com.etilize.burraq.eas.kafka.stream;
 
-import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.OPERATION_UPDATE;
+import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.*;
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
+import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessageProperties.*;
+import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessageProperties.ID;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -49,6 +51,9 @@ import org.springframework.stereotype.Service;
 import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
 import com.etilize.burraq.eas.kafka.debezium.DebeziumMessageParser;
 import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
+import com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessagesDecoder;
+import com.etilize.burraq.eas.kafka.redis.ProductSpecificationsStatusUpsertMessagePayload;
+import com.etilize.burraq.eas.specification.status.SpecificationStatusService;
 
 /**
  * It receives messages from Apache Kafka.
@@ -59,7 +64,8 @@ import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
 @Service
 public class MessageReceiver {
 
-    @Autowired
+    private SpecificationStatusService specificationStatusService;
+
     private AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -70,10 +76,16 @@ public class MessageReceiver {
      * Constructor to instantiate object instance
      *
      * @param debeziumMessageParser {@link @DebeziumMessageParser}
+     * @param avroJsonSchemaRegistryClientMessageConverter {@link AvroJsonSchemaRegistryClientMessageConverter}
+     * @param specificationStatusService {@link SpecificationStatusService}
      */
     @Autowired
-    public MessageReceiver(final DebeziumMessageParser debeziumMessageParser) {
+    public MessageReceiver(final DebeziumMessageParser debeziumMessageParser,
+            final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter,
+            final SpecificationStatusService specificationStatusService) {
         this.debeziumMessageParser = debeziumMessageParser;
+        this.avroJsonSchemaRegistryClientMessageConverter = avroJsonSchemaRegistryClientMessageConverter;
+        this.specificationStatusService = specificationStatusService;
     }
 
     /**
@@ -196,6 +208,45 @@ public class MessageReceiver {
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
             throws IOException {
         logger.info("Received Media Message: [{}].", record);
+    }
+
+    /**
+     * Process product specification status updates from PSSS.
+     *
+     * @param message {@link Message<String>}
+     * @throws IOException {@link IOException}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.psss}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
+    public void processProductSpecificationsStatusMessage(final Message<String> message) {
+        logger.info("Received product specifications status message: [{}]", message);
+        final KafkaConnectRedisMessagesDecoder psssMessageDecoder = new KafkaConnectRedisMessagesDecoder();
+        final String kafkaReceivedMessageKey = message.getHeaders() //
+                .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
+                        .get(KAFKA_RECEIVED_MESSAGE_KEY) //
+                        .toString() : null;
+        if (kafkaReceivedMessageKey.endsWith(HASH_MAP_SET_COMMAND)) {// Case for Add Or Update
+            final Optional<ProductSpecificationsStatusUpsertMessagePayload> requestPayload;
+            requestPayload = psssMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+                    message.getPayload());
+            if (requestPayload.isPresent()) {
+                requestPayload.get() //
+                        .getFields() //
+                        .entrySet() //
+                        .forEach(item -> {
+                            if (!item.getKey() //
+                                    .equals(ID)) {
+                                specificationStatusService.save(requestPayload.get() //
+                                        .getFields() //
+                                        .get(ID), item.getKey(), item.getValue());
+                            }
+                        });
+            }
+        } else if (kafkaReceivedMessageKey.endsWith(SET_REMOVE_COMMAND)) {// Case for delete all specifications statuses
+            final String id = psssMessageDecoder.extractProductIdFromDeleteSpecificationsStatusesMessage(
+                    message.getPayload()) //
+                    .get();
+            specificationStatusService.deleteAllByProductId(id);
+        }
     }
 
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,
