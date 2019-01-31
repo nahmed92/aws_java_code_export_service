@@ -28,11 +28,11 @@
 
 package com.etilize.burraq.eas.kafka.redis;
 
-import com.etilize.burraq.eas.kafka.stream.MessageReceiver;
+import com.etilize.burraq.eas.spring.cloud.stream.SpringCloudStreamMessagesReceiver;
 
 /**
  * Contains {@link public String} constants used for Kafka Connect Redis based
- * message manipulation in {@link MessageReceiver}.
+ * message manipulation in {@link SpringCloudStreamMessagesReceiver}.
  *
  * @author Affan Hasan
  * @since 1.0

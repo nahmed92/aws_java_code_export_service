@@ -60,7 +60,7 @@ public class KafkaConnectRedisMessagesDecoder {
     }
 
     /**
-     * Converts base 64 encoded Json string payload to {@link ProductSpecificationsStatusUpsertMessagePayload}, 
+     * Converts base 64 encoded Json string payload to {@link PSSSUpsertMessagePayload},
      * <br>following is the sample base 64 encoded json message.</br>
      * <br>Encoded:</br>
      * <p>{\"key\":\"cHJvZHVjdF9zdGF0dXNlczrYp9mE2YXYsdin2LnZig==\",\"fields\":{\"YXJfS1NB\":\"TkVX\",\"aWQ=\":\"2KfZhNmF2LHYp9i52Yo=\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}</p>
@@ -68,11 +68,11 @@ public class KafkaConnectRedisMessagesDecoder {
      * <p>{ \"key\":\"product_statuses:product123\", \"fields\":{"ar_KSA":"NEW","id":"product123","_class":"com.etilize.burraq.psss.productstatus.ProductStatus"} }</p>
      *
      * @param message {@link String} Json payload
-     * @return {@link ProductSpecificationsStatusUpsertMessagePayload} null when message is not related to "product_statuses"
+     * @return {@link PSSSUpsertMessagePayload} null when message is not related to "product_statuses"
      */
-    public Optional<ProductSpecificationsStatusUpsertMessagePayload> convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+    public Optional<PSSSUpsertMessagePayload> convertJsonToProductSpecificationsStatusUpsertMessagePayload(
             final String message) {
-        Optional<ProductSpecificationsStatusUpsertMessagePayload> productSpecificationsStatusUpsertMessagePayload = Optional.empty();
+        Optional<PSSSUpsertMessagePayload> productSpecificationsStatusUpsertMessagePayload = Optional.empty();
         final JsonObject payloadJson = jsonParser.parse(message) //
                 .getAsJsonObject();
         payloadJson.addProperty(KEY, this.decodeBase64String(payloadJson.get(KEY) //
@@ -86,7 +86,7 @@ public class KafkaConnectRedisMessagesDecoder {
                                     .getAsJsonObject());
             productSpecificationsStatusUpsertMessagePayload = Optional.of(
                     new Gson().fromJson(payloadJson.toString(),
-                            ProductSpecificationsStatusUpsertMessagePayload.class));
+                            PSSSUpsertMessagePayload.class));
             productSpecificationsStatusUpsertMessagePayload //
                     .get() //
                     .getFields() //

@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,17 +26,17 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.spring.cloud.stream;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 import java.text.ParseException;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 
-import com.etilize.burraq.eas.kafka.redis.ProductSpecificationsStatusUpsertMessagePayload;
-import com.google.common.collect.Maps;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEvent;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
@@ -44,44 +44,48 @@ import com.openpojo.validation.rule.impl.GetterMustExistRule;
 import com.openpojo.validation.rule.impl.NoPublicFieldsExceptStaticFinalRule;
 import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
 import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
+import com.openpojo.validation.rule.impl.SetterMustExistRule;
 import com.openpojo.validation.test.impl.GetterTester;
-
-import static org.hamcrest.MatcherAssert.*;
+import com.openpojo.validation.test.impl.SetterTester;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO test for {@link ProductSpecificationsStatusUpsertMessagePayload}
+ * POJO tests for {@link UpdateUnitTranslationEvent}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class ProductSpecificationsStatusUpsertMessagePayloadPojoTest {
+public class UpdateUnitTranslationEventPojoTest {
 
     @Test
-    public void shouldValidateProductSpecificationsStatusMessagePayloadPOJO() {
+    public void validateUpdateUnitTranslationEventPojo() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new GetterMustExistRule()) //
+                .with(new SetterMustExistRule()) //
                 .with(new NoPublicFieldsExceptStaticFinalRule()) //
                 .with(new NoStaticExceptFinalRule()) //
+                .with(new SetterTester()) //
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(
-                ProductSpecificationsStatusUpsertMessagePayload.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(UpdateUnitTranslationEvent.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(ProductSpecificationsStatusUpsertMessagePayload.class) //
+        EqualsVerifier.forClass(UpdateUnitTranslationEvent.class) //
+                .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final ProductSpecificationsStatusUpsertMessagePayload payload = new ProductSpecificationsStatusUpsertMessagePayload(
-                "product_statuses:product123", Maps.newLinkedHashMap());
-        assertThat(ObjectUtils.identityToString(payload), not(payload.toString()));
+        final UpdateUnitTranslationEvent updateUnitTranslationEvent = UpdateUnitTranslationEventFixture.createWithDefaults();
+        assertThat(ObjectUtils.identityToString(updateUnitTranslationEvent),
+                not(updateUnitTranslationEvent.toString()));
     }
 }
