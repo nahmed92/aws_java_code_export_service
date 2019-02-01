@@ -57,6 +57,8 @@ public interface KafkaConnectRedisMessageProperties {
 
     String PRODUCT_STATUSES = "product_statuses";
 
+    String PRODUCT_MEDIA_STATUSES = "product_media_statuses";
+
     String KEY = "key";
 
     String FIELDS = "fields";

@@ -122,6 +122,20 @@ public class KafkaConnectDebeziumMessagesReceiver {
         }
     }
 
+    /**
+     * Process media updates from product-media-service
+     *
+     * @param record {@link GenericData.Record}
+     * @param key {@link ConsumerRecord<Object, String>}
+     * @throws IOException {@link IOException}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pms}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
+    public void processProductMediaServiceMessages(
+            final GenericData.Record record,
+            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
+        logger.info("Received Product Media Service Message: [{}].", record);
+    }
+
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,
             final GenericData.Record record) {
         logger.info(

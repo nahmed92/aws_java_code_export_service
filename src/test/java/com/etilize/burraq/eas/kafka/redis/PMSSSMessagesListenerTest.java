@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -44,14 +45,15 @@ import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 
 /**
- * Contains integration tests for product-specification-status-service message listener.
+ * Contains integration tests for product-media-status-service message listener.
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class PSSSMessagesListenerTest extends AbstractIntegrationTest {
+public class PMSSSMessagesListenerTest extends AbstractIntegrationTest {
 
-    KafkaConnectRedisMessagesReceiver messageReceiver;
+    @Autowired
+    KafkaConnectRedisMessagesReceiver messageReceiver = null;
 
     @Mock
     SpecificationStatusService specificationStatusService;
@@ -66,72 +68,84 @@ public class PSSSMessagesListenerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void shouldCreateSpecificationStatusWhenNewProductCreatedInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}";
+    public void shouldCreateMediaStatusWhenNewProductCreatedInPMSSS() {
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
+                + ",\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"ZW5fVVM=\":\"TkVX\","
+                + "\"aWQ=\":\"bTFnYXJhbmQ=\"," + "\"X2NsYXNz\""
+                + ":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
                 "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
-        doNothing().when(specificationStatusService) //
-                .save("product123", "en_US", "NEW");
-        messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_US"),
-                eq("NEW"));
+        doNothing().when(mediaStatusService) //
+                .save("m1garand", "en_US", "NEW");
+        doNothing().when(mediaStatusService) //
+                .save("m1garand", "fr_US", "NEW");
+        messageReceiver.processPMSSMessages(message);
+        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("fr_US"), eq("NEW"));
+        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("en_US"), eq("NEW"));
     }
 
     @Test
-    public void shouldDeleteAllSpecificationsWhenProductDeletedInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlcw==\",\"members\":[\"cHJvZHVjdDEyMw==\"]}";
+    public void shouldDeleteMediaStatusWhenProductIsDeletedInPMSSS() {
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlcw==\",\"members\":[\"bTFnYXJhbmQ=\"]}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
                 "com.moilioncircle.redis.replicator.cmd.impl.SRemCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
-        doNothing().when(specificationStatusService) //
-                .deleteAllByProductId("product123");
-        messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).deleteAllByProductId(
-                eq("product123"));
+        doNothing().when(mediaStatusService) //
+                .deleteAllByProductId("m1garand");
+        messageReceiver.processPMSSMessages(message);
+        verify(mediaStatusService, times(1)).deleteAllByProductId(eq("m1garand"));
     }
 
     /**
-     * Represents scenario when a new Specification Locale is added or updated in a product.
+     * Represents the scenario when a new Media Status is added or updated in a product.
      */
     @Test
-    public void shouldCreateWhenNewLocaleIsAddedToAProductInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\",\"ZW5fVUs=\":\"TkVX\", \"ZW5fVVM=\":\"TkVX\"}}";
+    public void shouldAddMediaStatusWhenMediaStatusIsAddedInPMSS() {
+        final String base64EncodedUpsertMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
+                + ",\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"YXJfS1NB\":\"Q09NUExFVEVE\","
+                + "\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"bTFnYXJhbmQ=\","
+                + "\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
                 "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
         final Message<String> message = new GenericMessage<String>(
-                base64EncodedMessagePayload, headers);
+                base64EncodedUpsertMessagePayload, headers);
 
-        doNothing().when(specificationStatusService) //
+        doNothing().when(mediaStatusService) //
+                .save("product123", "fr_US", "NEW");
+        doNothing().when(mediaStatusService) //
+                .save("product123", "ar_KSA", "COMPLETED");
+        doNothing().when(mediaStatusService) //
                 .save("product123", "en_US", "NEW");
-        doNothing().when(specificationStatusService) //
-                .save("product123", "en_UK", "NEW");
-        messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_UK"),
-                eq("NEW"));
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_US"),
-                eq("NEW"));
+        messageReceiver.processPMSSMessages(message);
+        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("fr_US"), eq("NEW"));
+        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("ar_KSA"),
+                eq("COMPLETED"));
+        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("en_US"), eq("NEW"));
     }
 
     /**
-     * Represents scenario when a message is not related to add/update/delete "product_specifications"
+     * Represents scenario when a message is not related to add/update/delete "product_media_specifications"
      */
     @Test
-    public void shouldNotSaveWhenMessageIsNotProductStatuses() {
-        final String base64EncodedMessagePayloadForStatuses = "{\"key\":\"c3RhdHVzZXM6Tk9UX0ZPVU5E\",\"fields\":{\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3Muc3RhdHVzLlN0YXR1cw==\",\"aWQ=\":\"Tk9UX0ZPVU5E\",\"bmFtZQ==\":\"Tm90IEZvdW5k\",\"ZGVzY3JpcHRpb24=\":\"UHJvZHVjdCBpcyBub3QgZm91bmQ=\",\"Z3JvdXA=\":\"SVNTVUU=\"}}";
+    public void shouldNotSaveWhenMessageIsNotProductMediaStatuses() {
+        final String base64EncodedMessagePayloadForStatuses = "	{\"key\":\"c3RhdHVzZXM6WUVTX05PVF9GT1VORA==\","
+                + "\"fields\":{\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3Muc3RhdHVzLlN0YXR1cw==\","
+                + "\"aWQ=\":\"WUVTX05PVF9GT1VORA==\",\"bmFtZQ==\":\"WWVzIE5vdCBGb3VuZA==\","
+                + "\"ZGVzY3JpcHRpb24=\":\"UkMgaXMgbm90IGZvdW5k\",\"Z3JvdXA=\":\"SVNTVUU=\"}}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
                 "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayloadForStatuses, headers);
 
-        messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, never()).save(anyString(), anyString(),
-                anyString());
+        messageReceiver.processPMSSMessages(message);
+        verify(mediaStatusService, never()).save(anyString(), anyString(), anyString());
+        verify(mediaStatusService, never()).deleteAllByProductId(anyString());
     }
 }

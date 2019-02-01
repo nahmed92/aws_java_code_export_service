@@ -45,4 +45,10 @@ public interface MediaStatusService {
      */
     void save(String productId, String localeId, String statusId);
 
+    /**
+     * Delete all by product id.
+     *
+     * @param productId product id
+     */
+    void deleteAllByProductId(String productId);
 }

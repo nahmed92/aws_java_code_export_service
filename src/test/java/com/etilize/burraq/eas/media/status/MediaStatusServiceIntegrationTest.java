@@ -58,4 +58,10 @@ public class MediaStatusServiceIntegrationTest extends AbstractIntegrationTest {
     public void shouldSaveMediaStatus() {
         service.save("product123", "en_UK", "NEW");
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_statuses/media_statuses_after_delete_all_by_id.bson")
+    public void shouldDeleteAllMediaStatusesById() {
+        service.deleteAllByProductId("product123");
+    }
 }

@@ -35,12 +35,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Represents create/update 'product_statuses' Json message from PSSS.
+ * Represents create/update 'product_statuses' Json message from PSSS & PMSS.
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class PSSSUpsertMessagePayload {
+public class KafkaConnectRedisUpsertMessagePayload {
 
     private final String key;
 
@@ -52,7 +52,8 @@ public class PSSSUpsertMessagePayload {
      * @param key {@link String} key
      * @param fields {@link Map<String, String>} fields
      */
-    public PSSSUpsertMessagePayload(final String key, final Map<String, String> fields) {
+    public KafkaConnectRedisUpsertMessagePayload(final String key,
+            final Map<String, String> fields) {
         this.key = key;
         this.fields = fields;
     }
@@ -83,10 +84,10 @@ public class PSSSUpsertMessagePayload {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof PSSSUpsertMessagePayload)) {
+        if (!(obj instanceof KafkaConnectRedisUpsertMessagePayload)) {
             return false;
         }
-        final PSSSUpsertMessagePayload productSpecificationsStatusRequest = (PSSSUpsertMessagePayload) obj;
+        final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusRequest = (KafkaConnectRedisUpsertMessagePayload) obj;
         return new EqualsBuilder() //
                 .append(getKey(), productSpecificationsStatusRequest.getKey()) //
                 .append(getFields(), productSpecificationsStatusRequest.getFields()) //

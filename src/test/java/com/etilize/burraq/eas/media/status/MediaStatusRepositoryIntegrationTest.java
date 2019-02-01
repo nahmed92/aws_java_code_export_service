@@ -124,4 +124,10 @@ public class MediaStatusRepositoryIntegrationTest extends AbstractIntegrationTes
     public void shouldDeleteMediaStatusById() {
         repository.deleteById("product123-en_US");
     }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_statuses/media_statuses_after_delete_all_by_id.bson")
+    public void shouldDeleteAllMediaStatusesByProductId() {
+        repository.deleteAllByProductId("product123");
+    }
 }
