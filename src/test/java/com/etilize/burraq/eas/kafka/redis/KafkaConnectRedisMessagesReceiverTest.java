@@ -26,33 +26,14 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.stream;
-
-import java.util.Date;
-
-import com.etilize.burraq.eas.kafka.stream.UpdateUnitTranslationEvent;
-import com.fluentinterface.annotation.Constructs;
-import com.fluentinterface.builder.Builder;
+package com.etilize.burraq.eas.kafka.redis;
 
 /**
- * Builder interface to create {@link UpdateUnitTranslationEvent} fixtures
+ * Contains functional tests for {@linkKafkaConnectRedisMessagesReceiver}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public interface UpdateUnitTranslationEventBuilder
-        extends Builder<UpdateUnitTranslationEvent> {
+public class KafkaConnectRedisMessagesReceiverTest {
 
-    @Constructs
-    UpdateUnitTranslationEventBuilder of(String source);
-
-    UpdateUnitTranslationEventBuilder withLocaleId(String localeId);
-
-    UpdateUnitTranslationEventBuilder withValue(String value);
-
-    UpdateUnitTranslationEventBuilder withTranslation(String Translation);
-
-    UpdateUnitTranslationEventBuilder withPerformedBy(String performedBy);
-
-    UpdateUnitTranslationEventBuilder withPerformedDate(Date performedDate);
 }

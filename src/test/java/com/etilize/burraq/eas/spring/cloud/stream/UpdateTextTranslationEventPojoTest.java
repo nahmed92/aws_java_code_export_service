@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.stream;
+package com.etilize.burraq.eas.spring.cloud.stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
@@ -36,7 +36,7 @@ import java.text.ParseException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 
-import com.etilize.burraq.eas.kafka.stream.UpdateUnitTranslationEvent;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateTextTranslationEvent;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
@@ -52,15 +52,15 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO tests for {@link UpdateUnitTranslationEvent}
+ * POJO tests for {@link UpdateTextTranslationEvent}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class UpdateUnitTranslationEventPojoTest {
+public class UpdateTextTranslationEventPojoTest {
 
     @Test
-    public void validateUpdateUnitTranslationEventPojo() {
+    public void validateUpdateTextTranslationEventPojo() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new GetterMustExistRule()) //
@@ -72,20 +72,20 @@ public class UpdateUnitTranslationEventPojoTest {
                 .with(new GetterTester()) //
                 .build();
         validator.validate(
-                PojoClassFactory.getPojoClass(UpdateUnitTranslationEvent.class));
+                PojoClassFactory.getPojoClass(UpdateTextTranslationEvent.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(UpdateUnitTranslationEvent.class) //
+        EqualsVerifier.forClass(UpdateTextTranslationEvent.class) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final UpdateUnitTranslationEvent updateUnitTranslationEvent = UpdateUnitTranslationEventFixture.createWithDefaults();
-        assertThat(ObjectUtils.identityToString(updateUnitTranslationEvent),
-                not(updateUnitTranslationEvent.toString()));
+        final UpdateTextTranslationEvent updateTextTranslationEvent = UpdateTextTranslationEventFixture.createWithDefaults();
+        assertThat(ObjectUtils.identityToString(updateTextTranslationEvent),
+                not(updateTextTranslationEvent.toString()));
     }
 }

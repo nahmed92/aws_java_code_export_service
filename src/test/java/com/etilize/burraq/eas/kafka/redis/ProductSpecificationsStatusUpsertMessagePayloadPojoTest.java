@@ -50,7 +50,7 @@ import static org.hamcrest.MatcherAssert.*;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 /**
- * POJO test for {@link ProductSpecificationsStatusUpsertMessagePayload}
+ * POJO test for {@link PSSSUpsertMessagePayload}
  *
  * @author Affan Hasan
  * @since 1.0
@@ -67,19 +67,18 @@ public class ProductSpecificationsStatusUpsertMessagePayloadPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(
-                ProductSpecificationsStatusUpsertMessagePayload.class));
+        validator.validate(PojoClassFactory.getPojoClass(PSSSUpsertMessagePayload.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(ProductSpecificationsStatusUpsertMessagePayload.class) //
+        EqualsVerifier.forClass(PSSSUpsertMessagePayload.class) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final ProductSpecificationsStatusUpsertMessagePayload payload = new ProductSpecificationsStatusUpsertMessagePayload(
+        final PSSSUpsertMessagePayload payload = new PSSSUpsertMessagePayload(
                 "product_statuses:product123", Maps.newLinkedHashMap());
         assertThat(ObjectUtils.identityToString(payload), not(payload.toString()));
     }

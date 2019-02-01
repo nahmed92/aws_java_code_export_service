@@ -26,35 +26,33 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.stream;
+package com.etilize.burraq.eas.spring.cloud.stream;
 
 import java.util.Date;
 
-import com.etilize.burraq.eas.kafka.stream.UpdateTextTranslationEvent;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEvent;
 import com.fluentinterface.annotation.Constructs;
 import com.fluentinterface.builder.Builder;
 
 /**
- * Builder interface to create {@link UpdateTextTranslationEvent} fixtures
+ * Builder interface to create {@link UpdateUnitTranslationEvent} fixtures
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public interface UpdateTextTranslationEventBuilder
-        extends Builder<UpdateTextTranslationEvent> {
+public interface UpdateUnitTranslationEventBuilder
+        extends Builder<UpdateUnitTranslationEvent> {
 
     @Constructs
-    UpdateTextTranslationEventBuilder of(String source);
+    UpdateUnitTranslationEventBuilder of(String source);
 
-    UpdateTextTranslationEventBuilder withLocaleId(String localeId);
+    UpdateUnitTranslationEventBuilder withLocaleId(String localeId);
 
-    UpdateTextTranslationEventBuilder withIndustryId(String indsutryId);
+    UpdateUnitTranslationEventBuilder withValue(String value);
 
-    UpdateTextTranslationEventBuilder withValue(String value);
+    UpdateUnitTranslationEventBuilder withTranslation(String Translation);
 
-    UpdateTextTranslationEventBuilder withTranslation(String Translation);
+    UpdateUnitTranslationEventBuilder withPerformedBy(String performedBy);
 
-    UpdateTextTranslationEventBuilder withPerformedBy(String performedBy);
-
-    UpdateTextTranslationEventBuilder withPerformedDate(Date performedDate);
+    UpdateUnitTranslationEventBuilder withPerformedDate(Date performedDate);
 }

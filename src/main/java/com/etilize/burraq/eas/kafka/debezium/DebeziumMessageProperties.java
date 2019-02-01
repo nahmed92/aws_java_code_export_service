@@ -29,7 +29,7 @@
 package com.etilize.burraq.eas.kafka.debezium;
 
 /**
- * Contains {@link String} constants used for Debezium based message manipulation in {@link MessageReceiver}.
+ * Contains {@link String} constants used for Debezium based message manipulation in {@link KafkaConnectDebeziumMessagesReceiver}.
  *
  * @author Affan Hasan
  * @since 1.0

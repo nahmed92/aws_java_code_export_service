@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 Etilize
+ * Copyright (C) 2018 - 2019 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,19 +26,35 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.debezium;
+package com.etilize.burraq.eas.spring.cloud.stream;
+
+import java.util.Date;
+
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateTextTranslationEvent;
+import com.fluentinterface.annotation.Constructs;
+import com.fluentinterface.builder.Builder;
 
 /**
- * Contains {@link String} constants used for Debezium based message manipulation in {@link KafkaConnectDebeziumMessagesReceiver}.
+ * Builder interface to create {@link UpdateTextTranslationEvent} fixtures
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public interface DebeziumMessageKeys {
+public interface UpdateTextTranslationEventBuilder
+        extends Builder<UpdateTextTranslationEvent> {
 
-    String OPERATION_CREATE = "c"; // Create operation.
+    @Constructs
+    UpdateTextTranslationEventBuilder of(String source);
 
-    String OPERATION_UPDATE = "u"; // Update operation.
+    UpdateTextTranslationEventBuilder withLocaleId(String localeId);
 
-    String OPERATION_REMOVE = "r"; // Remove operation.
+    UpdateTextTranslationEventBuilder withIndustryId(String indsutryId);
+
+    UpdateTextTranslationEventBuilder withValue(String value);
+
+    UpdateTextTranslationEventBuilder withTranslation(String Translation);
+
+    UpdateTextTranslationEventBuilder withPerformedBy(String performedBy);
+
+    UpdateTextTranslationEventBuilder withPerformedDate(Date performedDate);
 }

@@ -40,7 +40,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author Affan Hasan
  * @since 1.0
  */
-public class ProductSpecificationsStatusUpsertMessagePayload {
+public class PSSSUpsertMessagePayload {
 
     private final String key;
 
@@ -52,8 +52,7 @@ public class ProductSpecificationsStatusUpsertMessagePayload {
      * @param key {@link String} key
      * @param fields {@link Map<String, String>} fields
      */
-    public ProductSpecificationsStatusUpsertMessagePayload(final String key,
-            final Map<String, String> fields) {
+    public PSSSUpsertMessagePayload(final String key, final Map<String, String> fields) {
         this.key = key;
         this.fields = fields;
     }
@@ -84,10 +83,10 @@ public class ProductSpecificationsStatusUpsertMessagePayload {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ProductSpecificationsStatusUpsertMessagePayload)) {
+        if (!(obj instanceof PSSSUpsertMessagePayload)) {
             return false;
         }
-        final ProductSpecificationsStatusUpsertMessagePayload productSpecificationsStatusRequest = (ProductSpecificationsStatusUpsertMessagePayload) obj;
+        final PSSSUpsertMessagePayload productSpecificationsStatusRequest = (PSSSUpsertMessagePayload) obj;
         return new EqualsBuilder() //
                 .append(getKey(), productSpecificationsStatusRequest.getKey()) //
                 .append(getFields(), productSpecificationsStatusRequest.getFields()) //

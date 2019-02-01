@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.stream;
+package com.etilize.burraq.eas.spring.cloud.stream;
 
 import java.util.Date;
 import org.apache.avro.reflect.AvroEncode;

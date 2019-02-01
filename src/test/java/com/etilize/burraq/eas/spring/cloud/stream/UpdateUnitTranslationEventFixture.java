@@ -26,13 +26,13 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.kafka.stream;
+package com.etilize.burraq.eas.spring.cloud.stream;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.etilize.burraq.eas.kafka.stream.UpdateUnitTranslationEvent;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEvent;
 import com.fluentinterface.ReflectionBuilder;
 
 /**

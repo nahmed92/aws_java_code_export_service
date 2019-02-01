@@ -37,7 +37,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessagesDecoder;
-import com.etilize.burraq.eas.kafka.redis.ProductSpecificationsStatusUpsertMessagePayload;
+import com.etilize.burraq.eas.kafka.redis.PSSSUpsertMessagePayload;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 
 /**
@@ -53,9 +53,9 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
     @Test
     public void shouldGetSpecificationLocalesFromHMSetCommandForCreateSpecificationStatuses() {
         final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}";
-        final Optional<ProductSpecificationsStatusUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+        final Optional<PSSSUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
                 base64EncodedMessagePayload);
-        final ProductSpecificationsStatusUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
+        final PSSSUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
                 is("product_statuses:product123"));
         assertThat(productSpecificationsStatusMessagePayload.getFields() //
@@ -74,9 +74,9 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
     @Test
     public void shouldGetSpecificationLocalesFromHMSetCommandForAddNewSpecificationStatus() {
         final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\",\"ZW5fVUs=\":\"TkVX\", \"ZW5fVVM=\":\"TkVX\"}}";
-        final Optional<ProductSpecificationsStatusUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+        final Optional<PSSSUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
                 base64EncodedMessagePayload);
-        final ProductSpecificationsStatusUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
+        final PSSSUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
                 is("product_statuses:product123"));
         assertThat(productSpecificationsStatusMessagePayload.getFields() //
@@ -92,7 +92,7 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
     @Test
     public void shouldReturnEmptyWhenMessageIsNotForProductSpecificationStatuses() {
         final String base64EncodedMessagePayloadForStatuses = "{\"key\":\"c3RhdHVzZXM6Tk9UX0ZPVU5E\",\"fields\":{\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3Muc3RhdHVzLlN0YXR1cw==\",\"aWQ=\":\"Tk9UX0ZPVU5E\",\"bmFtZQ==\":\"Tm90IEZvdW5k\",\"ZGVzY3JpcHRpb24=\":\"UHJvZHVjdCBpcyBub3QgZm91bmQ=\",\"Z3JvdXA=\":\"SVNTVUU=\"}}";
-        final Optional<ProductSpecificationsStatusUpsertMessagePayload> productSpecificationsStatusMessagePayload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+        final Optional<PSSSUpsertMessagePayload> productSpecificationsStatusMessagePayload = kafkaConnectRedisMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
                 base64EncodedMessagePayloadForStatuses);
         assertThat(productSpecificationsStatusMessagePayload.isPresent(), is(false));
     }

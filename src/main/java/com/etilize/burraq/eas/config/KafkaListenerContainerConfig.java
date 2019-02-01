@@ -44,7 +44,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
-import com.etilize.burraq.eas.kafka.stream.UpdateTextTranslationEvent;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateTextTranslationEvent;
 
 /**
  * Contains configuration for Apache Kafka Listener Container(s)
