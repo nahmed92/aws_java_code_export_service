@@ -68,9 +68,12 @@ public class SpringCloudStreamMessagesReceiver {
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.tas}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getUpdateTextTranslationEventListenerContainerFactory")
     public void processUpdateTextTranslationEvent(final Message<byte[]> message) {
+        /**
+         * We are adding NOSONAR here in order to avoid "findbugs:NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"
+         */
         final String contentType = message.getHeaders() //
                 .get("contentType") //
-                .toString(); //
+                .toString(); //NOSONAR
         if (contentType.contains("updatetexttranslationevent")) {
             final UpdateTextTranslationEvent updateTextTranslationEvent = (UpdateTextTranslationEvent) avroJsonSchemaRegistryClientMessageConverter.fromMessage(
                     message, UpdateTextTranslationEvent.class);

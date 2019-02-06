@@ -15,6 +15,7 @@ spring:
          topic.pas: product-accessory-service
          topic.pms: product-media-service
          topic.psss: product-specifications-status-service
+         topic.pmss: product-media-status-service
       group-id: export-aggregation-service
 info:
   version: ${project.version}

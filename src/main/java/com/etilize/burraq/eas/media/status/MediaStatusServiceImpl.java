@@ -80,4 +80,12 @@ public class MediaStatusServiceImpl implements MediaStatusService {
         status.setLastUpdateDate(new Date());
         repository.save(status);
     }
+
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.media.status.MediaStatusService#deleteAllByProductId(java.lang.String)
+     */
+    @Override
+    public void deleteAllByProductId(final String productId) {
+        repository.deleteAllByProductId(productId);
+    }
 }

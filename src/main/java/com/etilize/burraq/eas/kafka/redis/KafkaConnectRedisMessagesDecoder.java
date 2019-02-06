@@ -43,7 +43,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * Decode base64 string messages from PSSS.
+ * Decode base64 encoded string messages from PSSS & PMSS.
  *
  * @author Affan Hasan
  * @since 1.0
@@ -60,7 +60,7 @@ public class KafkaConnectRedisMessagesDecoder {
     }
 
     /**
-     * Converts base 64 encoded Json string payload to {@link PSSSUpsertMessagePayload},
+     * Converts base 64 encoded Json string payload to {@link KafkaConnectRedisUpsertMessagePayload},
      * <br>following is the sample base 64 encoded json message.</br>
      * <br>Encoded:</br>
      * <p>{\"key\":\"cHJvZHVjdF9zdGF0dXNlczrYp9mE2YXYsdin2LnZig==\",\"fields\":{\"YXJfS1NB\":\"TkVX\",\"aWQ=\":\"2KfZhNmF2LHYp9i52Yo=\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}</p>
@@ -68,25 +68,26 @@ public class KafkaConnectRedisMessagesDecoder {
      * <p>{ \"key\":\"product_statuses:product123\", \"fields\":{"ar_KSA":"NEW","id":"product123","_class":"com.etilize.burraq.psss.productstatus.ProductStatus"} }</p>
      *
      * @param message {@link String} Json payload
-     * @return {@link PSSSUpsertMessagePayload} null when message is not related to "product_statuses"
+     * @return {@link KafkaConnectRedisUpsertMessagePayload} null when message is not related to "product_statuses"
      */
-    public Optional<PSSSUpsertMessagePayload> convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+    public Optional<KafkaConnectRedisUpsertMessagePayload> convertJsonToKafkaConnectRedisUpsertMessagePayload(
             final String message) {
-        Optional<PSSSUpsertMessagePayload> productSpecificationsStatusUpsertMessagePayload = Optional.empty();
+        Optional<KafkaConnectRedisUpsertMessagePayload> productSpecificationsStatusUpsertMessagePayload = Optional.empty();
         final JsonObject payloadJson = jsonParser.parse(message) //
                 .getAsJsonObject();
         payloadJson.addProperty(KEY, this.decodeBase64String(payloadJson.get(KEY) //
                 .getAsString()));
         final String key = payloadJson.get(KEY) //
                 .getAsString();
-        if (key.startsWith(PRODUCT_STATUSES)) { // Verify it is "product_statuses" message
+        //Verify it is "product_statuses" (from PSSS) or "product_media_statuses" message from (PMSS)
+        if (key.startsWith(PRODUCT_STATUSES) || key.startsWith(PRODUCT_MEDIA_STATUSES)) {
             payloadJson.add(FIELDS,
                     decodeBase64JsonObject(payloadJson.get(FIELDS) //
                             .getAsJsonObject()) //
                                     .getAsJsonObject());
             productSpecificationsStatusUpsertMessagePayload = Optional.of(
                     new Gson().fromJson(payloadJson.toString(),
-                            PSSSUpsertMessagePayload.class));
+                            KafkaConnectRedisUpsertMessagePayload.class));
             productSpecificationsStatusUpsertMessagePayload //
                     .get() //
                     .getFields() //
@@ -96,25 +97,26 @@ public class KafkaConnectRedisMessagesDecoder {
     }
 
     /**
-     * Extracts product id from PSSS "delete product specifications" Json message.
+     * Extracts product id from delete message from PSSS & PMSS.
      * <br>following is the sample base 64 encoded json message.</br>
      * <br>Encoded:</br>
      * <p>{\"key\":\"cHJvZHVjdF9zdGF0dXNlcw==\",\"members\":[\"cHJvZHVjdDEyMw==\"]}</p>
      * Decoded:
      * <p>{\"key\":\"product_statuses:product123\",\"members\":[\"product123\"]}</p>
+     *
      * @param message {@link String} message payload
      * @return {@link Optional<String>} containing product id.
      */
-    public Optional<String> extractProductIdFromDeleteSpecificationsStatusesMessage(
-            final String message) {
+    public Optional<String> extractProductIdFromDeleteMessage(final String message) {
         final Optional<String> productId;
         final JsonObject payloadJson = jsonParser.parse(message) //
                 .getAsJsonObject();
         payloadJson.addProperty(KEY, decodeBase64String(payloadJson.get(KEY) //
                 .getAsString()));
-        if (payloadJson.get(KEY) //
-                .getAsString() //
-                .startsWith(PRODUCT_STATUSES)) {// Verify it is "product_statuses" delete "product specifications" message
+        final String key = payloadJson.get(KEY) //
+                .getAsString();
+        // Verify it is "product_statuses" (from PSSS) or "product_media_statuses" (from PMSS)
+        if (key.startsWith(PRODUCT_STATUSES) || key.startsWith(PRODUCT_MEDIA_STATUSES)) {
             payloadJson.add(MEMBERS, decodeBase64JsonObject(payloadJson.get(MEMBERS)) // decoding from Base 64
                     .getAsJsonArray());
             productId = Optional.of(payloadJson.get(MEMBERS) //

@@ -33,17 +33,16 @@ import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessagePropert
 import java.io.IOException;
 import java.util.Optional;
 
-import org.apache.avro.generic.GenericData;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.etilize.burraq.eas.media.status.MediaStatusService;
 import com.etilize.burraq.eas.specification.status.SpecificationStatusService;
 
 /**
@@ -59,37 +58,43 @@ public class KafkaConnectRedisMessagesReceiver {
 
     private SpecificationStatusService specificationStatusService;
 
+    private MediaStatusService mediaStatusService;
+
     /**
      * Constructor to instantiate object instance.
      *
-     * @param specificationStatusService
-     *            {@link SpecificationStatusService}
+     * @param specificationStatusService {@link SpecificationStatusService}
+     * @param mediaStatusService {@link MediaStatusService}
      */
     @Autowired
     public KafkaConnectRedisMessagesReceiver(
-            final SpecificationStatusService specificationStatusService) {
+            final SpecificationStatusService specificationStatusService,
+            final MediaStatusService mediaStatusService) {
         this.specificationStatusService = specificationStatusService;
+        this.mediaStatusService = mediaStatusService;
     }
 
     /**
      * Process product specification status updates from PSSS.
      *
-     * @param message
-     *            {@link Message<String>}
-     * @throws IOException
-     *             {@link IOException}
+     * @param message {@link Message<String>}
+     * @throws IOException {@link IOException}
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.psss}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
+    @Nonnull
     public void processProductSpecificationsStatusMessage(final Message<String> message) {
-        logger.info("Received product specifications status message: [{}]", message);
+        logger.info("Received Product Specifications Status Message: [{}]", message);
         final KafkaConnectRedisMessagesDecoder psssMessageDecoder = new KafkaConnectRedisMessagesDecoder();
+        /**
+         * We are adding NOSONAR here in order to avoid "findbugs:NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"
+         */
         final String kafkaReceivedMessageKey = message.getHeaders() //
                 .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
                         .get(KAFKA_RECEIVED_MESSAGE_KEY) //
-                        .toString() : null;
+                        .toString() : ""; //NOSONAR
         if (kafkaReceivedMessageKey.endsWith(HASH_MAP_SET_COMMAND)) {// Case for Add Or Update
-            final Optional<PSSSUpsertMessagePayload> requestPayload;
-            requestPayload = psssMessageDecoder.convertJsonToProductSpecificationsStatusUpsertMessagePayload(
+            final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
+            requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
                     message.getPayload());
             if (requestPayload.isPresent()) {
                 requestPayload.get() //
@@ -105,7 +110,7 @@ public class KafkaConnectRedisMessagesReceiver {
                         });
             }
         } else if (kafkaReceivedMessageKey.endsWith(SET_REMOVE_COMMAND)) {// Case for delete all specifications statuses
-            final String id = psssMessageDecoder.extractProductIdFromDeleteSpecificationsStatusesMessage(
+            final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
                     message.getPayload()) //
                     .get();
             specificationStatusService.deleteAllByProductId(id);
@@ -113,16 +118,43 @@ public class KafkaConnectRedisMessagesReceiver {
     }
 
     /**
-     * Process media updates from product-media-service
+     * PMSS messages listener.
      *
-     * @param record {@link GenericData.Record}
-     * @param key {@link ConsumerRecord<Object, String>}
-     * @throws IOException {@link IOException}
+     * @param message {@link Message<String>}
      */
-    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pms}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
-    public void processProductMediaSpecificationsStatusServiceMessages(
-            final GenericData.Record record,
-            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
-        logger.info("Received Media Message: [{}].", record);
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pmss}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
+    public void processPMSSMessages(final Message<String> message) {
+        logger.info("Received Product Media Status Service message: [{}]", message);
+        final KafkaConnectRedisMessagesDecoder redisMessageDecoder = new KafkaConnectRedisMessagesDecoder();
+        /*
+         * We are adding NOSONAR here in order to avoid "findbugs:NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"
+         */
+        final String kafkaReceivedMessageKey = message.getHeaders() //
+                .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
+                        .get(KAFKA_RECEIVED_MESSAGE_KEY) //
+                        .toString() : "";//NOSONAR
+        if (kafkaReceivedMessageKey.endsWith(HASH_MAP_SET_COMMAND)) {// Case for Add Or Update media statuses
+            final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
+            requestPayload = redisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
+                    message.getPayload());
+            if (requestPayload.isPresent()) {
+                requestPayload.get() //
+                        .getFields() //
+                        .entrySet() //
+                        .forEach(item -> {
+                            if (!item.getKey() //
+                                    .equals(ID)) {
+                                mediaStatusService.save(requestPayload.get() //
+                                        .getFields() //
+                                        .get(ID), item.getKey(), item.getValue());
+                            }
+                        });
+            }
+        } else if (kafkaReceivedMessageKey.endsWith(SET_REMOVE_COMMAND)) {// Case for delete all media statuses
+            final String id = redisMessageDecoder.extractProductIdFromDeleteMessage(
+                    message.getPayload()) //
+                    .get();
+            mediaStatusService.deleteAllByProductId(id);
+        }
     }
 }

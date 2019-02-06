@@ -43,4 +43,10 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface MediaStatusRepository
         extends DynamoDBCrudRepository<MediaStatus, String> {
 
+    /**
+     * It deletes all media statuses matching product id.
+     *
+     * @param productId {@link String} productId
+     */
+    void deleteAllByProductId(String productId);
 }

@@ -50,15 +50,15 @@ import static org.hamcrest.MatcherAssert.*;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 /**
- * POJO test for {@link PSSSUpsertMessagePayload}
+ * POJO test for {@link KafkaConnectRedisUpsertMessagePayload}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class ProductSpecificationsStatusUpsertMessagePayloadPojoTest {
+public class KafkaConnectRedisUpsertMessagePayloadPojoTest {
 
     @Test
-    public void shouldValidateProductSpecificationsStatusMessagePayloadPOJO() {
+    public void shouldValidateKafkaConnectRedisUpsertMessagePayloadPojo() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new GetterMustExistRule()) //
@@ -67,18 +67,19 @@ public class ProductSpecificationsStatusUpsertMessagePayloadPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(PSSSUpsertMessagePayload.class));
+        validator.validate(PojoClassFactory.getPojoClass(
+                KafkaConnectRedisUpsertMessagePayload.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(PSSSUpsertMessagePayload.class) //
+        EqualsVerifier.forClass(KafkaConnectRedisUpsertMessagePayload.class) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final PSSSUpsertMessagePayload payload = new PSSSUpsertMessagePayload(
+        final KafkaConnectRedisUpsertMessagePayload payload = new KafkaConnectRedisUpsertMessagePayload(
                 "product_statuses:product123", Maps.newLinkedHashMap());
         assertThat(ObjectUtils.identityToString(payload), not(payload.toString()));
     }
