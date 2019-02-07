@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.specification;
 
 import java.util.Date;
+
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,9 +38,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.etilize.burraq.eas.base.AbstractDynamoEntity;
+import com.etilize.burraq.eas.specification.value.SpecificationValue;
 
 /**
  * This class represents POJO for detailed specifications.
@@ -57,7 +58,7 @@ public abstract class Specification extends AbstractDynamoEntity {
 
     private String industryId;
 
-    private Map<String, Object> attributes;
+    private Map<String, SpecificationValue> attributes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
@@ -125,15 +126,14 @@ public abstract class Specification extends AbstractDynamoEntity {
     /**
      * @return the attributes
      */
-    @DynamoDBIgnore
-    public Map<String, Object> getAttributes() {
+    public Map<String, SpecificationValue> getAttributes() {
         return attributes;
     }
 
     /**
      * @param attributes the attributes to set
      */
-    public void setAttributes(final Map<String, Object> attributes) {
+    public void setAttributes(final Map<String, SpecificationValue> attributes) {
         this.attributes = attributes;
     }
 

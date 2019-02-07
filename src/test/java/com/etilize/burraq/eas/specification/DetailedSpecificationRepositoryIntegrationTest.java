@@ -42,9 +42,11 @@ import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.etilize.burraq.eas.specification.value.SpecificationValue;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
+import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
@@ -63,6 +65,51 @@ public class DetailedSpecificationRepositoryIntegrationTest
 
     @Autowired
     private DetailedSpecificationRepository repository;
+
+    @Test
+    @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_with_attributes_after_update_attributes.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeWhenAttributeValueIsAddedOrReplaced() {
+        final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithUpdatedAttributes();
+        repository.saveAttributes("product123-en", request);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_with_attributes_after_add_in_set.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeWhenAttributeValueIsAddedInSet() {
+        final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithAddedAttributeValue();
+        repository.saveAttributes("product123-en", request);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_with_attributes_after_remove_in_set.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeWhenAttributeValueIsRemoveInSet() {
+        final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithRemovedAttributeValue();
+        repository.saveAttributes("product123-en", request);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_with_attributes_after_remove_attribute.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeWhenAttributeValueIsRemoved() {
+        final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithRemovedAttributeIds();
+        repository.saveAttributes("product123-en", request);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_with_attributes_after_update_misc.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeForMiscAttributeValueUpdates() {
+        final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithMiscUpdates();
+        repository.saveAttributes("product123-en", request);
+    }
 
     @Test
     public void shouldFindAllDetailedSpecifications() {
@@ -92,7 +139,6 @@ public class DetailedSpecificationRepositoryIntegrationTest
                 isIn(Arrays.asList("industryId123")));
     }
 
-    @Test
     public void shouldFindDetailedSpecificationById() {
         final Optional<DetailedSpecification> specification = repository.findById(
                 "product123-en");
@@ -107,9 +153,7 @@ public class DetailedSpecificationRepositoryIntegrationTest
     @Test
     @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_create.bson")
     public void shouldCreateNewDetailedSpecification() {
-        final Map<String, Object> attributes = Maps.newHashMap();
-        attributes.put("mfgId", "Sony");
-        attributes.put("mfgPartNoId", "XYZ");
+        final Map<String, SpecificationValue> attributes = Maps.newHashMap();
         final DetailedSpecification specs = new DetailedSpecification();
         specs.setId("product1234-en");
         specs.setAttributes(attributes);

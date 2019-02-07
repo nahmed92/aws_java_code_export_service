@@ -41,6 +41,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface BasicSpecificationRepository
-        extends DynamoDBCrudRepository<BasicSpecification, String> {
+        extends DynamoDBCrudRepository<BasicSpecification, String>,
+        BasicSpecificationCustomRepository {
 
 }

@@ -47,32 +47,7 @@
          "lastUpdateDate":{
             "N":1546528059097
          }
-      },
-      {
-         "id":{
-            "S":"product1234-en"
-         },
-         "productId":{
-            "S":"product1234"
-         },
-         "localeId":{
-            "S":"en"
-         },
-         "industryId":{
-            "S":"industryId123"
-         },
-         "categoryId":{
-            "S":"categoryId123"
-         },
-         "attributes":{
-            "M":{
-            }
-         },
-         "lastUpdateDate":{
-            "N":1546528059097
-         }
       }
-
   ]
 },
 {
@@ -124,31 +99,6 @@
          "lastUpdateDate":{
             "N":1546528059097
          }
-      },
-      {
-         "id":{
-            "S":"product1234-en"
-         },
-         "productId":{
-            "S":"product1234"
-         },
-         "localeId":{
-            "S":"en"
-         },
-         "industryId":{
-            "S":"industryId123"
-         },
-         "categoryId":{
-            "S":"categoryId123"
-         },
-         "attributes":{
-            "M":{
-            }
-         },
-         "lastUpdateDate":{
-            "N":1546528059097
-         }
       }
-
   ]
 }

@@ -45,9 +45,7 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
  * @author Umar Zubair
  * @since 1.0
  */
-@UsingDataSet(locations = {
-    "/datasets/detailed_specifications/detailed_specifications.bson",
-    "/datasets/basic_specifications/basic_specifications.bson" }, loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@UsingDataSet(locations = "/datasets/specifications/specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
 public class SpecificationServiceIntegrationTest extends AbstractIntegrationTest {
 

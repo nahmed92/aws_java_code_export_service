@@ -18,6 +18,26 @@
          },
          "attributes":{
             "M":{
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2.2
+		            	},
+		            	"unit" : {
+		            	  "S":"g"
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Sony"
+            	}
             }
          },
          "lastUpdateDate":{
@@ -35,10 +55,10 @@
             "S":"en_US"
          },
          "industryId":{
-            "S":"industryId1234"
+            "S":"industryId123"
          },
          "categoryId":{
-            "S":"categoryId1234"
+            "S":"categoryId123"
          },
          "attributes":{
             "M":{
