@@ -43,9 +43,9 @@ public interface KafkaConnectRedisMessageProperties {
 
     String KAFKA_RECEIVED_MESSAGE_KEY = "kafka_receivedMessageKey";
 
-    String HASH_MAP_SET_COMMAND = "HMSetCommand";
+    String HASH_SET_COMMAND = "HSetCommand";
 
-    String SET_REMOVE_COMMAND = "SRemCommand";
+    String H_DEL_COMMAND = "HDelCommand";
 
     String PRODUCT_ID = "productId";
 
@@ -63,6 +63,10 @@ public interface KafkaConnectRedisMessageProperties {
 
     String FIELDS = "fields";
 
+    String FIELD = "field";
+
     String CLASS = "_class";
+
+    String VALUE = "value";
 
 }
