@@ -67,32 +67,31 @@ public class PSSSMessagesListenerTest extends AbstractIntegrationTest {
 
     @Test
     public void shouldCreateSpecificationStatusWhenNewProductCreatedInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNjU=\",\"field\":\"ZGVfREU=\",\"value\":\"Q09NUExFVEVE\"}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
         doNothing().when(specificationStatusService) //
-                .save("product123", "en_US", "NEW");
+                .save("psss65", "de_DE", "COMPLETED");
         messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_US"),
-                eq("NEW"));
+        verify(specificationStatusService, times(1)).save(eq("psss65"), eq("de_DE"),
+                eq("COMPLETED"));
     }
 
     @Test
     public void shouldDeleteAllSpecificationsWhenProductDeletedInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlcw==\",\"members\":[\"cHJvZHVjdDEyMw==\"]}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"fields\":[\"ZGVfREU=\",\"c3BfU1A=\"]}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.SRemCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HDelCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
         doNothing().when(specificationStatusService) //
-                .deleteAllByProductId("product123");
+                .deleteAllByProductId("psss777");
         messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).deleteAllByProductId(
-                eq("product123"));
+        verify(specificationStatusService, times(1)).deleteAllByProductId(eq("psss77"));
     }
 
     /**
@@ -100,22 +99,17 @@ public class PSSSMessagesListenerTest extends AbstractIntegrationTest {
      */
     @Test
     public void shouldCreateWhenNewLocaleIsAddedToAProductInPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\",\"ZW5fVUs=\":\"TkVX\", \"ZW5fVVM=\":\"TkVX\"}}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"field\":\"ZW5fQ0E=\",\"value\":\"Q09NUExFVEVE\"}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
-
         doNothing().when(specificationStatusService) //
-                .save("product123", "en_US", "NEW");
-        doNothing().when(specificationStatusService) //
-                .save("product123", "en_UK", "NEW");
+                .save("psss77", "en_CA", "COMPLETED");
         messageReceiver.processProductSpecificationsStatusMessage(message);
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_UK"),
-                eq("NEW"));
-        verify(specificationStatusService, times(1)).save(eq("product123"), eq("en_US"),
-                eq("NEW"));
+        verify(specificationStatusService, times(1)).save(eq("psss77"), eq("en_CA"),
+                eq("COMPLETED"));
     }
 
     /**

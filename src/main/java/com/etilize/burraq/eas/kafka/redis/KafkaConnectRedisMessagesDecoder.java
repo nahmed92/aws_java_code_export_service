@@ -32,13 +32,9 @@ import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessagePropert
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -63,9 +59,9 @@ public class KafkaConnectRedisMessagesDecoder {
      * Converts base 64 encoded Json string payload to {@link KafkaConnectRedisUpsertMessagePayload},
      * <br>following is the sample base 64 encoded json message.</br>
      * <br>Encoded:</br>
-     * <p>{\"key\":\"cHJvZHVjdF9zdGF0dXNlczrYp9mE2YXYsdin2LnZig==\",\"fields\":{\"YXJfS1NB\":\"TkVX\",\"aWQ=\":\"2KfZhNmF2LHYp9i52Yo=\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}</p>
+     * <p>{"key":"cHJvZHVjdF9zdGF0dXNlczpwc3NzNjU=","field":"ZGVfREU=","value":"QWx0"}</p>
      * Decoded:
-     * <p>{ \"key\":\"product_statuses:product123\", \"fields\":{"ar_KSA":"NEW","id":"product123","_class":"com.etilize.burraq.psss.productstatus.ProductStatus"} }</p>
+     * <p>{"key":"product_statuses:psss65","field":"de_DE","value":"Alt"}</p>
      *
      * @param message {@link String} Json payload
      * @return {@link KafkaConnectRedisUpsertMessagePayload} null when message is not related to "product_statuses"
@@ -79,19 +75,18 @@ public class KafkaConnectRedisMessagesDecoder {
                 .getAsString()));
         final String key = payloadJson.get(KEY) //
                 .getAsString();
-        //Verify it is "product_statuses" (from PSSS) or "product_media_statuses" message from (PMSS)
+        // Verify it is "product_statuses" (from PSSS) or "product_media_statuses" message from (PMSS)
         if (key.startsWith(PRODUCT_STATUSES) || key.startsWith(PRODUCT_MEDIA_STATUSES)) {
-            payloadJson.add(FIELDS,
-                    decodeBase64JsonObject(payloadJson.get(FIELDS) //
-                            .getAsJsonObject()) //
-                                    .getAsJsonObject());
+            payloadJson.addProperty(FIELD, this.decodeBase64String(payloadJson.get(FIELD) //
+                    .getAsString()));
+            payloadJson.addProperty(VALUE, this.decodeBase64String(payloadJson.get(VALUE) //
+                    .getAsString()));
             productSpecificationsStatusUpsertMessagePayload = Optional.of(
-                    new Gson().fromJson(payloadJson.toString(),
-                            KafkaConnectRedisUpsertMessagePayload.class));
-            productSpecificationsStatusUpsertMessagePayload //
-                    .get() //
-                    .getFields() //
-                    .remove(CLASS);
+                    new KafkaConnectRedisUpsertMessagePayload(payloadJson.get(KEY) //
+                            .getAsString(), payloadJson.get(FIELD) //
+                                    .getAsString(),
+                            payloadJson.get(VALUE) //
+                                    .getAsString()));
         }
         return productSpecificationsStatusUpsertMessagePayload;
     }
@@ -100,9 +95,9 @@ public class KafkaConnectRedisMessagesDecoder {
      * Extracts product id from delete message from PSSS & PMSS.
      * <br>following is the sample base 64 encoded json message.</br>
      * <br>Encoded:</br>
-     * <p>{\"key\":\"cHJvZHVjdF9zdGF0dXNlcw==\",\"members\":[\"cHJvZHVjdDEyMw==\"]}</p>
+     * <p>{"key":"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=","fields":["ZGVfREU=","c3BfU1A="]}</p>
      * Decoded:
-     * <p>{\"key\":\"product_statuses:product123\",\"members\":[\"product123\"]}</p>
+     * <p>{"key":"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=","fields":["de_DE","sp_SP"]}</p>
      *
      * @param message {@link String} message payload
      * @return {@link Optional<String>} containing product id.
@@ -113,31 +108,16 @@ public class KafkaConnectRedisMessagesDecoder {
                 .getAsJsonObject();
         payloadJson.addProperty(KEY, decodeBase64String(payloadJson.get(KEY) //
                 .getAsString()));
-        final String key = payloadJson.get(KEY) //
+        final String decodedkey = payloadJson.get(KEY) //
                 .getAsString();
         // Verify it is "product_statuses" (from PSSS) or "product_media_statuses" (from PMSS)
-        if (key.startsWith(PRODUCT_STATUSES) || key.startsWith(PRODUCT_MEDIA_STATUSES)) {
-            payloadJson.add(MEMBERS, decodeBase64JsonObject(payloadJson.get(MEMBERS)) // decoding from Base 64
-                    .getAsJsonArray());
-            productId = Optional.of(payloadJson.get(MEMBERS) //
-                    .getAsJsonArray() //
-                    .get(0) //
-                    .getAsString());
+        if (decodedkey.startsWith(PRODUCT_STATUSES)
+                || decodedkey.startsWith(PRODUCT_MEDIA_STATUSES)) {
+            productId = Optional.ofNullable(decodedkey.split(":")[1]); // splitting as key will be of form product_statuses:<productId>
         } else {
             productId = null;
         }
         return productId;
-    }
-
-    private JsonElement decodeBase64JsonObject(final JsonElement payloadJsonElement) {
-        final Matcher m = Pattern.compile("[\\w=]+") //
-                .matcher(payloadJsonElement.toString());
-        final StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, decodeBase64String(m.group()));
-        }
-        m.appendTail(sb);
-        return jsonParser.parse(sb.toString());
     }
 
     private String decodeBase64String(final String base64EncodedString) {

@@ -69,36 +69,31 @@ public class PMSSSMessagesListenerTest extends AbstractIntegrationTest {
 
     @Test
     public void shouldCreateMediaStatusWhenNewProductCreatedInPMSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
-                + ",\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"ZW5fVVM=\":\"TkVX\","
-                + "\"aWQ=\":\"bTFnYXJhbmQ=\"," + "\"X2NsYXNz\""
-                + ":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNjU=\",\"field\":\"ZGVfREU=\",\"value\":\"Q09NUExFVEVE\"}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
         doNothing().when(mediaStatusService) //
-                .save("m1garand", "en_US", "NEW");
-        doNothing().when(mediaStatusService) //
-                .save("m1garand", "fr_US", "NEW");
+                .save("psss65", "de_DE", "COMPLETED");
         messageReceiver.processPMSSMessages(message);
-        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("fr_US"), eq("NEW"));
-        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("en_US"), eq("NEW"));
+        verify(mediaStatusService, times(1)).save(eq("psss65"), eq("de_DE"),
+                eq("COMPLETED"));
     }
 
     @Test
     public void shouldDeleteMediaStatusWhenProductIsDeletedInPMSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlcw==\",\"members\":[\"bTFnYXJhbmQ=\"]}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"fields\":[\"ZGVfREU=\",\"c3BfU1A=\"]}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.SRemCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HDelCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedMessagePayload, headers);
         doNothing().when(mediaStatusService) //
-                .deleteAllByProductId("m1garand");
+                .deleteAllByProductId("psss77");
         messageReceiver.processPMSSMessages(message);
-        verify(mediaStatusService, times(1)).deleteAllByProductId(eq("m1garand"));
+        verify(mediaStatusService, times(1)).deleteAllByProductId(eq("psss77"));
     }
 
     /**
@@ -106,27 +101,17 @@ public class PMSSSMessagesListenerTest extends AbstractIntegrationTest {
      */
     @Test
     public void shouldAddMediaStatusWhenMediaStatusIsAddedInPMSS() {
-        final String base64EncodedUpsertMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
-                + ",\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"YXJfS1NB\":\"Q09NUExFVEVE\","
-                + "\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"bTFnYXJhbmQ=\","
-                + "\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
+        final String base64EncodedUpsertMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"field\":\"ZW5fQ0E=\",\"value\":\"Q09NUExFVEVE\"}";
         final Map<String, Object> headers = Maps.newLinkedHashMap();
         headers.put("kafka_receivedMessageKey",
-                "com.moilioncircle.redis.replicator.cmd.impl.HMSetCommand");
+                "com.moilioncircle.redis.replicator.cmd.impl.HSetCommand");
         final Message<String> message = new GenericMessage<String>(
                 base64EncodedUpsertMessagePayload, headers);
-
         doNothing().when(mediaStatusService) //
-                .save("product123", "fr_US", "NEW");
-        doNothing().when(mediaStatusService) //
-                .save("product123", "ar_KSA", "COMPLETED");
-        doNothing().when(mediaStatusService) //
-                .save("product123", "en_US", "NEW");
+                .save("psss77", "en_CA", "COMPLETED");
         messageReceiver.processPMSSMessages(message);
-        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("fr_US"), eq("NEW"));
-        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("ar_KSA"),
+        verify(mediaStatusService, times(1)).save(eq("psss77"), eq("en_CA"),
                 eq("COMPLETED"));
-        verify(mediaStatusService, times(1)).save(eq("m1garand"), eq("en_US"), eq("NEW"));
     }
 
     /**

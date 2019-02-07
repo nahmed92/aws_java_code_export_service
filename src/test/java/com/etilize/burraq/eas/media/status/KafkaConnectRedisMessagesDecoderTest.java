@@ -28,7 +28,6 @@
 
 package com.etilize.burraq.eas.media.status;
 
-import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessageProperties.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -51,84 +50,55 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
     private final KafkaConnectRedisMessagesDecoder kafkaConnectRedisMessageDecoder = new KafkaConnectRedisMessagesDecoder();
 
     @Test
-    public void shouldGetSpecificationLocalesFromHMSetCommandForCreateSpecificationStatusesFromPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\",\"fields\":{\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"cHJvZHVjdDEyMw==\",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\"}}";
-        final Optional<KafkaConnectRedisUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
-                base64EncodedMessagePayload);
+    public void shouldGetSpecificationLocalesFromHSetCommandForCreateSpecificationStatusesFromPSSS() {
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNjU=\",\"field\":\"ZGVfREU=\",\"value\":\"Q09NUExFVEVE\"}";
+        final Optional<KafkaConnectRedisUpsertMessagePayload> payload =
+
+                kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
+                        base64EncodedMessagePayload);
         final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
-                is("product_statuses:product123"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .size(), is(2));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("en_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get(ID), is("product123"));
+                is("product_statuses:psss65"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("de_DE"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("COMPLETED"));
     }
 
     @Test
-    public void shouldGetSpecificationLocalesFromHMSetCommandForCreateMediaStatusFromPMSS() {
+    public void shouldGetSpecificationLocalesFromHSetCommandForCreateMediaStatusFromPMSS() {
         final String base64EncodedMessagePayloadFromPMSS = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
-                + ",\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"ZW5fVVM=\":\"TkVX\","
-                + "\"aWQ=\":\"bTFnYXJhbmQ=\"," + "\"X2NsYXNz\""
-                + ":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
+                + ",\"field\":\"ZnJfVVM=\", \"value\" :\"TkVX\"}";
         final Optional<KafkaConnectRedisUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
                 base64EncodedMessagePayloadFromPMSS);
         final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
                 is("product_media_statuses:m1garand"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .size(), is(3));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("en_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("fr_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get(ID), is("m1garand"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("fr_US"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("NEW"));
     }
 
     @Test
-    public void shouldGetSpecificationLocalesFromHMSetCommandForAddNewSpecificationStatusFromPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwcm9kdWN0MTIz\","
-                + "\"fields\":{\"aWQ=\":\"cHJvZHVjdDEyMw==\","
-                + "\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBzc3MucHJvZHVjdHN0YXR1cy5Qcm9kdWN0U3RhdHVz\","
-                + "\"ZW5fVUs=\":\"TkVX\", \"ZW5fVVM=\":\"TkVX\"}}";
+    public void shouldGetSpecificationLocalesFromHSetCommandForAddNewSpecificationStatusFromPSSS() {
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"field\":\"ZW5fQ0E=\",\"value\":\"Q09NUExFVEVE\"}";
         final Optional<KafkaConnectRedisUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
                 base64EncodedMessagePayload);
         final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
-                is("product_statuses:product123"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .size(), is(3));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("en_UK"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("en_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get(ID), is("product123"));
+                is("product_statuses:psss77"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("en_CA"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("COMPLETED"));
     }
 
     @Test
-    public void shouldGetSpecificationLocalesFromHMSetCommandForAddNewMediaStatusFromPMSS() {
+    public void shouldGetSpecificationLocalesFromHSetCommandForAddNewMediaStatusFromPMSS() {
         final String base64EncodedUpsertMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\","
-                + "\"fields\":{\"ZnJfVVM=\":\"TkVX\",\"YXJfS1NB\":\"Q09NUExFVEVE\""
-                + ",\"ZW5fVVM=\":\"TkVX\",\"aWQ=\":\"bTFnYXJhbmQ=\""
-                + ",\"X2NsYXNz\":\"Y29tLmV0aWxpemUuYnVycmFxLnBtc3MucHJvZHVjdG1lZGlhLnN0YXR1cy5Qcm9kdWN0TWVkaWFTdGF0dXM=\"}}";
+                + "\"field\":\"ZnJfVVM=\", \"value\" :\"TkVX\" }";
         final Optional<KafkaConnectRedisUpsertMessagePayload> payload = kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
                 base64EncodedUpsertMessagePayload);
         final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get();
         assertThat(productSpecificationsStatusMessagePayload.getKey(),
                 is("product_media_statuses:m1garand"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .size(), is(4));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("fr_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("en_US"), is("NEW"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get("ar_KSA"), is("COMPLETED"));
-        assertThat(productSpecificationsStatusMessagePayload.getFields() //
-                .get(ID), is("m1garand"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("fr_US"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("NEW"));
     }
 
     @Test
@@ -155,18 +125,17 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
 
     @Test
     public void shouldGetProductIdToDeleteAllSpecificationsStatusesFromPSSS() {
-        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlcw==\""
-                + ",\"members\":[\"cHJvZHVjdDEyMw==\"]}";
+        final String base64EncodedMessagePayload = "{\"key\":\"cHJvZHVjdF9zdGF0dXNlczpwc3NzNzc=\",\"fields\":[\"ZGVfREU=\",\"c3BfU1A=\"]}";
         final Optional<String> productId = kafkaConnectRedisMessageDecoder.extractProductIdFromDeleteMessage(
                 base64EncodedMessagePayload);
         assertThat(productId.isPresent(), is(true));
-        assertThat(productId.get(), is("product123"));
+        assertThat(productId.get(), is("psss77"));
     }
 
     @Test
     public void shouldGetProductIdToDeleteAllMediaStatusesFromPMSSS() {
-        final String base64EncodedDeleteMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlcw==\""
-                + ",\"members\":[\"bTFnYXJhbmQ=\"]}";
+        final String base64EncodedDeleteMessagePayload = "{\"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczptMWdhcmFuZA==\""
+                + ",\"fields\":[\"ZGVfREU=\"]}";
         final Optional<String> productId = kafkaConnectRedisMessageDecoder.extractProductIdFromDeleteMessage(
                 base64EncodedDeleteMessagePayload);
         assertThat(productId.isPresent(), is(true));

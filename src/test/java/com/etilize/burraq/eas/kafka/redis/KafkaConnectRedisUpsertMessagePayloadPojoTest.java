@@ -80,7 +80,7 @@ public class KafkaConnectRedisUpsertMessagePayloadPojoTest {
     @Test
     public void shouldContainToString() throws ParseException {
         final KafkaConnectRedisUpsertMessagePayload payload = new KafkaConnectRedisUpsertMessagePayload(
-                "product_statuses:product123", Maps.newLinkedHashMap());
+                "product_statuses:product123", "de_DE", "COMPLETED");
         assertThat(ObjectUtils.identityToString(payload), not(payload.toString()));
     }
 }

@@ -28,8 +28,6 @@
 
 package com.etilize.burraq.eas.kafka.redis;
 
-import java.util.Map;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -44,18 +42,22 @@ public class KafkaConnectRedisUpsertMessagePayload {
 
     private final String key;
 
-    private final Map<String, String> fields;
+    private final String field;
+
+    private final String value;
 
     /**
      * Constructor to initialize object properties.
      *
      * @param key {@link String} key
-     * @param fields {@link Map<String, String>} fields
+     * @param field {@link String} field
+     * @param value {@link String} value
      */
-    public KafkaConnectRedisUpsertMessagePayload(final String key,
-            final Map<String, String> fields) {
+    public KafkaConnectRedisUpsertMessagePayload(final String key, final String field,
+            final String value) {
         this.key = key;
-        this.fields = fields;
+        this.field = field;
+        this.value = value;
     }
 
     /**
@@ -68,12 +70,21 @@ public class KafkaConnectRedisUpsertMessagePayload {
     }
 
     /**
-     * Return {@link Map} fields
+     * Return {@link String} field
      *
-     * @return fields
+     * @return field
      */
-    public Map<String, String> getFields() {
-        return fields;
+    public String getField() {
+        return field;
+    }
+
+    /**
+     * Return {@link String} value
+     *
+     * @return value
+     */
+    public String getValue() {
+        return value;
     }
 
     @Override
@@ -90,7 +101,8 @@ public class KafkaConnectRedisUpsertMessagePayload {
         final KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusRequest = (KafkaConnectRedisUpsertMessagePayload) obj;
         return new EqualsBuilder() //
                 .append(getKey(), productSpecificationsStatusRequest.getKey()) //
-                .append(getFields(), productSpecificationsStatusRequest.getFields()) //
+                .append(getField(), productSpecificationsStatusRequest.getField()) //
+                .append(getValue(), productSpecificationsStatusRequest.getValue()) //
                 .isEquals();
     }
 
@@ -98,7 +110,8 @@ public class KafkaConnectRedisUpsertMessagePayload {
     public final int hashCode() {
         return new HashCodeBuilder() //
                 .append(getKey()) //
-                .append(getFields()) //
+                .append(getField()) //
+                .append(getValue()) //
                 .toHashCode();
     }
 
@@ -106,7 +119,8 @@ public class KafkaConnectRedisUpsertMessagePayload {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("Key", getKey()) //
-                .append("Fields", getFields()) //
+                .append("Field", getField()) //
+                .append("Value", getValue()) //
                 .toString();
     }
 }
