@@ -44,7 +44,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * Contains factory methods for fixtures for Add Industry Debezium Message objects
+ * Contains factory methods to create Debezium message objects for testing.
  *
  * @author Affan Hasan
  * @since 1.0
@@ -671,5 +671,125 @@ public class DebeziumMessageTestFixtures {
         command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
         command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
         return command;
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PMS AddProductLocaleMessage.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getPMSAddLocaleMessageValueObject()
+            throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pms_debezium_messages_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pms_add_locale_message_object.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumMessageJsonObject).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsJsonNull());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
+    }
+
+    /**
+     * Returns {@link ConsumerRecord<String, String>} containing the mongodb object key.
+     *
+     * @return {@link ConsumerRecord<String, String>}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static ConsumerRecord<Object, String> getPMSDebeziumMessagesKeyObject()
+            throws FileNotFoundException, IOException {
+
+        final String debeziumMessageKeyJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pms_debezium_messages_key_schema.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageKeyJsonSchema);
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put("_id", "{\"_id\" : \"mp5\"}");
+        return new ConsumerRecord<>("burraq.product-media-service.media_specifications",
+                0, 0, command, null);
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PMS ProductMediaEvent with status ASSOCIATED and a URL.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getPMSProductMediaEventValueObjectWithURLAndStatusAssociated()
+            throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pms_debezium_messages_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/pms_product_media_event_status_with_status_associated_and_url_object.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumMessageJsonObject).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsJsonNull());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PMS ProductMediaEvent with status PENDING and URL as null.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getPMSProductMediaEventValueObjectWithoutURLAndStatusPending()
+            throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pms_debezium_messages_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/pms_product_media_event_status_with_status_pending_object.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumMessageJsonObject).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsJsonNull());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
     }
 }

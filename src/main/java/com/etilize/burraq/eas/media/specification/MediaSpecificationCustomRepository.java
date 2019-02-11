@@ -31,6 +31,7 @@ package com.etilize.burraq.eas.media.specification;
 import java.util.Date;
 
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 
 /**
@@ -77,15 +78,18 @@ public interface MediaSpecificationCustomRepository {
      */
     default UpdateItemSpec updateAttributeItem(final String id, final String attributeId,
             final String value) {
+        final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
         final StringBuilder updateExp = new StringBuilder();
         valueMap.withString(":value", value);
-        updateExp.append(String.format("SET %s.%s=:value ", ATTRIBUTES, attributeId));
+        nameMap.with("#attrId", attributeId);
+        updateExp.append(String.format("SET %s.#attrId=:value ", ATTRIBUTES));
         updateExp.append(String.format(", %s=%s", //
                 LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
                 .withUpdateExpression(updateExp.toString()) //
+                .withNameMap(nameMap) //
                 .withValueMap(valueMap);
         return updateItemSpec;
     }
@@ -99,14 +103,17 @@ public interface MediaSpecificationCustomRepository {
      */
     default UpdateItemSpec removeAttributeItem(final String id,
             final String attributeId) {
+    	final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
         final StringBuilder updateExp = new StringBuilder();
-        updateExp.append(String.format("REMOVE %s.%s ", ATTRIBUTES, attributeId));
+        nameMap.with("#attrId", attributeId);
+        updateExp.append(String.format("REMOVE %s.#attrId ", ATTRIBUTES));
         updateExp.append(String.format("SET %s=%s", //
                 LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
                 .withUpdateExpression(updateExp.toString()) //
+                .withNameMap(nameMap) //
                 .withValueMap(valueMap);
         return updateItemSpec;
     }
