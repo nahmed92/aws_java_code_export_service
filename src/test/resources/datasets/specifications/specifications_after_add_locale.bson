@@ -16,6 +16,10 @@
          "categoryId":{
             "S":"categoryId123"
          },
+         "attributes":{
+            "M":{
+            }
+         },
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -36,6 +40,10 @@
          "categoryId":{
             "S":"categoryId123"
          },
+         "attributes":{
+            "M":{
+            }
+         },
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -55,6 +63,10 @@
          },
          "categoryId":{
             "S":"categoryId123"
+         },
+         "attributes":{
+            "M":{
+            }
          },
          "lastUpdateDate":{
             "N":1546528059097
@@ -81,6 +93,10 @@
          "categoryId":{
             "S":"categoryId123"
          },
+         "attributes":{
+            "M":{
+            }
+         },
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -101,6 +117,10 @@
          "categoryId":{
             "S":"categoryId123"
          },
+         "attributes":{
+            "M":{
+            }
+         },
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -120,6 +140,10 @@
          },
          "categoryId":{
             "S":"categoryId123"
+         },
+         "attributes":{
+            "M":{
+            }
          },
          "lastUpdateDate":{
             "N":1546528059097

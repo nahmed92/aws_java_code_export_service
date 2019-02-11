@@ -18,6 +18,49 @@
          },
          "attributes":{
             "M":{
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2.2
+		            	},
+		            	"unit" : {
+		            	  "S":"g"
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Acer"
+            	},
+            	"stringRepId" : {
+            	  "SS" : ["abc","def","ghi"]
+            	},
+            	"numberRepId" : {
+            	  "NS" : [0]
+            	},
+            	"unitRepId" : {
+            	  "L" : [{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":1
+		            	},
+		            	"unit" : {
+		            	  "S":"b"
+		            	}
+		              }
+		              }
+	            	}
+            	  }]
+            	}
+
             }
          },
          "lastUpdateDate":{

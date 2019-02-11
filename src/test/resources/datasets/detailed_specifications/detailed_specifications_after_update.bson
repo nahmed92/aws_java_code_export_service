@@ -16,6 +16,10 @@
          "categoryId":{
             "S":"categoryId123"
          },
+         "attributes":{
+            "M":{
+            }
+         },
          "lastUpdateDate":{
             "N":1546528059097
          }
@@ -35,6 +39,10 @@
          },
          "categoryId":{
             "S":"categoryId1234"
+         },
+         "attributes":{
+            "M":{
+            }
          },
          "lastUpdateDate":{
             "N":1546528059097

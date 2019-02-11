@@ -28,19 +28,48 @@
 
 package com.etilize.burraq.eas.specification;
 
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.document.Table;
 
 /**
- * It represents dynamodb repository for {@link DetailedSpecification}.
+ * It defines implementation customization for {@link BasicSpecificationRepository}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-@EnableScan
-@RestResource(exported = false)
-public interface DetailedSpecificationRepository
-        extends DynamoDBCrudRepository<DetailedSpecification, String>,
-        DetailedSpecificationCustomRepository {
+public class BasicSpecificationRepositoryImpl
+        implements BasicSpecificationCustomRepository {
+
+    private final Table table;
+
+    /**
+     * Constructs with dependencies
+     *
+     * @param amazonDynamoDB amazonDynamoDB
+     */
+    @Autowired
+    public BasicSpecificationRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
+        Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
+        final DynamoDB db = new DynamoDB(amazonDynamoDB);
+        table = db.getTable(BasicSpecification.TABLE_NAME);
+    }
+
+    @Override
+    public void saveAttributes(final String id,
+            final UpdateSpecificationRequest request) {
+        table.updateItem(getUpdateItemSpecForSaveAttributes(id, request));
+    }
+
+    @Override
+    public Map<String, Object> getAttributes(final String id) {
+        return (Map<String, Object>) table.getItem(new PrimaryKey(ID, id)).get(
+                ATTRIBUTES);
+    }
 }

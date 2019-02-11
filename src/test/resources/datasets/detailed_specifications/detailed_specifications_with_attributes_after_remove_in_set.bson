@@ -18,6 +18,49 @@
          },
          "attributes":{
             "M":{
+            	"sizeId" : {
+            	  "N":2
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2.2
+		            	},
+		            	"unit" : {
+		            	  "S":"g"
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Sony"
+            	},
+            	"numberRepId" : {
+            	  "NS" : [0]
+            	},
+            	"unitRepId" : {
+            	  "L" : [{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":1
+		            	},
+		            	"unit" : {
+		            	  "S":"b"
+		            	}
+		              }
+		              }
+	            	}
+            	  }]
+            	}
+
             }
          },
          "lastUpdateDate":{
