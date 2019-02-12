@@ -31,6 +31,8 @@ package com.etilize.burraq.eas.specification;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.etilize.burraq.eas.utils.Utils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -42,6 +44,10 @@ import com.google.common.collect.Sets;
  */
 public class UpdateSpecificationRequest {
 
+    private final String productId;
+
+    private final String localeId;
+
     private final Set<String> removedAttributeIds = Sets.newHashSet();
 
     private final Map<String, Object> updatedAttributes = Maps.newHashMap();
@@ -49,6 +55,38 @@ public class UpdateSpecificationRequest {
     private final Map<String, Object> removedFromSetAttributes = Maps.newHashMap();
 
     private final Map<String, Object> addedToSetAttributes = Maps.newHashMap();
+
+    /**
+     * Constructs the object
+     *
+     * @param productId product id
+     * @param localeId locale id
+     */
+    public UpdateSpecificationRequest(final String productId, final String localeId) {
+        this.productId = productId;
+        this.localeId = localeId;
+    }
+
+    /**
+     * @return productId-localeId
+     */
+    public String getId() {
+        return Utils.generateId(productId, localeId);
+    }
+
+    /**
+     * @return the productId
+     */
+    public String getProductId() {
+        return productId;
+    }
+
+    /**
+     * @return the localeId
+     */
+    public String getLocaleId() {
+        return localeId;
+    }
 
     /**
      * It adds attribute in removedAttributeIds
@@ -121,6 +159,8 @@ public class UpdateSpecificationRequest {
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
+                .append("ProductId", productId) //
+                .append("LocaleId", localeId) //
                 .append("AddedToSetAttributes", addedToSetAttributes) //
                 .append("UpdatedAttributes", updatedAttributes) //
                 .append("RemovedAttributeIds", removedAttributeIds) //

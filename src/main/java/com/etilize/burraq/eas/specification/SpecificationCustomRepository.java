@@ -28,13 +28,18 @@
 
 package com.etilize.burraq.eas.specification;
 
+import static com.etilize.burraq.eas.utils.Utils.*;
+
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.etilize.burraq.eas.specification.value.SpecificationValue;
 import com.etilize.burraq.eas.specification.value.UnitAttribute;
@@ -58,45 +63,42 @@ public interface SpecificationCustomRepository {
 
     String ATTRIBUTES = "attributes";
 
-    String COLON_LAST_UPDATE_DATE = ":lastUpdateDate";
-
-    String COLON_ATTRIBUTES = ":attributes";
-
     /**
      * It save attributes in db.
      *
-     * @param id product id
      * @param request {@link UpdateSpecificationRequest}
      */
-    void saveAttributes(String id, UpdateSpecificationRequest request);
+    void saveAttributes(UpdateSpecificationRequest request);
 
     /**
-     * It return attributes data
+     * It return Specification for id. findById will throw error if attributes have data.
+     * Default implementation of findById can not handle Map<String, Object> type of field attributes.
      *
-     * @param id product id
-     * @return Map<String, Object>
+     * @param id id
+     * @return Optional<Specification>
      */
-    Map<String, Object> getAttributes(String id);
+    Optional<Specification> findOne(String id);
 
     /**
      * It returns {@link UpdateItemSpec} to save attributes in db.
      *
-     * @param id product id
      * @param request {@link UpdateSpecificationRequest}
      * @return UpdateItemSpec
      */
 
-    default UpdateItemSpec getUpdateItemSpecForSaveAttributes(final String id,
+    default UpdateItemSpec getUpdateItemSpecForSaveAttributes(
             final UpdateSpecificationRequest request) {
+        final NameMap nameMap = new NameMap();
+        nameMap.with(getKeyName(LAST_UPDATE_DATE), LAST_UPDATE_DATE);
         final ValueMap valueMap = new ValueMap() //
-                .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
-        final StringBuilder updateExp = new StringBuilder(String.format("SET %s=%s,", //
-                LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
+                .withLong(getValueName(LAST_UPDATE_DATE), new Date().getTime());
+        final StringBuilder updateExp = new StringBuilder(
+                getKeyValueUse("SET #%s=:%s,", LAST_UPDATE_DATE));
         request.getUpdatedAttributes().entrySet().forEach(entry -> {
-            valueMap.with(":" + entry.getKey(),
+            nameMap.with(getKeyName(entry.getKey()), entry.getKey());
+            valueMap.with(getValueName(entry.getKey()),
                     convertOperationToValue(entry.getValue()));
-            updateExp.append(String.format("%s.%s=:%s,", ATTRIBUTES, entry.getKey(),
-                    entry.getKey()));
+            updateExp.append(getKeyValueUse(ATTRIBUTES + ".#%s=:%s,", entry.getKey()));
         });
         updateExp.deleteCharAt(updateExp.lastIndexOf(","));
         if (!request.getRemovedFromSetAttributes().isEmpty()) {
@@ -104,20 +106,20 @@ public interface SpecificationCustomRepository {
             request.getRemovedFromSetAttributes().entrySet().forEach(entry -> {
                 final Object value = convertOperationToValue(entry.getValue());
                 if (value instanceof String) {
-                    valueMap.withStringSet(":" + entry.getKey(),
+                    valueMap.withStringSet(getValueName(entry.getKey()),
                             (String) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
                 } else if (value instanceof Number) {
-                    valueMap.withNumberSet(":" + entry.getKey(),
+                    valueMap.withNumberSet(getValueName(entry.getKey()),
                             (Number) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
                 } else if (value instanceof Set) {
-                    valueMap.with(":" + entry.getKey(),
+                    valueMap.with(getValueName(entry.getKey()),
                             (Set) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
+                }
+                if (value instanceof String || value instanceof Number
+                        || value instanceof Set) {
+                    nameMap.with(getKeyName(entry.getKey()), entry.getKey());
+                    updateExp.append(
+                            getKeyValueUse(ATTRIBUTES + ".#%s :%s,", entry.getKey()));
                 }
             });
             updateExp.deleteCharAt(updateExp.lastIndexOf(","));
@@ -127,20 +129,20 @@ public interface SpecificationCustomRepository {
             request.getAddedToSetAttributes().entrySet().forEach(entry -> {
                 final Object value = convertOperationToValue(entry.getValue());
                 if (value instanceof String) {
-                    valueMap.withStringSet(":" + entry.getKey(),
+                    valueMap.withStringSet(getValueName(entry.getKey()),
                             (String) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
                 } else if (value instanceof Number) {
-                    valueMap.withNumberSet(":" + entry.getKey(),
+                    valueMap.withNumberSet(getValueName(entry.getKey()),
                             (Number) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
                 } else if (value instanceof Set) {
-                    valueMap.with(":" + entry.getKey(),
+                    valueMap.with(getValueName(entry.getKey()),
                             (Set) convertOperationToValue(entry.getValue()));
-                    updateExp.append(String.format("%s.%s :%s,", ATTRIBUTES,
-                            entry.getKey(), entry.getKey()));
+                }
+                if (value instanceof String || value instanceof Number
+                        || value instanceof Set) {
+                    nameMap.with(getKeyName(entry.getKey()), entry.getKey());
+                    updateExp.append(
+                            getKeyValueUse(ATTRIBUTES + ".#%s :%s,", entry.getKey()));
                 }
             });
             updateExp.deleteCharAt(updateExp.lastIndexOf(","));
@@ -148,12 +150,15 @@ public interface SpecificationCustomRepository {
         if (!request.getRemovedAttributeIds().isEmpty()) {
             updateExp.append(" REMOVE ");
             request.getRemovedAttributeIds().forEach(attributeId -> {
-                updateExp.append(String.format("%s.%s,", ATTRIBUTES, attributeId));
+                nameMap.with(getKeyName(attributeId), attributeId);
+                updateExp.append(String.format("%s.#%s,", ATTRIBUTES, attributeId));
             });
             updateExp.deleteCharAt(updateExp.lastIndexOf(","));
         }
-        final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
+        final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID,
+                request.getId()) //
                 .withUpdateExpression(updateExp.toString()) //
+                .withNameMap(nameMap) //
                 .withValueMap(valueMap);
         return updateItemSpec;
     }

@@ -103,7 +103,7 @@ public interface MediaSpecificationCustomRepository {
      */
     default UpdateItemSpec removeAttributeItem(final String id,
             final String attributeId) {
-    	final NameMap nameMap = new NameMap();
+        final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
         final StringBuilder updateExp = new StringBuilder();

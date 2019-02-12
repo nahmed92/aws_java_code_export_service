@@ -26,90 +26,79 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.value;
+package com.etilize.burraq.eas.attribute;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Generic class that holds different specification attribute values.
- * @param <T> Generic type <T> can be {@link String}, {@link Number} class
+ * Represents units that are associated with attributes
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class Value<T> implements SpecificationValue {
+public class Unit {
 
-    private final T value;
+    private final String unitId;
+
+    private final String name;
 
     /**
-     * Default constructor with arguments
+     * Unit Constructor
      *
-     * @param value {@link T}
+     * @param unitId unit id
+     * @param name unit's name
      */
     @JsonCreator
-    public Value(@JsonProperty("value") final T value) {
-        Assert.notNull(value, "value cannot be null");
-        this.value = value;
+    public Unit(@JsonProperty("unitId") final String unitId,
+            @JsonProperty("name") final String name) {
+        this.unitId = unitId;
+        this.name = name;
     }
 
-    /**
-     * return generic class data
-     *
-     * @return {@link T}
-     */
-    public T getValue() {
-        return value;
+    public String getUnitId() {
+        return unitId;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode
-     */
+    public String getName() {
+        return name;
+    }
+
     @Override
-    public final int hashCode() {
-        return new HashCodeBuilder() //
-                .append(getValue()) //
-                .hashCode();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public final boolean equals(final Object obj) {
-        if (obj == null) {
+    public final boolean equals(final Object object) {
+        if (object == null) {
             return false;
         }
-        if (obj == this) {
+        if (object == this) {
             return true;
         }
-        if (!(obj instanceof Value)) {
+        if (!(object instanceof Unit)) {
             return false;
         }
-        final Value<?> valueObject = (Value<?>) obj;
+
+        final Unit unit = (Unit) object;
+
         return new EqualsBuilder() //
-                .append(getValue(), valueObject.getValue()) //
+                .append(unitId, unit.getUnitId()) //
                 .isEquals();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString
-     */
+    @Override
+    public final int hashCode() {
+        return new HashCodeBuilder() //
+                .append(unitId) //
+                .hashCode();
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("Value", value) //
+                .append("UnitId", unitId) //
+                .append("Name", name) //
                 .toString();
     }
 }

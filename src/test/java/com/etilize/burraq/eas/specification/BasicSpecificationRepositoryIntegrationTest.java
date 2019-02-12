@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.specification;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.*;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -42,8 +43,6 @@ import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.etilize.burraq.eas.specification.value.SpecificationValue;
-import com.etilize.burraq.eas.specification.value.Value;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
@@ -72,7 +71,7 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenAttributeValueIsAddedOrReplaced() {
         final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithUpdatedAttributes();
-        repository.saveAttributes("product123-en", request);
+        repository.saveAttributes(request);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenAttributeValueIsAddedInSet() {
         final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithAddedAttributeValue();
-        repository.saveAttributes("product123-en", request);
+        repository.saveAttributes(request);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenAttributeValueIsRemoveInSet() {
         final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithRemovedAttributeValue();
-        repository.saveAttributes("product123-en", request);
+        repository.saveAttributes(request);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenAttributeValueIsRemoved() {
         final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithRemovedAttributeIds();
-        repository.saveAttributes("product123-en", request);
+        repository.saveAttributes(request);
     }
 
     @Test
@@ -108,7 +107,7 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeForMiscAttributeValueUpdates() {
         final UpdateSpecificationRequest request = UpdateSpecificationRequestFixture.createWithMiscUpdates();
-        repository.saveAttributes("product123-en", request);
+        repository.saveAttributes(request);
     }
 
     @Test
@@ -140,24 +139,35 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     }
 
     @Test
+    @UsingDataSet(locations = "/datasets/basic_specifications/basic_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void shouldFindBasicSpecificationById() {
-        final Optional<BasicSpecification> specification = repository.findById(
-                "product123-en");
+        final Optional<Specification> specification = repository.findOne("product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));
         assertThat(specification.get().getLocaleId(), is("en"));
         assertThat(specification.get().getCategoryId(), is("categoryId123"));
         assertThat(specification.get().getIndustryId(), is("industryId123"));
+        assertThat(specification.get().getAttributes(), hasEntry("mfgPartNoId", "XYZ"));
+        assertThat(specification.get().getAttributes().get("processId"), notNullValue());
+        final Map<String,Map<String,Object>> value = (Map<String,Map<String,Object>>) specification.get().getAttributes().get("processId");
+        assertThat(value.get("EXTRACTED"), notNullValue());
+        assertThat(value.get("EXTRACTED"), hasEntry("unit", "g"));
+    }
+
+    @Test
+    public void shouldReturnOptionalEmptyByIdDoesNotExist() {
+        final Optional<Specification> specification = repository.findOne(
+                "product123-en1");
+        assertThat(specification.isPresent(), is(false));
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/basic_specifications/basic_specifications_after_create.bson")
     public void shouldCreateNewBasicSpecification() {
-        final Map<String, SpecificationValue> attributes = Maps.newHashMap();
         final BasicSpecification specs = new BasicSpecification();
         specs.setId("product1234-en");
-        specs.setAttributes(attributes);
+        specs.setAttributes(Maps.newHashMap());
         specs.setCategoryId("categoryId123");
         specs.setIndustryId("industryId123");
         specs.setLocaleId("en");

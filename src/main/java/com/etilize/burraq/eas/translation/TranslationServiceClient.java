@@ -26,37 +26,36 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.translation;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
- * It contains business logic to maintain detailed and basic specifications.
+ * Feign client for translation-service
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public interface SpecificationService {
+@Component
+@FeignClient("translation-service")
+public interface TranslationServiceClient {
 
     /**
-     * It added record with productId-en.
-     *
-     * @param productId product id
-     * @param industryId industry id
-     * @param categoryId category id
+     * It will translate text using end point /texts/translate
+     * @param request {@link TextTranslationRequest}
+     * @return {@link TranslationResponse}
      */
-    void createProduct(String productId, String industryId, String categoryId);
+    @PostMapping(consumes = "application/json", path = "/texts/translate")
+    TranslationResponse translateText(TextTranslationRequest request);
 
     /**
-     * It added record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
+     * It will translate text using end point /units/translate
+     * @param request {@link UnitTranslationRequest}
+     * @return {@link TranslationResponse}
      */
-    void addLocale(String productId, String localeId);
-
-    /**
-     * It is used to update data based on PSPECS specs updates
-     *
-     * @param request {@link UpdateSpecificationRequest}
-     */
-    void updateSpecifications(UpdateSpecificationRequest request);
+    @PostMapping(consumes = "application/json", path = "/units/translate")
+    TranslationResponse translateUnit(UnitTranslationRequest request);
 }

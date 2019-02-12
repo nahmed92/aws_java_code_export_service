@@ -45,7 +45,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Contains functional test(s) for {@link DebeziumMessageParser}.
  *

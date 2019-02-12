@@ -26,37 +26,46 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.attribute;
+
+import java.util.Map;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * It contains business logic to maintain detailed and basic specifications.
+ * Feign client for attribute-service
  *
- * @author Umar Zubair
+ * @author Sidra Zia
  * @since 1.0
  */
-public interface SpecificationService {
+@Component
+@FeignClient("attribute-service")
+public interface AttributeServiceClient {
 
     /**
-     * It added record with productId-en.
+     * Method to get an attribute by Id
      *
-     * @param productId product id
-     * @param industryId industry id
-     * @param categoryId category id
+     * @param id the attribute id
+     * @return attribute for given id
      */
-    void createProduct(String productId, String industryId, String categoryId);
+    @GetMapping("/attributes/{id}")
+    Resource<Attribute> findById(@PathVariable("id") String id);
 
     /**
-     * It added record with productId-localeId.
+     * Method to get attributes by matching specific values for fields.
+     * Querydsl is used in ATS. Any field of attribute class can be used for search.
+     * page, size and sort parameters can be sent through map as well.
      *
-     * @param productId product id
-     * @param localeId locale id
+     * @param queryMap key (field) value (value to search) pair
+     * @return attributes
      */
-    void addLocale(String productId, String localeId);
-
-    /**
-     * It is used to update data based on PSPECS specs updates
-     *
-     * @param request {@link UpdateSpecificationRequest}
-     */
-    void updateSpecifications(UpdateSpecificationRequest request);
+    @GetMapping("/attributes")
+    PagedResources<Resource<Attribute>> findBy(
+            @RequestParam Map<String, Object> queryMap);
 }
