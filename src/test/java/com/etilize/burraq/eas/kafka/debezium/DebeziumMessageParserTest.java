@@ -30,6 +30,7 @@ package com.etilize.burraq.eas.kafka.debezium;
 
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.*;
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
+import static com.etilize.burraq.eas.media.specification.Status.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
@@ -39,8 +40,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 
+import org.apache.avro.generic.GenericData;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Contains functional test(s) for {@link DebeziumMessageParser}.
@@ -313,5 +317,55 @@ public class DebeziumMessageParserTest {
         assertThat(params.get(KEY).toString(), is("20"));
         //unit as a value for indexing
         assertThat(params.get("operations"), is(REMOVE_FROM_SET_OPERATION));
+    }
+
+    @Test
+    public void shouldExtractProductIdFromPMSMessageKey()
+            throws FileNotFoundException, IOException {
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
+        final String productId = parser.getProductIdFromPMSKeyMessage(key);
+        assertThat(productId, is("mp5"));
+    }
+
+    @Test
+    public void shouldReturnTrueForAddProductLocaleMessageFromPMS()
+            throws FileNotFoundException, IOException {
+        final GenericData.Record addProductLocaleMessageObject = DebeziumMessageTestFixtures.getPMSAddLocaleMessageValueObject();
+        final boolean flag = parser.isAddProductLocaleMessageFromPMS(
+                addProductLocaleMessageObject);
+        assertThat(flag, is(true));
+    }
+
+    @Test
+    public void shouldReturnFalseForProductMediaEventFromPMS()
+            throws FileNotFoundException, IOException {
+        final GenericData.Record addProductLocaleMessageObject = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithoutURLAndStatusPending();
+        final boolean flag = parser.isAddProductLocaleMessageFromPMS(
+                addProductLocaleMessageObject);
+        assertThat(flag, is(false));
+    }
+
+    @Test
+    public void shouldReturnPMSAddProductLocaleRequest()
+            throws FileNotFoundException, IOException {
+        final GenericData.Record addProductLocaleMessageObject = DebeziumMessageTestFixtures.getPMSAddLocaleMessageValueObject();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
+        final PMSAddProductLocaleRequest addLocale = parser.getPMSAddProductLocaleRequest(
+                addProductLocaleMessageObject, key);
+        assertThat(addLocale.getProductId(), is("mp5"));
+        assertThat(addLocale.getLocaleId(), is("en_UK"));
+    }
+
+    @Test
+    public void shouldReturnPMSProductMediaEventRequest()
+            throws FileNotFoundException, IOException {
+        final GenericData.Record productMediaEventObject = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithURLAndStatusAssociated();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
+        final PMSProductMediaEventRequest pMSProductMediaEventRequest = parser.getPMSProductMediaEventRequest(
+                productMediaEventObject, key);
+        assertThat(pMSProductMediaEventRequest.getProductId(), is("mp5"));
+        assertThat(pMSProductMediaEventRequest.getLocaleId(), is("de_DE"));
+        assertThat(pMSProductMediaEventRequest.getAttributeId(), is("1"));
+        assertThat(pMSProductMediaEventRequest.getStatus(), is(ASSOCIATED));
     }
 }

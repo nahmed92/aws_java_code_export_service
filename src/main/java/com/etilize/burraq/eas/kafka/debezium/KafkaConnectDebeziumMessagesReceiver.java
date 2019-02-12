@@ -45,6 +45,8 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
+
 /**
  * Houses listeners for all incoming Apache Kafka Debezium messages
  *
@@ -58,15 +60,20 @@ public class KafkaConnectDebeziumMessagesReceiver {
 
     private final DebeziumMessageParser debeziumMessageParser;
 
+    private final MediaSpecificationService mediaSpecificationService;
+
     /**
-     * Constructor to instantiate object instance
+     * Constructor to instantiate object instance.
      *
      * @param debeziumMessageParser {@link @DebeziumMessageParser}
+     * @param mediaSpecificationService {@link MediaSpecificationService}
      */
     @Autowired
     public KafkaConnectDebeziumMessagesReceiver(
-            final DebeziumMessageParser debeziumMessageParser) {
+            final DebeziumMessageParser debeziumMessageParser,
+            final MediaSpecificationService mediaSpecificationService) {
         this.debeziumMessageParser = debeziumMessageParser;
+        this.mediaSpecificationService = mediaSpecificationService;
     }
 
     /**
@@ -133,6 +140,18 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void processProductMediaServiceMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         logger.info("Received Product Media Service Message: [{}].", record);
+        if (debeziumMessageParser.isAddProductLocaleMessageFromPMS(record)) {// It means AddProductLocaleMessage
+            final PMSAddProductLocaleRequest pmsAddProductLocaleRequest = debeziumMessageParser.getPMSAddProductLocaleRequest(
+                    record, key);
+            mediaSpecificationService.addLocale(pmsAddProductLocaleRequest.getProductId(),
+                    pmsAddProductLocaleRequest.getLocaleId());
+        } else {// It means ProductMediaEvent
+            final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
+                    record, key);
+            mediaSpecificationService.saveAttribute(request.getProductId(),
+                    request.getLocaleId(), request.getAttributeId(), request.getStatus(),
+                    request.getValue());
+        }
     }
 
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,

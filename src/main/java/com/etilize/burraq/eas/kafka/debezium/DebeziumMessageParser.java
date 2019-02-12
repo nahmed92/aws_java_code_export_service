@@ -42,8 +42,10 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
+import com.etilize.burraq.eas.media.specification.Status;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
@@ -288,5 +290,105 @@ public class DebeziumMessageParser {
                 record.toString()).getAsJsonObject();
         return getUpdateOperationMap(productId,
                 new JsonParser().parse(jsonRecord.get(PATCH).getAsString()).toString());
+    }
+
+    /**
+     * Extracts productId from Debezium messages
+     *
+     * @param key {@link ConsumerRecord<Object, String>} message key
+     * @return {@link String} productId
+     */
+    public String getProductIdFromPMSKeyMessage(
+            final ConsumerRecord<Object, String> key) {
+        final JsonObject keyJO = new JsonParser().parse(key.key() //
+                .toString()) //
+                .getAsJsonObject();
+        final String productId = new JsonParser().parse(keyJO.get(ID) //
+                .getAsString()) //
+                .getAsJsonObject() //
+                .get(ID) //
+                .getAsString();
+        return productId;
+    }
+
+    /**
+     * Returns PMS message type i.e. AddProductLocaleMessage Or ProductMediaEvent
+     *
+     * @param record {@link GenericData.Record} Apache kafka value message
+     * @return {@link boolean} value for message type.
+     */
+    public boolean isAddProductLocaleMessageFromPMS(final GenericData.Record record) {
+        final String patch = record.get(PATCH) //
+                .toString();
+        final JsonObject setJO = new JsonParser().parse(patch) //
+                .getAsJsonObject() //
+                .get(SET) //
+                .getAsJsonObject();
+        final int keySize = setJO.keySet() //
+                .size();
+        return keySize == 1 ? true : // It means AddProductLocaleMessage
+                false;// It means ProductMediaEvent
+    }
+
+    /**
+     * Extracts out {@link PMSAddProductLocaleRequest} object from Apache Kafka Message
+     *
+     * @param record {@link GenericData.Record} Apache kafka value message
+     * @param key {@link ConsumerRecord<Object, String>} Apache Kafka message key
+     * @return {@link PMSAddProductLocaleRequest}
+     */
+    public PMSAddProductLocaleRequest getPMSAddProductLocaleRequest(
+            final GenericData.Record record, final ConsumerRecord<Object, String> key) {
+        final String patch = record.get(PATCH) //
+                .toString();
+        final JsonObject setJO = new JsonParser().parse(patch) //
+                .getAsJsonObject() //
+                .get(SET) //
+                .getAsJsonObject();
+        return new PMSAddProductLocaleRequest(getProductIdFromPMSKeyMessage(key),
+                setJO.entrySet() //
+                        .iterator() //
+                        .next() //
+                        .getKey());
+    }
+
+    /**
+     * Returns an instance of {@link PMSProductMediaEventRequest}
+     *
+     * @param record {@link GenericData.Record} Apache kafka value message
+     * @param key {@link ConsumerRecord<Object, String>} Apache Kafka message key
+     * @return {@link PMSProductMediaEventRequest}
+     */
+    public PMSProductMediaEventRequest getPMSProductMediaEventRequest(
+            final GenericData.Record record, final ConsumerRecord<Object, String> key) {
+        final String patch = record.get(PATCH) //
+                .toString();
+        final JsonObject setJO = new JsonParser().parse(patch) //
+                .getAsJsonObject() //
+                .get(SET) //
+                .getAsJsonObject();
+        final String productId = getProductIdFromPMSKeyMessage(key);
+        final String localeId = setJO.keySet() //
+                .iterator() //
+                .next() //
+                .split("\\.")[0];
+        final String attributeId = setJO.keySet() //
+                .iterator() //
+                .next() //
+                .split("\\.")[1];
+        Status status = null;
+        String value = null;
+        for (final String item : setJO.keySet()) {
+            if (item.endsWith("status")) {
+                status = Status.valueOf(setJO.get(item) //
+                        .getAsString());
+            } else if (item.endsWith("url")) {
+                value = setJO.get(item) //
+                        .isJsonNull() ? null : setJO.get(item) //
+                                .getAsString();
+            }
+        }
+        return new PMSProductMediaEventRequest(productId, localeId, attributeId, status,
+                value);
     }
 }
