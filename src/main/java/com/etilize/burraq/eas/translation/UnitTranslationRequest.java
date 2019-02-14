@@ -26,64 +26,50 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.value;
+package com.etilize.burraq.eas.translation;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Generic class that holds different specification attribute values.
- * @param <T> Generic type <T> can be {@link String}, {@link Number} class
+ * This class represents request to translate unit
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class Value<T> implements SpecificationValue {
+public class UnitTranslationRequest {
 
-    private final T value;
+    private final String localeId;
+
+    private final String value;
 
     /**
-     * Default constructor with arguments
+     * Initializes newly request
      *
-     * @param value {@link T}
+     * @param localeId locale id
+     * @param value value to translate
      */
-    @JsonCreator
-    public Value(@JsonProperty("value") final T value) {
-        Assert.notNull(value, "value cannot be null");
+    public UnitTranslationRequest(final String localeId, final String value) {
+        this.localeId = localeId;
         this.value = value;
     }
 
     /**
-     * return generic class data
-     *
-     * @return {@link T}
+     * @return the localeId
      */
-    public T getValue() {
+    public String getLocaleId() {
+        return localeId;
+    }
+
+    /**
+     * @return the value
+     */
+    public String getValue() {
         return value;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode
-     */
-    @Override
-    public final int hashCode() {
-        return new HashCodeBuilder() //
-                .append(getValue()) //
-                .hashCode();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public final boolean equals(final Object obj) {
         if (obj == null) {
@@ -92,24 +78,29 @@ public class Value<T> implements SpecificationValue {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Value)) {
+        if (!(obj instanceof UnitTranslationRequest)) {
             return false;
         }
-        final Value<?> valueObject = (Value<?>) obj;
+        final UnitTranslationRequest request = (UnitTranslationRequest) obj;
         return new EqualsBuilder() //
-                .append(getValue(), valueObject.getValue()) //
+                .append(getLocaleId(), request.getLocaleId()) //
+                .append(getValue(), request.getValue()) //
                 .isEquals();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString
-     */
+    @Override
+    public final int hashCode() {
+        return new HashCodeBuilder() //
+                .append(getLocaleId()) //
+                .append(getValue()) //
+                .hashCode();
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("Value", value) //
+                .append("LocaleId", getLocaleId()) //
+                .append("Value", getValue()) //
                 .toString();
     }
 }

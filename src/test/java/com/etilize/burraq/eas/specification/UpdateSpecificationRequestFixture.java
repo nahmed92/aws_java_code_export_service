@@ -46,7 +46,8 @@ import com.google.common.collect.Maps;
 public class UpdateSpecificationRequestFixture {
 
     public static UpdateSpecificationRequest createWithUpdatedAttributes() {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest();
+        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+                "product123", "en");
         request.addUpdatedAttributes("mfgId", new Value("Acer"));
         request.addUpdatedAttributes("mfgPartNoId", new Value("ABC"));
         request.addUpdatedAttributes("sizeId", new Value(3));
@@ -65,7 +66,8 @@ public class UpdateSpecificationRequestFixture {
     }
 
     public static UpdateSpecificationRequest createWithAddedAttributeValue() {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest();
+        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+                "product123", "en");
         request.addAddedToSetAttributes("stringRepId", new Value("ghi"));
         request.addAddedToSetAttributes("numberRepId", new Value(3));
         request.addAddedToSetAttributes("notexistsId", new Value(4));
@@ -73,7 +75,8 @@ public class UpdateSpecificationRequestFixture {
     }
 
     public static UpdateSpecificationRequest createWithRemovedAttributeValue() {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest();
+        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+                "product123", "en");
         request.addRemovedFromSetAttributes("stringRepId", new Value("abc"));
         request.addRemovedFromSetAttributes("numberRepId", new Value(1));
         request.addRemovedFromSetAttributes("notexistsId", new Value(4));
@@ -81,7 +84,8 @@ public class UpdateSpecificationRequestFixture {
     }
 
     public static UpdateSpecificationRequest createWithRemovedAttributeIds() {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest();
+        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+                "product123", "en");
         request.addRemovedAttributeIds("stringRepId");
         request.addRemovedAttributeIds("numberRepId");
         request.addRemovedAttributeIds("unitRepId");
@@ -91,7 +95,8 @@ public class UpdateSpecificationRequestFixture {
     }
 
     public static UpdateSpecificationRequest createWithMiscUpdates() {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest();
+        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+                "product123", "en");
         request.addUpdatedAttributes("mfgId", new Value("Acer"));
         request.addAddedToSetAttributes("stringRepId",
                 Lists.newArrayList(new Value("def"), new Value("ghi")));

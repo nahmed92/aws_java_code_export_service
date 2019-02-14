@@ -95,7 +95,7 @@ public class SpecificationServiceImpl implements SpecificationService {
     public void addLocale(final String productId, final String localeId) {
         if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
             final String id = generateId(productId, localeId);
-            final Optional<DetailedSpecification> detailedSpecsForEN = getDetailedSpecification(
+            final Optional<Specification> detailedSpecsForEN = getDetailedSpecification(
                     productId, LOCALE_EN);
             if (detailedSpecsForEN.isPresent()) {
                 final DetailedSpecification detialedSpecs = new DetailedSpecification();
@@ -110,7 +110,7 @@ public class SpecificationServiceImpl implements SpecificationService {
                 detailedSpecificationRepository.save(detialedSpecs);
             }
 
-            final Optional<BasicSpecification> basicSpecsForEN = getBasicSpecification(
+            final Optional<Specification> basicSpecsForEN = getBasicSpecification(
                     productId, LOCALE_EN);
             if (basicSpecsForEN.isPresent()) {
                 final BasicSpecification basicSpecs = new BasicSpecification();
@@ -127,14 +127,21 @@ public class SpecificationServiceImpl implements SpecificationService {
         }
     }
 
-    private Optional<DetailedSpecification> getDetailedSpecification(
-            final String productId, final String localeId) {
-        return detailedSpecificationRepository.findById(generateId(productId, localeId));
+    @Override
+    public void updateSpecifications(final UpdateSpecificationRequest request) {
+        // TODO: Apply rules to update data across locales, translate data and filter based on POF
+        basicSpecificationRepository.saveAttributes(request);
+        detailedSpecificationRepository.saveAttributes(request);
     }
 
-    private Optional<BasicSpecification> getBasicSpecification(final String productId,
+    private Optional<Specification> getDetailedSpecification(final String productId,
             final String localeId) {
-        return basicSpecificationRepository.findById(generateId(productId, localeId));
+        return detailedSpecificationRepository.findOne(generateId(productId, localeId));
+    }
+
+    private Optional<Specification> getBasicSpecification(final String productId,
+            final String localeId) {
+        return basicSpecificationRepository.findOne(generateId(productId, localeId));
     }
 
     private BasicSpecification getBasicSpecification(final Specification specs) {

@@ -26,37 +26,70 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.translation;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * It contains business logic to maintain detailed and basic specifications.
+ * This class represents response of translation request
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public interface SpecificationService {
+public class TranslationResponse {
+
+    private final String translation;
 
     /**
-     * It added record with productId-en.
+     * Initializes newly created response
      *
-     * @param productId product id
-     * @param industryId industry id
-     * @param categoryId category id
+     * @param translation translated text
      */
-    void createProduct(String productId, String industryId, String categoryId);
+    @JsonCreator
+    public TranslationResponse(@JsonProperty("translation") final String translation) {
+        this.translation = translation;
+    }
 
     /**
-     * It added record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
+     * @return the translation
      */
-    void addLocale(String productId, String localeId);
+    public String getTranslation() {
+        return translation;
+    }
 
-    /**
-     * It is used to update data based on PSPECS specs updates
-     *
-     * @param request {@link UpdateSpecificationRequest}
-     */
-    void updateSpecifications(UpdateSpecificationRequest request);
+    @Override
+    public final boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof TranslationResponse)) {
+            return false;
+        }
+        final TranslationResponse response = (TranslationResponse) obj;
+        return new EqualsBuilder() //
+                .append(translation, response.getTranslation()) //
+                .isEquals();
+    }
+
+    @Override
+    public final int hashCode() {
+        return new HashCodeBuilder() //
+                .append(translation) //
+                .hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+                .append("Translation", translation) //
+                .toString();
+    }
 }

@@ -40,7 +40,6 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.etilize.burraq.eas.base.AbstractDynamoEntity;
-import com.etilize.burraq.eas.specification.value.SpecificationValue;
 
 /**
  * This class represents POJO for detailed specifications.
@@ -58,7 +57,7 @@ public abstract class Specification extends AbstractDynamoEntity {
 
     private String industryId;
 
-    private Map<String, SpecificationValue> attributes;
+    private Map<String, Object> attributes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
@@ -126,14 +125,14 @@ public abstract class Specification extends AbstractDynamoEntity {
     /**
      * @return the attributes
      */
-    public Map<String, SpecificationValue> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 
     /**
      * @param attributes the attributes to set
      */
-    public void setAttributes(final Map<String, SpecificationValue> attributes) {
+    public void setAttributes(final Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 

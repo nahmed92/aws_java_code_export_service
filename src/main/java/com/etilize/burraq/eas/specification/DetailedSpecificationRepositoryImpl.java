@@ -28,13 +28,14 @@
 
 package com.etilize.burraq.eas.specification;
 
-import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
@@ -62,14 +63,23 @@ public class DetailedSpecificationRepositoryImpl
     }
 
     @Override
-    public void saveAttributes(final String id,
-            final UpdateSpecificationRequest request) {
-        table.updateItem(getUpdateItemSpecForSaveAttributes(id, request));
+    public void saveAttributes(final UpdateSpecificationRequest request) {
+        table.updateItem(getUpdateItemSpecForSaveAttributes(request));
     }
 
     @Override
-    public Map<String, Object> getAttributes(final String id) {
-        return (Map<String, Object>) table.getItem(new PrimaryKey(ID, id)).get(
-                ATTRIBUTES);
+    public Optional<Specification> findOne(final String id) {
+        final Item item = table.getItem(new PrimaryKey(ID, id));
+        DetailedSpecification specs = null;
+        if (item != null) {
+            specs = new DetailedSpecification();
+            specs.setId(id);
+            specs.setCategoryId(item.getString("categoryId"));
+            specs.setIndustryId(item.getString("industryId"));
+            specs.setLocaleId(item.getString("localeId"));
+            specs.setProductId(item.getString("productId"));
+            specs.setAttributes(item.getRawMap(ATTRIBUTES));
+        }
+        return Optional.ofNullable(specs);
     }
 }

@@ -26,37 +26,18 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.attribute;
 
 /**
- * It contains business logic to maintain detailed and basic specifications.
+ * This enum is used to associate scope to an attribute
  *
- * @author Umar Zubair
+ * @author Nasir Ahmed
  * @since 1.0
  */
-public interface SpecificationService {
 
-    /**
-     * It added record with productId-en.
-     *
-     * @param productId product id
-     * @param industryId industry id
-     * @param categoryId category id
-     */
-    void createProduct(String productId, String industryId, String categoryId);
-
-    /**
-     * It added record with productId-localeId.
-     *
-     * @param productId product id
-     * @param localeId locale id
-     */
-    void addLocale(String productId, String localeId);
-
-    /**
-     * It is used to update data based on PSPECS specs updates
-     *
-     * @param request {@link UpdateSpecificationRequest}
-     */
-    void updateSpecifications(UpdateSpecificationRequest request);
+public enum Scope {
+    INTERNATIONAL, //
+    LANGUAGE_SPECIFIC, //
+    LOCALE_SPECIFIC, //
+    REGIONAL
 }

@@ -78,8 +78,8 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
         doNothing().when(mediaSpecificationService) //
                 .saveAttribute("mp5", "de_DE", "1", ASSOCIATED, "http://www.google.com");
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
-        verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "de_DE",
-                "1", ASSOCIATED, "http://www.google.com");
+        verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "de_DE", "1",
+                ASSOCIATED, "http://www.google.com");
     }
 
     @Test
@@ -90,7 +90,7 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
         doNothing().when(mediaSpecificationService) //
                 .saveAttribute("mp5", "en_US", "1", PENDING, null);
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
-        verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "en_US",
-                "1", PENDING, null);
+        verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "en_US", "1",
+                PENDING, null);
     }
 }

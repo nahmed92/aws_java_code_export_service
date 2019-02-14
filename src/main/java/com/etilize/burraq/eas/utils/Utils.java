@@ -52,4 +52,35 @@ public final class Utils {
     public static String generateId(final String productId, final String localeId) {
         return String.format(PRODUCTID_LOCALE, productId, localeId);
     }
+
+    /**
+     * Returns "#"+key
+     *
+     * @param key field name
+     * @return "#"+key
+     */
+    public static String getKeyName(final String key) {
+        return "#" + key;
+    }
+
+    /**
+     * Returns ":"+key
+     *
+     * @param key field name
+     * @return ":"+key
+     */
+    public static String getValueName(final String key) {
+        return ":" + key;
+    }
+
+    /**
+     * Use String.format considering query referring key twice. It is used for cases like query is "#%s :%s" or "#%s=:%s"
+     *
+     * @param query string to format
+     * @param key field name
+     * @return "#"+key
+     */
+    public static String getKeyValueUse(final String query, final String key) {
+        return String.format(query, key, key);
+    }
 }

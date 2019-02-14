@@ -26,37 +26,33 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.translation;
 
 /**
- * It contains business logic to maintain detailed and basic specifications.
+ * It provides layer to translate data
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public interface SpecificationService {
+public interface TranslationService {
 
     /**
-     * It added record with productId-en.
+     * It translate text value
      *
-     * @param productId product id
      * @param industryId industry id
-     * @param categoryId category id
-     */
-    void createProduct(String productId, String industryId, String categoryId);
-
-    /**
-     * It added record with productId-localeId.
-     *
-     * @param productId product id
      * @param localeId locale id
+     * @param value value to translate
+     * @return translated value
      */
-    void addLocale(String productId, String localeId);
+    String translateText(String industryId, String localeId, String value);
 
     /**
-     * It is used to update data based on PSPECS specs updates
+     * It translate unit value
      *
-     * @param request {@link UpdateSpecificationRequest}
+     * @param localeId locale id
+     * @param value value to translate
+     * @return translated value
      */
-    void updateSpecifications(UpdateSpecificationRequest request);
+    String translateUnit(String localeId, String value);
+
 }

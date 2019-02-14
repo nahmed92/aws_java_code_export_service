@@ -26,61 +26,60 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification;
+package com.etilize.burraq.eas.translation;
 
-import java.util.Optional;
-
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-import com.amazonaws.services.dynamodbv2.document.Table;
-
 /**
- * It defines implementation customization for {@link BasicSpecificationRepository}
+ * This class implements {@link TranslationService}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class BasicSpecificationRepositoryImpl
-        implements BasicSpecificationCustomRepository {
+@Service
+public class TranslationServiceImpl implements TranslationService {
 
-    private final Table table;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final TranslationServiceClient serviceClient;
 
     /**
-     * Constructs with dependencies
+     * Constructor to instantiate TranslationService
      *
-     * @param amazonDynamoDB amazonDynamoDB
+     * @param serviceClient Feign service client {@link TranslationServiceClient}
+     *
      */
     @Autowired
-    public BasicSpecificationRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
-        Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
-        final DynamoDB db = new DynamoDB(amazonDynamoDB);
-        table = db.getTable(BasicSpecification.TABLE_NAME);
+    public TranslationServiceImpl(final TranslationServiceClient serviceClient) {
+        Assert.notNull(serviceClient, "serviceClient should not be null.");
+        this.serviceClient = serviceClient;
     }
 
     @Override
-    public void saveAttributes(final UpdateSpecificationRequest request) {
-        table.updateItem(getUpdateItemSpecForSaveAttributes(request));
-    }
-
-    @Override
-    public Optional<Specification> findOne(final String id) {
-        final Item item = table.getItem(new PrimaryKey(ID, id));
-        BasicSpecification specs = null;
-        if (item != null) {
-            specs = new BasicSpecification();
-            specs.setId(id);
-            specs.setCategoryId(item.getString("categoryId"));
-            specs.setIndustryId(item.getString("industryId"));
-            specs.setLocaleId(item.getString("localeId"));
-            specs.setProductId(item.getString("productId"));
-            specs.setAttributes(item.getRawMap(ATTRIBUTES));
+    public String translateText(final String industryId, final String localeId,
+            final String value) {
+        String translation = "";
+        if (StringUtils.isNotBlank(value)) {
+            translation = serviceClient.translateText(new TextTranslationRequest(
+                    industryId, localeId, value)).getTranslation();
         }
-        return Optional.ofNullable(specs);
+        logger.info("Translate Text - value: {} translate: {}", value, translation);
+        return translation;
     }
 
+    @Override
+    public String translateUnit(final String localeId, final String value) {
+        String translation = "";
+        if (StringUtils.isNotBlank(value)) {
+            translation = serviceClient.translateUnit(
+                    new UnitTranslationRequest(localeId, value)).getTranslation();
+        }
+        logger.info("Translate Unit - value: {} translate: {}", value, translation);
+        return translation;
+    }
 }
