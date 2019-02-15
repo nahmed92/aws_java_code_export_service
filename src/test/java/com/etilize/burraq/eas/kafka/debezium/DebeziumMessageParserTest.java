@@ -322,7 +322,7 @@ public class DebeziumMessageParserTest {
     public void shouldExtractProductIdFromPMSMessageKey()
             throws FileNotFoundException, IOException {
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
-        final String productId = parser.getProductIdFromPMSKeyMessage(key);
+        final String productId = parser.getProductIdFromDebeziumMessageKey(key);
         assertThat(productId, is("mp5"));
     }
 
@@ -366,5 +366,17 @@ public class DebeziumMessageParserTest {
         assertThat(pMSProductMediaEventRequest.getLocaleId(), is("de_DE"));
         assertThat(pMSProductMediaEventRequest.getAttributeId(), is("1"));
         assertThat(pMSProductMediaEventRequest.getStatus(), is(ASSOCIATED));
+    }
+
+    @Test
+    public void shouldReturnPSPECSAssociateCategoryCommand()
+            throws FileNotFoundException, IOException {
+        final GenericData.Record associateCategoryCommandObject = DebeziumMessageTestFixtures.getPSPECSAssociateCategoryCommandValueObject();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPSPECSDebeziumMessagesKeyObject();
+        final AssociateCategoryCommand pspecsAssociateCategoryCommandRequest = parser.getAssociateCategoryCommand(
+                associateCategoryCommandObject, key);
+        assertThat(pspecsAssociateCategoryCommandRequest.getProductId(), is("ppsh"));
+        assertThat(pspecsAssociateCategoryCommandRequest.getIndustryId(), is("ind1"));
+        assertThat(pspecsAssociateCategoryCommandRequest.getCategoryId(), is("cat1"));
     }
 }

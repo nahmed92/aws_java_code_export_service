@@ -46,6 +46,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
+import com.etilize.burraq.eas.specification.SpecificationService;
 
 /**
  * Houses listeners for all incoming Apache Kafka Debezium messages
@@ -62,18 +63,23 @@ public class KafkaConnectDebeziumMessagesReceiver {
 
     private final MediaSpecificationService mediaSpecificationService;
 
+    private final SpecificationService specificationService;
+
     /**
      * Constructor to instantiate object instance.
      *
      * @param debeziumMessageParser {@link @DebeziumMessageParser}
      * @param mediaSpecificationService {@link MediaSpecificationService}
+     * @param specificationService {@link SpecificationService}
      */
     @Autowired
     public KafkaConnectDebeziumMessagesReceiver(
             final DebeziumMessageParser debeziumMessageParser,
-            final MediaSpecificationService mediaSpecificationService) {
+            final MediaSpecificationService mediaSpecificationService,
+            final SpecificationService specificationService) {
         this.debeziumMessageParser = debeziumMessageParser;
         this.mediaSpecificationService = mediaSpecificationService;
+        this.specificationService = specificationService;
     }
 
     /**
@@ -87,21 +93,15 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void processProductSpecificationUpdates(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
             throws IOException {
-        final GenericData.Record keyRecord = ((GenericData.Record) key.key());
-        final String productId;
-        if (keyRecord.get("id") != null) {
-            productId = keyRecord.get("id") //
-                    .toString() //
-                    .replaceAll("\"", "");
-        } else {
-            productId = keyRecord.get("_id") //
-                    .toString() //
-                    .replaceAll("\"", "");
-        }
+        final String productId = debeziumMessageParser.getProductIdFromDebeziumMessageKey(
+                key);
         final Optional<String> operation = debeziumMessageParser.extractOperationType(
                 record);
         if (operation.isPresent()) {
             switch (operation.get()) {
+                case OPERATION_CREATE:
+                    processAssociateCategoryCommandFromPSPECS(key, record);
+                    break;
                 case OPERATION_UPDATE:
                     switch (debeziumMessageParser.extractUpdateOperationType(
                             record).get()) {
@@ -154,6 +154,19 @@ public class KafkaConnectDebeziumMessagesReceiver {
         }
     }
 
+    private void processAssociateCategoryCommandFromPSPECS(
+            final ConsumerRecord<Object, String> key, final GenericData.Record record) {
+        logger.info(
+                "Received Debezium's AssociateCategoryCommand pspecs for key: [{}] with data: [{}]",
+                key, record);
+        final AssociateCategoryCommand pSPECSAssociateCategoryCommandRequest = debeziumMessageParser.getAssociateCategoryCommand(
+                record, key);
+        specificationService.createProduct(
+                pSPECSAssociateCategoryCommandRequest.getProductId(),
+                pSPECSAssociateCategoryCommandRequest.getIndustryId(),
+                pSPECSAssociateCategoryCommandRequest.getCategoryId());
+    }
+
     private void processUpdateSpecificationAttributeCommandForAddLocale(final String key,
             final GenericData.Record record) {
         logger.info(
@@ -163,7 +176,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
         final Optional<String> localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
                 record);
         if (productId.isPresent() && localeId.isPresent()) {
-            //TODO: Add product specification locale logic will be added here.
+            specificationService.addLocale(productId.get(), localeId.get());
         }
     }
 
