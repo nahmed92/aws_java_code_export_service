@@ -84,7 +84,7 @@ public class CustomerCodeServiceImpl implements CustomerCodeService {
         Assert.hasText(code, CODE_IS_REQUIRED);
         Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
 
-        final List<String> locales = localeService.getLocalesForMarket(marketId);
+        final List<String> locales = localeService.findLocaleIdsForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
             final CustomerCode customerCode = new CustomerCode();
@@ -106,7 +106,7 @@ public class CustomerCodeServiceImpl implements CustomerCodeService {
         Assert.hasText(code, CODE_IS_REQUIRED);
         Assert.hasText(customerId, CUSTOMER_ID_IS_REQUIRED);
 
-        final List<String> locales = localeService.getLocalesForMarket(marketId);
+        final List<String> locales = localeService.findLocaleIdsForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
             final CustomerCode customerCode = new CustomerCode();

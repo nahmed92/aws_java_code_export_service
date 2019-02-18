@@ -51,15 +51,15 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO test for {@link SpecificationStatusId}
+ * POJO test for {@link SpecificationStatusKey}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class SpecificationStatusIdPojoTest {
+public class SpecificationStatusKeyPojoTest {
 
     @Test
-    public void shouldValidateSpecificationStatusIdPOJO() {
+    public void shouldValidateSpecificationStatusKeyPOJO() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new SetterMustExistRule()) //
@@ -70,20 +70,19 @@ public class SpecificationStatusIdPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(SpecificationStatusId.class));
+        validator.validate(PojoClassFactory.getPojoClass(SpecificationStatusKey.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(SpecificationStatusId.class) //
-                .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED) //
+        EqualsVerifier.forClass(SpecificationStatusKey.class) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final SpecificationStatusId statusId = new SpecificationStatusId();
-        assertThat(ObjectUtils.identityToString(statusId), not(statusId.toString()));
+        final SpecificationStatusKey statusKey = new SpecificationStatusKey();
+        assertThat(ObjectUtils.identityToString(statusKey), not(statusKey.toString()));
     }
 }

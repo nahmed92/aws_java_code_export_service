@@ -151,7 +151,8 @@ public class DetailedSpecificationRepositoryIntegrationTest
         assertThat(specification.get().getIndustryId(), is("industryId123"));
         assertThat(specification.get().getAttributes(), hasEntry("mfgPartNoId", "XYZ"));
         assertThat(specification.get().getAttributes().get("processId"), notNullValue());
-        final Map<String,Map<String,Object>> value = (Map<String,Map<String,Object>>) specification.get().getAttributes().get("processId");
+        final Map<String, Map<String, Object>> value = (Map<String, Map<String, Object>>) specification.get().getAttributes().get(
+                "processId");
         assertThat(value.get("EXTRACTED"), notNullValue());
         assertThat(value.get("EXTRACTED"), hasEntry("unit", "g"));
     }

@@ -68,7 +68,7 @@ public class AccessoryServiceIntegrationTest extends AbstractIntegrationTest {
     @Override
     public void before() {
         service = new AccessoryServiceImpl(repository, localeService);
-        when(localeService.getLocalesForMarket("US")).thenReturn(
+        when(localeService.findLocaleIdsForMarket("US")).thenReturn(
                 Lists.newArrayList("en_US", "fr_US"));
     }
 
@@ -77,7 +77,7 @@ public class AccessoryServiceIntegrationTest extends AbstractIntegrationTest {
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldLinkNewAccessoryWithExitingProduct() {
         service.save("productId123", "US", "accessoryProductId1234");
-        verify(localeService).getLocalesForMarket("US");
+        verify(localeService).findLocaleIdsForMarket("US");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class AccessoryServiceIntegrationTest extends AbstractIntegrationTest {
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldNotLinkIfAccessoryIsAlreadyLinked() {
         service.save("productId123", "US", "accessoryProductId123");
-        verify(localeService).getLocalesForMarket("US");
+        verify(localeService).findLocaleIdsForMarket("US");
     }
 
     @Test
@@ -93,7 +93,7 @@ public class AccessoryServiceIntegrationTest extends AbstractIntegrationTest {
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldCreateNewProductWithAccessory() {
         service.save("productId1234", "US", "accessoryProductId1234");
-        verify(localeService).getLocalesForMarket("US");
+        verify(localeService).findLocaleIdsForMarket("US");
     }
 
     @Test
@@ -101,6 +101,6 @@ public class AccessoryServiceIntegrationTest extends AbstractIntegrationTest {
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUnlinkAccessoryFromExitingProduct() {
         service.delete("productId123", "US", "accessoryProductId12");
-        verify(localeService).getLocalesForMarket("US");
+        verify(localeService).findLocaleIdsForMarket("US");
     }
 }

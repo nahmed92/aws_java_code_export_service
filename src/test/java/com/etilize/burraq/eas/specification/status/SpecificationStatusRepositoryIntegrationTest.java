@@ -88,7 +88,7 @@ public class SpecificationStatusRepositoryIntegrationTest
 
     @Test
     public void shouldFindSpecificationStatusById() {
-        final SpecificationStatusId productStatusId = new SpecificationStatusId();
+        final SpecificationStatusKey productStatusId = new SpecificationStatusKey();
         productStatusId.setId("product123-en");
         productStatusId.setProductId("product123");
         final Optional<SpecificationStatus> specification = repository.findById(
@@ -158,7 +158,7 @@ public class SpecificationStatusRepositoryIntegrationTest
     @Test
     @ShouldMatchDataSet(location = "/datasets/specification_statuses/specification_statuses_after_delete.bson")
     public void shouldDeleteSpecificationStatusById() {
-        final SpecificationStatusId productStatusId = new SpecificationStatusId();
+        final SpecificationStatusKey productStatusId = new SpecificationStatusKey();
         productStatusId.setId("product123-en_US");
         productStatusId.setProductId("product123");
         repository.deleteById(productStatusId);

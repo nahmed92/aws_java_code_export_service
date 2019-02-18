@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.barcode;
+package com.etilize.burraq.eas.customer.code;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -52,15 +52,15 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO test for {@link BarcodeId}
+ * POJO test for {@link CustomerCodeKey}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class BarcodeIdPojoTest {
+public class CustomerCodeKeyPojoTest {
 
     @Test
-    public void shouldValidateBarcodeIdPOJO() {
+    public void shouldValidateCustomerCodeKeyPOJO() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new SetterMustExistRule()) //
@@ -71,20 +71,20 @@ public class BarcodeIdPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(BarcodeId.class));
+        validator.validate(PojoClassFactory.getPojoClass(CustomerCodeKey.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(BarcodeId.class) //
-                .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED) //
+        EqualsVerifier.forClass(CustomerCodeKey.class) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final BarcodeId barcodeId = new BarcodeId();
-        assertThat(ObjectUtils.identityToString(barcodeId), not(barcodeId.toString()));
+        final CustomerCodeKey customerCodeKey = new CustomerCodeKey();
+        assertThat(ObjectUtils.identityToString(customerCodeKey),
+                not(customerCodeKey.toString()));
     }
 }

@@ -30,7 +30,6 @@ package com.etilize.burraq.eas.translation;
 
 import static org.hamcrest.MatcherAssert.*;
 
-
 import static org.hamcrest.Matchers.*;
 
 import java.text.ParseException;
@@ -81,7 +80,9 @@ public class TextTranslationRequestPojoTest {
 
     @Test
     public void shouldHaveToString() throws ParseException {
-        final TextTranslationRequest textTranslationRequest = new TextTranslationRequest("inId","localeId", "color");
-        assertThat(ObjectUtils.identityToString(textTranslationRequest), not(textTranslationRequest.toString()));
+        final TextTranslationRequest textTranslationRequest = new TextTranslationRequest(
+                "inId", "localeId", "color");
+        assertThat(ObjectUtils.identityToString(textTranslationRequest),
+                not(textTranslationRequest.toString()));
     }
 }

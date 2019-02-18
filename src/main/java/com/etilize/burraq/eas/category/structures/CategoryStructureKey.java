@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.customer.code;
+package com.etilize.burraq.eas.category.structures;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,45 +36,45 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 
 /**
- * This class represents ID for POJO for customer code.
+ * This class represents ID for POJO for category structures related tables.
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class CustomerCodeId {
+public class CategoryStructureKey {
 
-    private String id;
+    private String categoryId;
 
-    private String customerId;
+    private String localeId;
 
     /**
-     * @return the id
+     * @return the categoryId
      */
     @DynamoDBHashKey
-    public String getId() {
-        return id;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     /**
-     * @param id the id to set
+     * @param categoryId the categoryId to set
      */
-    public void setId(final String id) {
-        this.id = id;
+    public void setCategoryId(final String categoryId) {
+        this.categoryId = categoryId;
     }
 
     /**
-     * @return the customerId
+     * @return the localeId
      */
     @DynamoDBRangeKey
-    public String getCustomerId() {
-        return customerId;
+    public String getLocaleId() {
+        return localeId;
     }
 
     /**
-     * @param customerId the customerId to set
+     * @param localeId the localeId to set
      */
-    public void setCustomerId(final String customerId) {
-        this.customerId = customerId;
+    public void setLocaleId(final String localeId) {
+        this.localeId = localeId;
     }
 
     @Override
@@ -85,30 +85,29 @@ public class CustomerCodeId {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomerCodeId)) {
+        if (!(obj instanceof CategoryStructureKey)) {
             return false;
         }
-        final CustomerCodeId codeId = (CustomerCodeId) obj;
+        final CategoryStructureKey key = (CategoryStructureKey) obj;
         return new EqualsBuilder() //
-                .append(getId(), codeId.getId()) //
-                .append(getCustomerId(), codeId.getCustomerId()) //
+                .append(getCategoryId(), key.getCategoryId()) //
+                .append(getLocaleId(), key.getLocaleId()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getId()) //
-                .append(getCustomerId()) //
+                .append(getCategoryId()) //
+                .append(getLocaleId()) //
                 .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("Id", getId()) //
-                .append("CustomerId", getCustomerId()) //
+                .append("CategoryId", getCategoryId()) //
+                .append("LocaleId", getLocaleId()) //
                 .toString();
     }
-
 }

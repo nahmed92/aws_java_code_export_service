@@ -41,7 +41,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface CustomerCodeRepository
-        extends DynamoDBPagingAndSortingRepository<CustomerCode, CustomerCodeId>,
+        extends DynamoDBPagingAndSortingRepository<CustomerCode, CustomerCodeKey>,
         CustomerCodeCustomRepository {
 
 }

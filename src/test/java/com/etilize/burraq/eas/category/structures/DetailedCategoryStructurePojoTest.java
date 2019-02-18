@@ -26,10 +26,9 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.customer.code;
+package com.etilize.burraq.eas.category.structures;
 
 import static org.hamcrest.MatcherAssert.*;
-
 import static org.hamcrest.Matchers.*;
 
 import java.text.ParseException;
@@ -52,31 +51,30 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO test for {@link CustomerCodeId}
+ * POJO test for {@link DetailedCategoryStructure}
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class CustomerCodeIdPojoTest {
+public class DetailedCategoryStructurePojoTest {
 
     @Test
-    public void shouldValidateCustomerCodeIdPOJO() {
+    public void shouldValidateDetailedCategoryStructurePOJO() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
-                .with(new SetterMustExistRule()) //
-                .with(new GetterMustExistRule()) //
                 .with(new NoPublicFieldsExceptStaticFinalRule()) //
                 .with(new NoStaticExceptFinalRule()) //
                 .with(new SetterTester()) //
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(CustomerCodeId.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(DetailedCategoryStructure.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(CustomerCodeId.class) //
+        EqualsVerifier.forClass(DetailedCategoryStructure.class) //
                 .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
@@ -84,8 +82,7 @@ public class CustomerCodeIdPojoTest {
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final CustomerCodeId customerCodeId = new CustomerCodeId();
-        assertThat(ObjectUtils.identityToString(customerCodeId),
-                not(customerCodeId.toString()));
+        final DetailedCategoryStructure category = new DetailedCategoryStructure();
+        assertThat(ObjectUtils.identityToString(category), not(category.toString()));
     }
 }

@@ -36,4 +36,14 @@ package com.etilize.burraq.eas;
 public interface ExportAggregationConstants {
 
     String LOCALE_EN = "en";
+
+    String LOCALE_EN_US = "en_US";
+
+    String OFFERING_BASIC_SPECS = "BASIC_SPECS";
+
+    String OFFERING_DETAILED_SPECS = "DETAILED_SPECS";
+
+    String OFFERING_BASIC_MEDIA = "BASIC_MEDIA";
+
+    String OFFERING_RICH_MEDIA = "RICH_MEDIA";
 }

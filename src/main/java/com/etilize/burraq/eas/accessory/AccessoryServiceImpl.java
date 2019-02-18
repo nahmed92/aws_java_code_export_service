@@ -81,7 +81,7 @@ public class AccessoryServiceImpl implements AccessoryService {
         Assert.hasText(marketId, MARKET_ID_IS_REQUIRED);
         Assert.hasText(accessoryProductId, ACCESSORY_PRODUCT_ID_IS_REQUIRED);
 
-        final List<String> locales = localeService.getLocalesForMarket(marketId);
+        final List<String> locales = localeService.findLocaleIdsForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
             final Accessory accessory = new Accessory();
@@ -102,7 +102,7 @@ public class AccessoryServiceImpl implements AccessoryService {
         Assert.hasText(marketId, MARKET_ID_IS_REQUIRED);
         Assert.hasText(accessoryProductId, ACCESSORY_PRODUCT_ID_IS_REQUIRED);
 
-        final List<String> locales = localeService.getLocalesForMarket(marketId);
+        final List<String> locales = localeService.findLocaleIdsForMarket(marketId);
         locales.forEach(localeId -> {
             final String id = generateId(productId, localeId);
             final Accessory accessory = new Accessory();

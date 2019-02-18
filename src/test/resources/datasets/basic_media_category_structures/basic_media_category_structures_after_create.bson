@@ -1,0 +1,100 @@
+{
+   "basic_media_category_structures":[
+      {
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "localeId":{
+            "S":"en_CA"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "parentCategoryId":{
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{
+            "S":"Notebook"
+         },
+		 "industryName":{
+            "S":"IT"
+         },
+         "attributes":{
+            "M":{
+            	"sizeId" : {
+            	  "S":"Size"
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"Mfg Part No"
+            	}
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "localeId":{
+            "S":"en_US"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "parentCategoryId":{
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{
+            "S":"Notebook"
+         },
+		 "industryName":{
+            "S":"IT"
+         },
+         "attributes":{
+            "M":{
+            	"sizeId" : {
+            	  "S":"Size"
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"Mfg Part No"
+            	}
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "localeId":{
+            "S":"enuk_UK"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "parentCategoryId":{
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{
+            "S":"Notebook"
+         },
+		 "industryName":{
+            "S":"IT"
+         },
+         "attributes":{
+            "M":{
+            	"mfgPartNoId" : {
+            	  "S":"Mfg Part No"
+            	}
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      }
+  ]
+}
