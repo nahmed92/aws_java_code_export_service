@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.barcode;
+package com.etilize.burraq.eas.kafka.neo4j;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;

@@ -37,7 +37,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
-import com.etilize.burraq.eas.barcode.BarcodeKafkaMesssagePojo;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.gson.JsonParser;
 
@@ -75,6 +74,35 @@ public class KafkaMessageParserNeo4jUtilityTest extends AbstractIntegrationTest 
         assertThat(parsedProperies.getType(), is("EAN"));
         assertThat(parsedProperies.getCode(), is("0885170129832"));
         assertThat(parsedProperies.getCustomerId(), is("Lenovo"));
+    }
+
+    @Test
+    public void shouldParseAccessoryCreateMessage() throws IOException {
+
+        final String accessoryKafkaMessage = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH + "/accessory_create_message.json"),
+                "UTF-8");
+        final AccessoryKafkaMesssagePojo parsedProperies = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
+                new JsonParser().parse(accessoryKafkaMessage).getAsJsonObject());
+        assertThat(parsedProperies.getRecordType(), is("relationship"));
+        assertThat(parsedProperies.getOperationType(), is("created"));
+        assertThat(parsedProperies.getProductId(), is("98769"));
+        assertThat(parsedProperies.getMarketId(), is("US"));
+        assertThat(parsedProperies.getAccessoryId(), is("1000009365"));
+    }
+
+    @Test
+    public void shouldParseAccessoryDeleteMessage() throws IOException {
+        final String accessoryKafkaMessage = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH + "/accessory_delete_message.json"),
+                "UTF-8");
+        final AccessoryKafkaMesssagePojo parsedProperies = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
+                new JsonParser().parse(accessoryKafkaMessage).getAsJsonObject());
+        assertThat(parsedProperies.getRecordType(), is("relationship"));
+        assertThat(parsedProperies.getOperationType(), is("deleted"));
+        assertThat(parsedProperies.getProductId(), is("98769"));
+        assertThat(parsedProperies.getMarketId(), is("US"));
+        assertThat(parsedProperies.getAccessoryId(), is("1000009365"));
     }
 
 }

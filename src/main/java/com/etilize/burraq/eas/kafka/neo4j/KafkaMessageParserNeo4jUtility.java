@@ -28,7 +28,6 @@
 
 package com.etilize.burraq.eas.kafka.neo4j;
 
-import com.etilize.burraq.eas.barcode.BarcodeKafkaMesssagePojo;
 import com.google.gson.JsonObject;
 
 /**
@@ -64,6 +63,39 @@ public class KafkaMessageParserNeo4jUtility {
                 jsonObect.get("type").getAsString(), //
                 jsonObect.get("code").getAsString(), //
                 jsonObect.get("customerId").getAsString(), //
+                operationType, //
+                PAYLOAD.get("type").getAsString());
+
+    }
+
+    /**
+     * Process product-accessory-service originated messages
+     *
+     * @param jsonRecord {@link JsonObject}
+     *
+     * @return {@link AccessoryKafkaMesssagePojo}
+     */
+    public static AccessoryKafkaMesssagePojo parseAccessoriesKafkaMessage(
+            final JsonObject jsonRecord) {
+        // Parsing PAS Neo4j message
+        //Get Operation that hold Operation information created or deleted
+        final String operationType = jsonRecord.getAsJsonObject("value").getAsJsonObject(
+                "meta").get("operation").getAsString();
+        // PAYLOAD holds actual values like productId, market, accessoryId, type in before
+        // and after property and identify it's node data or relationship data
+        final JsonObject PAYLOAD = jsonRecord.getAsJsonObject("value").getAsJsonObject(
+                "payload");
+        // BEFORE_OR_AFTER_PROPERTY holds actual value of productId, type, code, customerId
+        final JsonObject BEFORE_OR_AFTER_PROPERTY = operationType.equals("deleted")
+                ? PAYLOAD.getAsJsonObject("before") : PAYLOAD.getAsJsonObject("after");
+
+        final JsonObject jsonObect = BEFORE_OR_AFTER_PROPERTY.getAsJsonObject(
+                "properties");
+        // operationType property specify Node or relationship data
+        // if Node data recordType is node, relationship relationship record
+        return new AccessoryKafkaMesssagePojo(jsonObect.get("productId").getAsString(), //
+                jsonObect.get("markets").getAsString(), //
+                jsonObect.get("accessoryId").getAsString(), //
                 operationType, //
                 PAYLOAD.get("type").getAsString());
     }
