@@ -28,11 +28,20 @@
 
 package com.etilize.burraq.eas.kafka.neo4j;
 
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
+
+import com.etilize.burraq.eas.barcode.BarcodeKafkaMesssagePojo;
+import com.etilize.burraq.eas.barcode.BarcodeService;
+import com.google.gson.JsonParser;
 
 /**
  * Houses listeners for all incoming Apache Kafka Redis messages
@@ -43,17 +52,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConnectNeo4jMessagesReceiver {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final String RECORD_TYPE = "relationship";
+
+    private static final String OPERATION_TYPE = "created";
+
+    @Autowired
+    private BarcodeService barcodeService;
 
     /**
      * Process barcode-service originated messages
      *
      * @param message
      *            {@link Message<String>} message of type {@link String}
+     * @throws IOException
+     * @throws JsonMappingException
+     * @throws JsonParseException
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.bacs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processBarcodeMessages(final Message<String> message) {
+    public void processBarcodeMessages(final Message<String> message)
+            throws JsonParseException, JsonMappingException, IOException {
         logger.info("Received message from barcode-service [{}]", message);
+        final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
+                new JsonParser().parse(
+                        message.getPayload().toString()).getAsJsonObject());
+        if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                barcodeService.save(parsedMessage.getProductId(), //
+                        parsedMessage.getType(), //
+                        parsedMessage.getCode(), //
+                        parsedMessage.getCustomerId());
+            } else {
+                barcodeService.delete(parsedMessage.getProductId(), //
+                        parsedMessage.getType(), //
+                        parsedMessage.getCode(), //
+                        parsedMessage.getCustomerId());
+            }
+        }
     }
 
     /**
