@@ -298,7 +298,7 @@ public class DebeziumMessageParser {
      * @param key {@link ConsumerRecord<Object, String>} message key
      * @return {@link String} productId
      */
-    public String getProductIdFromPMSKeyMessage(
+    public String getProductIdFromDebeziumMessageKey(
             final ConsumerRecord<Object, String> key) {
         final JsonObject keyJO = new JsonParser().parse(key.key() //
                 .toString()) //
@@ -345,7 +345,7 @@ public class DebeziumMessageParser {
                 .getAsJsonObject() //
                 .get(SET) //
                 .getAsJsonObject();
-        return new PMSAddProductLocaleRequest(getProductIdFromPMSKeyMessage(key),
+        return new PMSAddProductLocaleRequest(getProductIdFromDebeziumMessageKey(key),
                 setJO.entrySet() //
                         .iterator() //
                         .next() //
@@ -367,7 +367,7 @@ public class DebeziumMessageParser {
                 .getAsJsonObject() //
                 .get(SET) //
                 .getAsJsonObject();
-        final String productId = getProductIdFromPMSKeyMessage(key);
+        final String productId = getProductIdFromDebeziumMessageKey(key);
         final String localeId = setJO.keySet() //
                 .iterator() //
                 .next() //
@@ -390,5 +390,25 @@ public class DebeziumMessageParser {
         }
         return new PMSProductMediaEventRequest(productId, localeId, attributeId, status,
                 value);
+    }
+
+    /**
+     * Returns an instance of {@link AssociateCategoryCommand}
+     *
+     * @param record {@link GenericData.Record}
+     * @param key {@link ConsumerRecord<Object, String>}
+     * @return {@link AssociateCategoryCommand}
+     */
+    public AssociateCategoryCommand getAssociateCategoryCommand(
+            final GenericData.Record record, final ConsumerRecord<Object, String> key) {
+        final String after = record.get(AFTER) //
+                .toString();
+        final JsonObject associateCategoryJson = new JsonParser().parse(after) //
+                .getAsJsonObject();
+        return new AssociateCategoryCommand(associateCategoryJson.get(ID) //
+                .getAsString(), associateCategoryJson.get(INDUSTRY_ID) //
+                        .getAsString(),
+                associateCategoryJson.get(CATEGORY_ID) //
+                        .getAsString());
     }
 }

@@ -792,4 +792,95 @@ public class DebeziumMessageTestFixtures {
                 .getAsLong());
         return message;
     }
+
+    /**
+     * Returns {@link ConsumerRecord<String, String>} containing the mongodb object key.
+     *
+     * @return {@link ConsumerRecord<String, String>}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static ConsumerRecord<Object, String> getPSPECSDebeziumMessagesKeyObject()
+            throws FileNotFoundException, IOException {
+
+        final String debeziumMessageKeyJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_key_schema.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageKeyJsonSchema);
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put("_id", "{\"_id\" : \"ppsh\"}");
+        return new ConsumerRecord<>(
+                "burraq.product-specifications-service.specifications", 0, 0, command,
+                null);
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PSPECS AssociateCategoryCommand.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getPSPECSAssociateCategoryCommandValueObject()
+            throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_associate_category_command.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonParser jsonParser = new JsonParser();
+        final JsonObject object = jsonParser.parse(debeziumMessageJsonObject) //
+                .getAsJsonObject();
+        final JsonObject after = jsonParser.parse(object.get(AFTER) //
+                .getAsString()).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, object.get(PATCH) //
+                .getAsJsonNull());
+        message.put(AFTER, after.getAsJsonObject());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PSPECS AddProductLocaleMessage.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getAddProductLocaleMessage() throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/pspecs_add_product_locale_message_command.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonParser jsonParser = new JsonParser();
+        final JsonObject object = jsonParser.parse(debeziumMessageJsonObject) //
+                .getAsJsonObject();
+        final JsonObject patch = jsonParser.parse(object.get(PATCH) //
+                .getAsString()).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, patch.toString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsJsonNull());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
+    }
 }

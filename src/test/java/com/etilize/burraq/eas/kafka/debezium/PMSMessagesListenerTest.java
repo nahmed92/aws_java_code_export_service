@@ -39,10 +39,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
+import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 
 /**
- * Contains integration tests for product-specification-status-service message listener.
+ * Contains integration tests for product-media-service message listener.
  *
  * @author Affan Hasan
  * @since 1.0
@@ -54,10 +55,14 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
     @Mock
     MediaSpecificationService mediaSpecificationService;
 
+    @Mock
+    SpecificationService specificationService;
+
     @Override
     public void before() {
         messageReceiver = new KafkaConnectDebeziumMessagesReceiver(
-                new DebeziumMessageParser(), mediaSpecificationService);
+                new DebeziumMessageParser(), mediaSpecificationService,
+                specificationService);
     }
 
     @Test

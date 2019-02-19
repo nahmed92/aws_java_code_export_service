@@ -1,0 +1,1 @@
+{"after": "{\"_id\" : \"ppsh\",\"categoryId\" : \"cat1\",\"industryId\" : \"ind1\",\"_class\" : \"com.etilize.burraq.pspecs.specification.Specification\"}", "patch": null, "source": {"name": "burraq", "rs": "rs0", "ns": "product-specifications-service.specifications", "sec": 1550142834, "ord": 1, "h": 6262286516246873155, "initsync": null}, "op": "c", "ts_ms": 1550142834406}
