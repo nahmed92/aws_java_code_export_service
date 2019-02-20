@@ -51,6 +51,7 @@ public class UpdateSpecificationRequestFixture {
         request.addUpdatedAttributes("mfgId", new Value("Acer"));
         request.addUpdatedAttributes("mfgPartNoId", new Value("ABC"));
         request.addUpdatedAttributes("sizeId", new Value(3));
+
         final Map<String, UnitAttribute> unitAttrs = Maps.newHashMap();
         unitAttrs.put("EXTRACTED", new UnitAttribute(3.2, "kg"));
         request.addUpdatedAttributes("processId", new UnitValue(unitAttrs));
@@ -106,5 +107,4 @@ public class UpdateSpecificationRequestFixture {
         request.addRemovedAttributeIds("notexistsId");
         return request;
     }
-
 }

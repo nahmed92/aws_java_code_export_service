@@ -18,6 +18,15 @@
          },
          "attributes":{
             "M":{
+            	"sizeId" : {
+            	  "N":2
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"mfgId" : {
+            	  "S":"Sony"
+            	}
             }
          },
          "lastUpdateDate":{
@@ -42,6 +51,15 @@
          },
          "attributes":{
             "M":{
+            	"sizeId" : {
+            	  "N":2
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"mfgId" : {
+            	  "S":"Sony"
+            	}
             }
          },
          "lastUpdateDate":{
@@ -73,10 +91,8 @@
          }
       }
 
-  ]
-},
-{
-   "detailed_specifications":[
+  ],
+  "detailed_specifications":[
       {
          "id":{
             "S":"product123-en"
@@ -95,6 +111,51 @@
          },
          "attributes":{
             "M":{
+            	"sizeId" : {
+            	  "N":2
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2.2
+		            	},
+		            	"unit" : {
+		            	  "S":"g"
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Sony"
+            	},
+            	"stringRepId" : {
+            	  "SS" : ["abc"]
+            	},
+            	"numberRepId" : {
+            	  "NS" : [0,1]
+            	},
+            	"unitRepId" : {
+            	  "L" : [{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":1
+		            	},
+		            	"unit" : {
+		            	  "S":"b"
+		            	}
+		              }
+		              }
+	            	}
+            	  }]
+            	}
             }
          },
          "lastUpdateDate":{
@@ -119,6 +180,51 @@
          },
          "attributes":{
             "M":{
+            	"sizeId" : {
+            	  "N":2
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"XYZ"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2.2
+		            	},
+		            	"unit" : {
+		            	  "S":"g"
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Sony"
+            	},
+            	"stringRepId" : {
+            	  "SS" : ["abc"]
+            	},
+            	"numberRepId" : {
+            	  "NS" : [0,1]
+            	},
+            	"unitRepId" : {
+            	  "L" : [{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":1
+		            	},
+		            	"unit" : {
+		            	  "S":"b"
+		            	}
+		              }
+		              }
+	            	}
+            	  }]
+            	}
             }
          },
          "lastUpdateDate":{

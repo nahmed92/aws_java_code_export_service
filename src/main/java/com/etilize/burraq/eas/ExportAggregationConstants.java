@@ -39,6 +39,8 @@ public interface ExportAggregationConstants {
 
     String LOCALE_EN_US = "en_US";
 
+    String LANGUAGE_EN = "en";
+
     String OFFERING_BASIC_SPECS = "BASIC_SPECS";
 
     String OFFERING_DETAILED_SPECS = "DETAILED_SPECS";

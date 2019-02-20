@@ -156,6 +156,16 @@ public class UpdateSpecificationRequest {
         return addedToSetAttributes;
     }
 
+    /**
+     * It check that request has any operation or not.
+     *
+     * @return boolean
+     */
+    public boolean hasAnyOperation() {
+        return !addedToSetAttributes.isEmpty() || !updatedAttributes.isEmpty()
+                || !removedAttributeIds.isEmpty() || !removedFromSetAttributes.isEmpty();
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //

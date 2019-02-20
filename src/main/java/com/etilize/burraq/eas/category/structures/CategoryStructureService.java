@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.category.structures;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,4 +47,21 @@ public interface CategoryStructureService {
      * @param attributeIds attribute ids
      */
     void save(String categoryId, String offeringId, Set<String> attributeIds);
+
+    /**
+     * It return attribute names by id for basic specs offering.
+     *
+     * @param categoryId catgeoyr id
+     * @return Map<String, String>
+     */
+    Map<String, String> findBasicSpecsOfferingAttributes(String categoryId);
+
+    /**
+     * It return attribute names by id for detailed specs offering.
+     *
+     * @param categoryId catgeoyr id
+     * @return Map<String, String>
+     */
+    Map<String, String> findDetailedSpecsOfferingAttributes(String categoryId);
+
 }
