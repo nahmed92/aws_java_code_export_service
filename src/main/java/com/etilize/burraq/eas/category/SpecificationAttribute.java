@@ -26,89 +26,105 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.barcode;
+package com.etilize.burraq.eas.category;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * This class represents ID for POJO for barcode.
+ * Houses reference to an specification attributes associated to a category
  *
  * @author Umar Zubair
  * @since 1.0
  */
-public class BarcodeId {
+public class SpecificationAttribute {
 
-    private String id;
+    private final String attributeId;
 
-    private String type;
+    private final Source source;
+
+    private final Integer order;
 
     /**
-     * @return the id
+     * Constructor for attribute associated with category
+     *
+     * @param attributeId stores attributeId
+     * @param source stores source of attribute
+     * @param order stores order of attribute
      */
-    @DynamoDBHashKey
-    public String getId() {
-        return id;
+    @JsonCreator
+    public SpecificationAttribute(@JsonProperty("attributeId") final String attributeId,
+            @JsonProperty("source") final Source source,
+            @JsonProperty("order") final Integer order) {
+        this.attributeId = attributeId;
+        this.source = source;
+        this.order = order;
     }
 
     /**
-     * @param id the id to set
+     * Returns attributeId
+     *
+     * @return attributeId
      */
-    public void setId(final String id) {
-        this.id = id;
+    public String getAttributeId() {
+        return this.attributeId;
     }
 
     /**
-     * @return the type
+     * Returns attribute source
+     *
+     * @return source
      */
-    @DynamoDBRangeKey
-    public String getType() {
-        return type;
+    public Source getSource() {
+        return this.source;
     }
 
     /**
-     * @param type type to set
+     * Returns attribute order
+     *
+     * @return order
      */
-    public void setType(final String type) {
-        this.type = type;
+    public Integer getOrder() {
+        return this.order;
     }
 
     @Override
-    public final boolean equals(final Object obj) {
-        if (obj == null) {
+    public final boolean equals(final Object object) {
+        if (object == null) {
             return false;
         }
-        if (obj == this) {
+        if (object == this) {
             return true;
         }
-        if (!(obj instanceof BarcodeId)) {
+        if (!(object instanceof SpecificationAttribute)) {
             return false;
         }
-        final BarcodeId barcodeId = (BarcodeId) obj;
+
+        final SpecificationAttribute specsAttribute = (SpecificationAttribute) object;
+
         return new EqualsBuilder() //
-                .append(getId(), barcodeId.getId()) //
-                .append(getType(), barcodeId.getType()) //
+                .append(attributeId, specsAttribute.getAttributeId()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getId()) //
-                .append(getType()) //
-                .toHashCode();
+                .append(attributeId) //
+                .hashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("Id", getId()) //
-                .append("Type", getType()) //
+                .append("AttributeId", attributeId) //
+                .append("Source", source) //
+                .append("Order", order) //
                 .toString();
     }
 

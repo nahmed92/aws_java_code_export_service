@@ -26,88 +26,90 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.specification.status;
+package com.etilize.burraq.eas.category;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * This class represents ID for POJO for product specs status.
+ * Houses reference to an media attributes associated to a category
  *
  * @author Umar Zubair
- * @since 1.0
+ *
  */
-public class SpecificationStatusId {
+public class MediaAttribute {
 
-    private String id;
+    private final String attributeId;
 
-    private String productId;
+    private final Source source;
 
     /**
-     * @return the id
+     * Constructor {@link MediaAttribute}
+     *
+     * @param attributeId media attribute Id
+     * @param source media attribute source
      */
-    @DynamoDBHashKey
-    public String getId() {
-        return id;
+    @JsonCreator
+    public MediaAttribute(@JsonProperty("attributeId") final String attributeId,
+            @JsonProperty("source") final Source source) {
+        this.attributeId = attributeId;
+        this.source = source;
     }
 
     /**
-     * @param id the id to set
+     * Return media attributes ID
+     *
+     * @return attributeId
      */
-    public void setId(final String id) {
-        this.id = id;
+    public String getAttributeId() {
+        return attributeId;
     }
 
     /**
-     * @return the productId
+     * Return media attributes source
+     *
+     * @return {@link Source}
      */
-    @DynamoDBRangeKey
-    public String getProductId() {
-        return productId;
-    }
-
-    /**
-     * @param productId the productId to set
-     */
-    public void setProductId(final String productId) {
-        this.productId = productId;
+    public Source getSource() {
+        return source;
     }
 
     @Override
-    public final boolean equals(final Object obj) {
-        if (obj == null) {
+    public final boolean equals(final Object object) {
+        if (object == null) {
             return false;
         }
-        if (obj == this) {
+        if (object == this) {
             return true;
         }
-        if (!(obj instanceof SpecificationStatusId)) {
+        if (!(object instanceof MediaAttribute)) {
             return false;
         }
-        final SpecificationStatusId specificationStatusId = (SpecificationStatusId) obj;
+
+        final MediaAttribute mediaAttribute = (MediaAttribute) object;
+
         return new EqualsBuilder() //
-                .append(getId(), specificationStatusId.getId()) //
-                .append(getProductId(), specificationStatusId.getProductId()) //
+                .append(attributeId, mediaAttribute.getAttributeId()) //
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getId()) //
-                .append(getProductId()) //
-                .toHashCode();
+                .append(attributeId) //
+                .hashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("Id", getId()) //
-                .append("ProductId", getProductId()) //
+                .append("AttributeId", attributeId) //
+                .append("Source", source) //
                 .toString();
     }
 }

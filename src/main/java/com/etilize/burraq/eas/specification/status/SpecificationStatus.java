@@ -56,7 +56,7 @@ public class SpecificationStatus {
     public static final String TABLE_NAME = "specification_statuses";
 
     @Id
-    private SpecificationStatusId specificationStatusId;
+    private SpecificationStatusKey specificationStatusKey;
 
     private String localeId;
 
@@ -74,17 +74,17 @@ public class SpecificationStatus {
      */
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
-        return specificationStatusId != null ? specificationStatusId.getId() : null;
+        return specificationStatusKey != null ? specificationStatusKey.getId() : null;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
+        if (specificationStatusKey == null) {
+            specificationStatusKey = new SpecificationStatusKey();
         }
-        specificationStatusId.setId(id);
+        specificationStatusKey.setId(id);
     }
 
     /**
@@ -92,7 +92,7 @@ public class SpecificationStatus {
      */
     @DynamoDBRangeKey(attributeName = "productId")
     public String getProductId() {
-        return specificationStatusId != null ? specificationStatusId.getProductId()
+        return specificationStatusKey != null ? specificationStatusKey.getProductId()
                 : null;
     }
 
@@ -100,10 +100,10 @@ public class SpecificationStatus {
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
-        if (specificationStatusId == null) {
-            specificationStatusId = new SpecificationStatusId();
+        if (specificationStatusKey == null) {
+            specificationStatusKey = new SpecificationStatusKey();
         }
-        specificationStatusId.setProductId(productId);
+        specificationStatusKey.setProductId(productId);
     }
 
     /**

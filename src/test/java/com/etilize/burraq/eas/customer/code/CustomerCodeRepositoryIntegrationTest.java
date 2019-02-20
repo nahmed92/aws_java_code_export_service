@@ -63,7 +63,7 @@ public class CustomerCodeRepositoryIntegrationTest extends AbstractIntegrationTe
 
     @Test
     public void shouldFindCustomerCodeById() {
-        final CustomerCodeId id = new CustomerCodeId();
+        final CustomerCodeKey id = new CustomerCodeKey();
         id.setCustomerId("customerId123");
         id.setId("productId123-en_US");
         final Optional<CustomerCode> customerCode = repository.findById(id);
@@ -105,7 +105,7 @@ public class CustomerCodeRepositoryIntegrationTest extends AbstractIntegrationTe
     @Test
     @ShouldMatchDataSet(location = "/datasets/customer_codes/customer_codes_after_delete.bson")
     public void shouldDeleteCustomerCodeById() {
-        final CustomerCodeId id = new CustomerCodeId();
+        final CustomerCodeKey id = new CustomerCodeKey();
         id.setCustomerId("customerId123");
         id.setId("productId123-en_US");
         repository.deleteById(id);

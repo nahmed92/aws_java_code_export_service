@@ -62,7 +62,7 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
-    public List<String> getLocalesForMarket(final String market) {
+    public List<String> findLocaleIdsForMarket(final String market) {
         final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
                 null, 0, 20, null).getContent();
         final List<String> localeStrs = locales.stream().map(
@@ -71,4 +71,16 @@ public class LocaleServiceImpl implements LocaleService {
                                 Collectors.toList());
         return localeStrs;
     }
+
+    @Override
+    public List<String> findAllLocaleIds() {
+        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(null,
+                null, 0, 1000, null).getContent();
+        final List<String> localeStrs = locales.stream().map(
+                locale -> StringUtils.substringAfterLast(
+                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
+                                Collectors.toList());
+        return localeStrs;
+    }
+
 }

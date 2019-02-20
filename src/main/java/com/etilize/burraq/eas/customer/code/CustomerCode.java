@@ -57,7 +57,7 @@ public class CustomerCode {
     public static final String TABLE_NAME = "customer_codes";
 
     @Id
-    private CustomerCodeId customerCodeId;
+    private CustomerCodeKey customerCodeKey;
 
     private String productId;
 
@@ -77,17 +77,17 @@ public class CustomerCode {
      */
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
-        return customerCodeId != null ? customerCodeId.getId() : null;
+        return customerCodeKey != null ? customerCodeKey.getId() : null;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (customerCodeId == null) {
-            customerCodeId = new CustomerCodeId();
+        if (customerCodeKey == null) {
+            customerCodeKey = new CustomerCodeKey();
         }
-        customerCodeId.setId(id);
+        customerCodeKey.setId(id);
     }
 
     /**
@@ -95,17 +95,17 @@ public class CustomerCode {
      */
     @DynamoDBRangeKey(attributeName = "customerId")
     public String getCustomerId() {
-        return customerCodeId != null ? customerCodeId.getCustomerId() : null;
+        return customerCodeKey != null ? customerCodeKey.getCustomerId() : null;
     }
 
     /**
      * @param customerId the customerId to set
      */
     public void setCustomerId(final String customerId) {
-        if (customerCodeId == null) {
-            customerCodeId = new CustomerCodeId();
+        if (customerCodeKey == null) {
+            customerCodeKey = new CustomerCodeKey();
         }
-        customerCodeId.setCustomerId(customerId);
+        customerCodeKey.setCustomerId(customerId);
     }
 
     /**

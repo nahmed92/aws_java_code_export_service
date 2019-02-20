@@ -58,7 +58,7 @@ public class Barcode {
     public static final String TABLE_NAME = "barcodes";
 
     @Id
-    private BarcodeId barcodeId;
+    private BarcodeKey barcodeKey;
 
     private String productId;
 
@@ -78,17 +78,17 @@ public class Barcode {
      */
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
-        return barcodeId != null ? barcodeId.getId() : null;
+        return barcodeKey != null ? barcodeKey.getId() : null;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(final String id) {
-        if (barcodeId == null) {
-            barcodeId = new BarcodeId();
+        if (barcodeKey == null) {
+            barcodeKey = new BarcodeKey();
         }
-        barcodeId.setId(id);
+        barcodeKey.setId(id);
     }
 
     /**
@@ -96,17 +96,17 @@ public class Barcode {
      */
     @DynamoDBRangeKey(attributeName = "type")
     public String getType() {
-        return barcodeId != null ? barcodeId.getType() : null;
+        return barcodeKey != null ? barcodeKey.getType() : null;
     }
 
     /**
      * @param type type to set
      */
     public void setType(final String type) {
-        if (barcodeId == null) {
-            barcodeId = new BarcodeId();
+        if (barcodeKey == null) {
+            barcodeKey = new BarcodeKey();
         }
-        barcodeId.setType(type);
+        barcodeKey.setType(type);
     }
 
     /**

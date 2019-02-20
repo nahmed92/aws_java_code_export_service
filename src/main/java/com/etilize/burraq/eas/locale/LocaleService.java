@@ -43,5 +43,11 @@ public interface LocaleService {
      * @param market market
      * @return locale ids
      */
-    List<String> getLocalesForMarket(String market);
+    List<String> findLocaleIdsForMarket(String market);
+
+    /**
+     * Returns all locale ids
+     * @return locale ids
+     */
+    List<String> findAllLocaleIds();
 }

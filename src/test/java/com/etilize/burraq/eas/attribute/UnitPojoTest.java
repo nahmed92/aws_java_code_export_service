@@ -30,7 +30,6 @@ package com.etilize.burraq.eas.attribute;
 
 import static org.hamcrest.MatcherAssert.*;
 
-
 import static org.hamcrest.Matchers.*;
 
 import java.text.ParseException;

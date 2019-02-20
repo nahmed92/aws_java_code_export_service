@@ -66,7 +66,7 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void shouldFindBarcodeById() {
-        final BarcodeId id = new BarcodeId();
+        final BarcodeKey id = new BarcodeKey();
         id.setType("EAN");
         id.setId("productId123-en_US");
         final Optional<Barcode> barcode = repository.findById(id);
@@ -128,7 +128,7 @@ public class BarcodeRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @ShouldMatchDataSet(location = "/datasets/barcodes/barcodes_after_delete.bson")
     public void shouldDeleteBarcodeById() {
-        final BarcodeId id = new BarcodeId();
+        final BarcodeKey id = new BarcodeKey();
         id.setType("EAN");
         id.setId("productId123-en_US");
         repository.deleteById(id);
