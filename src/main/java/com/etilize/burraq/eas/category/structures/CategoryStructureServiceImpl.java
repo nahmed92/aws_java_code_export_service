@@ -33,6 +33,7 @@ import static com.etilize.burraq.eas.ExportAggregationConstants.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ import com.etilize.burraq.eas.category.Category;
 import com.etilize.burraq.eas.locale.LocaleService;
 import com.etilize.burraq.eas.taxonomy.TaxonomyService;
 import com.etilize.burraq.eas.translation.TranslationService;
+import com.google.common.collect.Maps;
 
 /**
  * It implements {@link CategoryStructureService}
@@ -154,6 +156,35 @@ public class CategoryStructureServiceImpl implements CategoryStructureService {
             default:
                 break;
         }
+    }
+
+    @Override
+    public Map<String, String> findBasicSpecsOfferingAttributes(final String categoryId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategoryStructureKey key = new CategoryStructureKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<BasicCategoryStructure> category = basicCategoryStructureRepository.findById(
+                key);
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+        }
+        return attributes;
+    }
+
+    @Override
+    public Map<String, String> findDetailedSpecsOfferingAttributes(
+            final String categoryId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategoryStructureKey key = new CategoryStructureKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<DetailedCategoryStructure> category = detailedCategoryStructureRepository.findById(
+                key);
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+        }
+        return attributes;
     }
 
     private void saveBasicCategoryStructure(final CategoryStructure categoryStructure,

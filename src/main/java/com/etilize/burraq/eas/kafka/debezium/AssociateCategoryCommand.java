@@ -53,8 +53,8 @@ public class AssociateCategoryCommand {
      * @param industryId {@link String}
      * @param categoryId {@link String}
      */
-    public AssociateCategoryCommand(final String productId,
-            final String industryId, final String categoryId) {
+    public AssociateCategoryCommand(final String productId, final String industryId,
+            final String categoryId) {
         this.productId = productId;
         this.industryId = industryId;
         this.categoryId = categoryId;

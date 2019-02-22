@@ -120,7 +120,6 @@ public class CategoryStructureServiceIntegrationTest extends AbstractIntegration
                 .thenReturn("Notebook.");
         when(translationService.translateText("industryId123", "enuk_UK", "IT")) //
                 .thenReturn("I.T.");
-
     }
 
     @Test

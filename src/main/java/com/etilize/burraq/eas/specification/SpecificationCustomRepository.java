@@ -30,10 +30,7 @@ package com.etilize.burraq.eas.specification;
 
 import static com.etilize.burraq.eas.utils.Utils.*;
 
-import java.util.ArrayList;
-
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,13 +38,6 @@ import java.util.Set;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.etilize.burraq.eas.specification.value.SpecificationValue;
-import com.etilize.burraq.eas.specification.value.UnitAttribute;
-import com.etilize.burraq.eas.specification.value.UnitValue;
-import com.etilize.burraq.eas.specification.value.Value;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * It defines common services for {@link DetailedSpecificationRepository} & {@link BasicSpecificationRepository}
@@ -71,6 +61,14 @@ public interface SpecificationCustomRepository {
     void saveAttributes(UpdateSpecificationRequest request);
 
     /**
+     * It gets attribute value in raw format and save it as it is.
+     *
+     * @param id id
+     * @param attributes map of attribute values by attribute id
+     */
+    void saveAttributes(String id, Map<String, Object> attributes);
+
+    /**
      * It return Specification for id. findById will throw error if attributes have data.
      * Default implementation of findById can not handle Map<String, Object> type of field attributes.
      *
@@ -80,12 +78,39 @@ public interface SpecificationCustomRepository {
     Optional<Specification> findOne(String id);
 
     /**
+     * It returns {@link UpdateItemSpec} to save raw data attributes in db.
+     *
+     * @param id id
+     * @param attributes map of attribute values by attribute id
+     * @return UpdateItemSpec
+     */
+    default UpdateItemSpec getUpdateItemSpecForSaveAttributesRawData(final String id,
+            final Map<String, Object> attributes) {
+        final NameMap nameMap = new NameMap();
+        nameMap.with(getKeyName(LAST_UPDATE_DATE), LAST_UPDATE_DATE);
+        final ValueMap valueMap = new ValueMap() //
+                .withLong(getValueName(LAST_UPDATE_DATE), new Date().getTime());
+        final StringBuilder updateExp = new StringBuilder(
+                getKeyValueUse("SET #%s=:%s,", LAST_UPDATE_DATE));
+        attributes.entrySet().forEach(entry -> {
+            nameMap.with(getKeyName(entry.getKey()), entry.getKey());
+            valueMap.with(getValueName(entry.getKey()), entry.getValue());
+            updateExp.append(getKeyValueUse(ATTRIBUTES + ".#%s=:%s,", entry.getKey()));
+        });
+        updateExp.deleteCharAt(updateExp.lastIndexOf(","));
+        final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
+                .withUpdateExpression(updateExp.toString()) //
+                .withNameMap(nameMap) //
+                .withValueMap(valueMap);
+        return updateItemSpec;
+    }
+
+    /**
      * It returns {@link UpdateItemSpec} to save attributes in db.
      *
      * @param request {@link UpdateSpecificationRequest}
      * @return UpdateItemSpec
      */
-
     default UpdateItemSpec getUpdateItemSpecForSaveAttributes(
             final UpdateSpecificationRequest request) {
         final NameMap nameMap = new NameMap();
@@ -106,14 +131,11 @@ public interface SpecificationCustomRepository {
             request.getRemovedFromSetAttributes().entrySet().forEach(entry -> {
                 final Object value = convertOperationToValue(entry.getValue());
                 if (value instanceof String) {
-                    valueMap.withStringSet(getValueName(entry.getKey()),
-                            (String) convertOperationToValue(entry.getValue()));
+                    valueMap.withStringSet(getValueName(entry.getKey()), (String) value);
                 } else if (value instanceof Number) {
-                    valueMap.withNumberSet(getValueName(entry.getKey()),
-                            (Number) convertOperationToValue(entry.getValue()));
+                    valueMap.withNumberSet(getValueName(entry.getKey()), (Number) value);
                 } else if (value instanceof Set) {
-                    valueMap.with(getValueName(entry.getKey()),
-                            (Set) convertOperationToValue(entry.getValue()));
+                    valueMap.with(getValueName(entry.getKey()), (Set) value);
                 }
                 if (value instanceof String || value instanceof Number
                         || value instanceof Set) {
@@ -129,14 +151,11 @@ public interface SpecificationCustomRepository {
             request.getAddedToSetAttributes().entrySet().forEach(entry -> {
                 final Object value = convertOperationToValue(entry.getValue());
                 if (value instanceof String) {
-                    valueMap.withStringSet(getValueName(entry.getKey()),
-                            (String) convertOperationToValue(entry.getValue()));
+                    valueMap.withStringSet(getValueName(entry.getKey()), (String) value);
                 } else if (value instanceof Number) {
-                    valueMap.withNumberSet(getValueName(entry.getKey()),
-                            (Number) convertOperationToValue(entry.getValue()));
+                    valueMap.withNumberSet(getValueName(entry.getKey()), (Number) value);
                 } else if (value instanceof Set) {
-                    valueMap.with(getValueName(entry.getKey()),
-                            (Set) convertOperationToValue(entry.getValue()));
+                    valueMap.with(getValueName(entry.getKey()), (Set) value);
                 }
                 if (value instanceof String || value instanceof Number
                         || value instanceof Set) {
@@ -161,78 +180,5 @@ public interface SpecificationCustomRepository {
                 .withNameMap(nameMap) //
                 .withValueMap(valueMap);
         return updateItemSpec;
-    }
-
-    /**
-     * It returns String,Number,Set of String, Set of Number, Map or List of Map
-     * @param opValue Object value for attribute
-     * @return Object
-     */
-    default Object convertOperationToValue(final Object opValue) {
-        Object convertedValue = null;
-        if (opValue instanceof Object[] || opValue instanceof ArrayList) {
-            Object[] multiObjects = null;
-            if (opValue instanceof ArrayList) {
-                multiObjects = ((ArrayList) opValue).toArray();
-            } else {
-                multiObjects = (Object[]) opValue;
-            }
-            final List<Object> values = Lists.newArrayList();
-            boolean useList = false;
-            for (final Object obj : multiObjects) {
-                if ((SpecificationValue) obj instanceof UnitValue) {
-                    useList = true;
-                }
-                values.add(getSpecificationValue((SpecificationValue) obj));
-            }
-            if (useList) {
-                // we have to use list for Map - unit
-                convertedValue = values;
-            } else {
-                // we have to use set for string and number
-                convertedValue = ImmutableSet.copyOf(values);
-            }
-        } else {
-            convertedValue = getSpecificationValue((SpecificationValue) opValue);
-        }
-        return convertedValue;
-    }
-
-    /**
-     * It return String, Number, Map<String, Map<String, Object>> or same passed object
-     * @param opValue {@link SpecificationValue}
-     * @return Object
-     */
-    default Object getSpecificationValue(final SpecificationValue opValue) {
-        if (opValue instanceof Value<?>) {
-            final Value<?> value = (Value) opValue;
-            if (value.getValue() instanceof String
-                    || value.getValue() instanceof Number) {
-                return value.getValue();
-            }
-        } else if (opValue instanceof UnitValue) {
-            final UnitValue value = (UnitValue) opValue;
-            return getUnitAttrMap(value.getValue());
-        }
-        return opValue;
-    }
-
-    /**
-     * It converts Map<String, UnitAttribute> into Map<String, Map<String, Object>>
-     *
-     * @param unitAttributeMap Map<String, UnitAttribute>
-     * @return Map<String, Map<String, Object>>
-     */
-    default Map<String, Map<String, Object>> getUnitAttrMap(
-            final Map<String, UnitAttribute> unitAttributeMap) {
-        final Map<String, Map<String, Object>> result = Maps.newHashMap();
-        unitAttributeMap.entrySet().stream().forEach(entry -> {
-            final UnitAttribute ua = entry.getValue();
-            final Map<String, Object> uaMap = Maps.newHashMap();
-            uaMap.put("unit", ua.getUnit());
-            uaMap.put("value", ua.getValue());
-            result.put(entry.getKey(), uaMap);
-        });
-        return result;
     }
 }

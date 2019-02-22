@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.specification;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,16 @@ public class BasicSpecificationRepositoryImpl
 
     @Override
     public void saveAttributes(final UpdateSpecificationRequest request) {
-        table.updateItem(getUpdateItemSpecForSaveAttributes(request));
+        if (request.hasAnyOperation()) {
+            table.updateItem(getUpdateItemSpecForSaveAttributes(request));
+        }
+    }
+
+    @Override
+    public void saveAttributes(final String id, final Map<String, Object> attributes) {
+        if (!attributes.isEmpty()) {
+            table.updateItem(getUpdateItemSpecForSaveAttributesRawData(id, attributes));
+        }
     }
 
     @Override

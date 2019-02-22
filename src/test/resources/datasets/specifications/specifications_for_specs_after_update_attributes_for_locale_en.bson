@@ -19,13 +19,13 @@
          "attributes":{
             "M":{
             	"sizeId" : {
-            	  "N":2
+            	  "N":3
             	},
             	"mfgPartNoId" : {
-            	  "S":"XYZ"
+            	  "S":"ABC"
             	},
             	"mfgId" : {
-            	  "S":"Sony"
+            	  "S":"Acer"
             	}
             }
          },
@@ -52,13 +52,58 @@
          "attributes":{
             "M":{
             	"sizeId" : {
-            	  "N":2
+            	  "N":3
             	},
             	"mfgPartNoId" : {
-            	  "S":"XYZ"
+            	  "S":"ABC"
             	},
             	"mfgId" : {
-            	  "S":"Sony"
+            	  "S":"Acer"
+            	},
+            	"marketingId" : {
+            	  "S":"Marketing info en_US"
+            	},
+            	"stringTranslatableId" : {
+            	  "S":"abc"
+            	}
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "id":{
+            "S":"product123-fr_US"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"fr_US"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "attributes":{
+            "M":{
+            	"sizeId" : {
+            	  "N":3
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"ABC"
+            	},
+            	"mfgId" : {
+            	  "S":"Acer."
+            	},
+            	"marketingId" : {
+            	  "S":"Marketing info fr_US"
+            	},
+            	"stringTranslatableId" : {
+            	  "S":"abc."
             	}
             }
          },
@@ -87,33 +132,33 @@
          "attributes":{
             "M":{
             	"sizeId" : {
-            	  "N":2
+            	  "N":3
             	},
             	"mfgPartNoId" : {
-            	  "S":"XYZ"
+            	  "S":"ABC"
             	},
             	"processId":{
             		"M":{
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":2.2
+		            	  "N":3.2
 		            	},
 		            	"unit" : {
-		            	  "S":"g"
+		            	  "S":"kg"
 		            	}
 		              }
 	            	}
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Sony"
+            	  "S":"Acer"
             	},
             	"stringRepId" : {
-            	  "SS" : ["abc"]
+            	  "SS" : ["def"]
             	},
             	"numberRepId" : {
-            	  "NS" : [0,1]
+            	  "NS" : [2]
             	},
             	"unitRepId" : {
             	  "L" : [{
@@ -121,10 +166,10 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":1
+		            	  "N":2
 		            	},
 		            	"unit" : {
-		            	  "S":"b"
+		            	  "S":"mb"
 		            	}
 		              }
 		              }
@@ -156,33 +201,33 @@
          "attributes":{
             "M":{
             	"sizeId" : {
-            	  "N":2
+            	  "N":3
             	},
             	"mfgPartNoId" : {
-            	  "S":"XYZ"
+            	  "S":"ABC"
             	},
             	"processId":{
             		"M":{
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":2.2
+		            	  "N":3.2
 		            	},
 		            	"unit" : {
-		            	  "S":"g"
+		            	  "S":"kg"
 		            	}
 		              }
 	            	}
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Sony"
+            	  "S":"Acer"
             	},
             	"stringRepId" : {
-            	  "SS" : ["abc"]
+            	  "SS" : ["def"]
             	},
             	"numberRepId" : {
-            	  "NS" : [0,1]
+            	  "NS" : [2]
             	},
             	"unitRepId" : {
             	  "L" : [{
@@ -190,15 +235,96 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":1
+		            	  "N":2
 		            	},
 		            	"unit" : {
-		            	  "S":"b"
+		            	  "S":"mb"
 		            	}
 		              }
 		              }
 	            	}
             	  }]
+            	},
+            	"marketingId" : {
+            	  "S":"Marketing info en_US"
+            	},
+            	"stringTranslatableId" : {
+            	  "S":"abc"
+            	}
+            }
+         },
+         "lastUpdateDate":{
+            "N":1546528059097
+         }
+      },
+      {
+         "id":{
+            "S":"product123-fr_US"
+         },
+         "productId":{
+            "S":"product123"
+         },
+         "localeId":{
+            "S":"fr_US"
+         },
+         "industryId":{
+            "S":"industryId123"
+         },
+         "categoryId":{
+            "S":"categoryId123"
+         },
+         "attributes":{
+            "M":{
+            	"sizeId" : {
+            	  "N":3
+            	},
+            	"mfgPartNoId" : {
+            	  "S":"ABC"
+            	},
+            	"processId":{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":3.2
+		            	},
+		            	"unit" : {
+		            	  "S":"kg."
+		            	}
+		              }
+	            	}
+	              }
+	            },
+            	"mfgId" : {
+            	  "S":"Acer."
+            	},
+            	"stringRepId" : {
+            	  "SS" : ["def."]
+            	},
+            	"numberRepId" : {
+            	  "NS" : [2]
+            	},
+            	"unitRepId" : {
+            	  "L" : [{
+            		"M":{
+	            	"EXTRACTED" : {
+	            	   "M":{
+		            	"value" : {
+		            	  "N":2
+		            	},
+		            	"unit" : {
+		            	  "S":"mb."
+		            	}
+		              }
+		              }
+	            	}
+            	  }]
+            	},
+            	"marketingId" : {
+            	  "S":"Marketing info fr_US"
+            	},
+            	"stringTranslatableId" : {
+            	  "S":"abc."
             	}
             }
          },
@@ -206,5 +332,6 @@
             "N":1546528059097
          }
       }
+
   ]
 }

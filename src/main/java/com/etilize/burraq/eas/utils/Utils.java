@@ -28,6 +28,19 @@
 
 package com.etilize.burraq.eas.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.etilize.burraq.eas.specification.value.SpecificationValue;
+import com.etilize.burraq.eas.specification.value.UnitAttribute;
+import com.etilize.burraq.eas.specification.value.UnitValue;
+import com.etilize.burraq.eas.specification.value.Value;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 /**
  * It contains utility methods.
  * @author Umar Zubair
@@ -83,4 +96,81 @@ public final class Utils {
     public static String getKeyValueUse(final String query, final String key) {
         return String.format(query, key, key);
     }
+
+    /**
+     * It returns String,Number,Set of String, Set of Number, Map or List of Map
+     * @param opValue Object value for attribute
+     * @return Object
+     */
+    public static Object convertOperationToValue(final Object opValue) {
+        Object convertedValue = null;
+        if (opValue instanceof Object[] || opValue instanceof ArrayList
+                || opValue instanceof Set) {
+            Object[] multiObjects = null;
+            if (opValue instanceof ArrayList) {
+                multiObjects = ((ArrayList) opValue).toArray();
+            } else if (opValue instanceof Set) {
+                multiObjects = ((Set) opValue).toArray();
+            } else {
+                multiObjects = (Object[]) opValue;
+            }
+            final List<Object> values = Lists.newArrayList();
+            boolean useList = false;
+            for (final Object obj : multiObjects) {
+                if ((SpecificationValue) obj instanceof UnitValue) {
+                    useList = true;
+                }
+                values.add(getSpecificationValue((SpecificationValue) obj));
+            }
+            if (useList) {
+                // we have to use list for Map - unit
+                convertedValue = values;
+            } else {
+                // we have to use set for string and number
+                convertedValue = ImmutableSet.copyOf(values);
+            }
+        } else {
+            convertedValue = getSpecificationValue((SpecificationValue) opValue);
+        }
+        return convertedValue;
+    }
+
+    /**
+     * It return String, Number, Map<String, Map<String, Object>> or same passed object
+     * @param opValue {@link SpecificationValue}
+     * @return Object
+     */
+    private static Object getSpecificationValue(final SpecificationValue opValue) {
+        if (opValue instanceof Value<?>) {
+            final Value<?> value = (Value) opValue;
+            if (value.getValue() instanceof String
+                    || value.getValue() instanceof Number) {
+                return value.getValue();
+            }
+        } else if (opValue instanceof UnitValue) {
+            final UnitValue value = (UnitValue) opValue;
+            return getUnitAttrMap(value.getValue());
+        }
+        return opValue;
+    }
+
+    /**
+     * It converts Map<String, UnitAttribute> into Map<String, Map<String, Object>>
+     *
+     * @param unitAttributeMap Map<String, UnitAttribute>
+     * @return Map<String, Map<String, Object>>
+     */
+    private static Map<String, Map<String, Object>> getUnitAttrMap(
+            final Map<String, UnitAttribute> unitAttributeMap) {
+        final Map<String, Map<String, Object>> result = Maps.newHashMap();
+        unitAttributeMap.entrySet().stream().forEach(entry -> {
+            final UnitAttribute ua = entry.getValue();
+            final Map<String, Object> uaMap = Maps.newHashMap();
+            uaMap.put("unit", ua.getUnit());
+            uaMap.put("value", ua.getValue());
+            result.put(entry.getKey(), uaMap);
+        });
+        return result;
+    }
+
 }
