@@ -41,6 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.etilize.burraq.eas.category.structures.CategoryStructureService;
+import com.etilize.burraq.eas.specification.Product;
+import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.specification.status.SpecificationStatus;
 import com.etilize.burraq.eas.specification.status.SpecificationStatusRepository;
 import com.google.common.collect.Maps;
@@ -68,24 +71,37 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
 
     private final SpecificationStatusRepository specsStatusRepository;
 
+    private final CategoryStructureService categoryStructureService;
+
+    private final SpecificationService specificationService;
+
     /**
      * Constructs with dependencies
      *
+     * @param categoryStructureService categoryStructureService
+     * @param specificationService specificationService
      * @param basicSpecificationRepository basicSpecificationRepository
      * @param detailedSpecificationRepository detailedSpecificationRepository
      * @param specsStatusRepository specsStatusRepository
      */
     @Autowired
     public MediaSpecificationServiceImpl(
+            final CategoryStructureService categoryStructureService,
+            final SpecificationService specificationService,
             final BasicMediaSpecificationRepository basicSpecificationRepository,
             final RichMediaSpecificationRepository detailedSpecificationRepository,
             final SpecificationStatusRepository specsStatusRepository) {
+        Assert.notNull(categoryStructureService,
+                "categoryStructureService should not be null.");
+        Assert.notNull(specificationService, "specificationService should not be null.");
         Assert.notNull(basicSpecificationRepository,
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
                 "detailedSpecificationRepository should not be null.");
         Assert.notNull(specsStatusRepository,
                 "specsStatusRepository should not be null.");
+        this.categoryStructureService = categoryStructureService;
+        this.specificationService = specificationService;
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
         this.specsStatusRepository = specsStatusRepository;
@@ -139,37 +155,64 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
 
     private void updateAttribute(final String productId, final String localeId,
             final String attributeId, final String value) {
-        // TODO apply check of attributeId against product offering
+        final Product product = specificationService.findProductByProductId(
+                productId).get();
+        final boolean isOfferedInBasic = categoryStructureService.hasBasicMediaOfferingAttribute(
+                product.getCategoryId(), attributeId);
+        final boolean isOfferedInRich = categoryStructureService.hasRichMediaOfferingAttribute(
+                product.getCategoryId(), attributeId);
         if (LOCALE_EN.equalsIgnoreCase(localeId)) {
             final List<SpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                     productId);
             specsStatuses.forEach(specsStatus -> {
                 final String id = generateId(productId, specsStatus.getLocaleId());
-                detailedSpecificationRepository.updateAttribute(id, attributeId, value);
-                basicSpecificationRepository.updateAttribute(id, attributeId, value);
+                if (isOfferedInRich) {
+                    detailedSpecificationRepository.updateAttribute(id, attributeId,
+                            value);
+                }
+                if (isOfferedInBasic) {
+                    basicSpecificationRepository.updateAttribute(id, attributeId, value);
+                }
             });
         } else {
             final String id = generateId(productId, localeId);
-            detailedSpecificationRepository.updateAttribute(id, attributeId, value);
-            basicSpecificationRepository.updateAttribute(id, attributeId, value);
+            if (isOfferedInRich) {
+                detailedSpecificationRepository.updateAttribute(id, attributeId, value);
+            }
+            if (isOfferedInBasic) {
+                basicSpecificationRepository.updateAttribute(id, attributeId, value);
+            }
         }
     }
 
     private void removeAttribute(final String productId, final String localeId,
             final String attributeId) {
-        // TODO apply check of attributeId against product offering
+        final Product product = specificationService.findProductByProductId(
+                productId).get();
+        final boolean isOfferedInBasic = categoryStructureService.hasBasicMediaOfferingAttribute(
+                product.getCategoryId(), attributeId);
+        final boolean isOfferedInRich = categoryStructureService.hasRichMediaOfferingAttribute(
+                product.getCategoryId(), attributeId);
         if (LOCALE_EN.equalsIgnoreCase(localeId)) {
             final List<SpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                     productId);
             specsStatuses.forEach(specsStatus -> {
                 final String id = generateId(productId, specsStatus.getLocaleId());
-                detailedSpecificationRepository.removeAttribute(id, attributeId);
-                basicSpecificationRepository.removeAttribute(id, attributeId);
+                if (isOfferedInRich) {
+                    detailedSpecificationRepository.removeAttribute(id, attributeId);
+                }
+                if (isOfferedInBasic) {
+                    basicSpecificationRepository.removeAttribute(id, attributeId);
+                }
             });
         } else {
             final String id = generateId(productId, localeId);
-            detailedSpecificationRepository.removeAttribute(id, attributeId);
-            basicSpecificationRepository.removeAttribute(id, attributeId);
+            if (isOfferedInRich) {
+                detailedSpecificationRepository.removeAttribute(id, attributeId);
+            }
+            if (isOfferedInBasic) {
+                basicSpecificationRepository.removeAttribute(id, attributeId);
+            }
         }
     }
 

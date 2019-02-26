@@ -187,6 +187,44 @@ public class CategoryStructureServiceImpl implements CategoryStructureService {
         return attributes;
     }
 
+    @Override
+    public boolean hasBasicMediaOfferingAttribute(final String categoryId,
+            final String attributeId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategoryStructureKey key = new CategoryStructureKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<BasicMediaCategoryStructure> category = basicMediaCategoryStructureRepository.findById(
+                key);
+        Boolean exists = Boolean.TRUE;
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+            if (!attributes.isEmpty() && !attributes.containsKey(attributeId)) {
+                exists = Boolean.FALSE;
+            }
+        }
+        return exists;
+    }
+
+    @Override
+    public boolean hasRichMediaOfferingAttribute(final String categoryId,
+            final String attributeId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategoryStructureKey key = new CategoryStructureKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<RichMediaCategoryStructure> category = richMediaCategoryStructureRepository.findById(
+                key);
+        Boolean exists = Boolean.TRUE;
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+            if (!attributes.isEmpty() && !attributes.containsKey(attributeId)) {
+                exists = Boolean.FALSE;
+            }
+        }
+        return exists;
+    }
+
     private void saveBasicCategoryStructure(final CategoryStructure categoryStructure,
             final List<String> localeIds) {
         final BasicCategoryStructure basicCategoryStructure = new BasicCategoryStructure();

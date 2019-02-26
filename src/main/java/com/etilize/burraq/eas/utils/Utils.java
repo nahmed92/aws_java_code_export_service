@@ -58,6 +58,7 @@ public final class Utils {
 
     /**
      * It returns productId-localeId whoch is used as id
+     *
      * @param productId product id
      * @param localeId locale id
      * @return productId-localeId
@@ -99,6 +100,7 @@ public final class Utils {
 
     /**
      * It returns String,Number,Set of String, Set of Number, Map or List of Map
+     *
      * @param opValue Object value for attribute
      * @return Object
      */
@@ -137,6 +139,7 @@ public final class Utils {
 
     /**
      * It return String, Number, Map<String, Map<String, Object>> or same passed object
+     *
      * @param opValue {@link SpecificationValue}
      * @return Object
      */

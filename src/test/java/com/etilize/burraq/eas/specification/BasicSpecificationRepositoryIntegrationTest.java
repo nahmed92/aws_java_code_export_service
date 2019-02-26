@@ -157,6 +157,17 @@ public class BasicSpecificationRepositoryIntegrationTest extends AbstractIntegra
     }
 
     @Test
+    @UsingDataSet(locations = "/datasets/basic_specifications/basic_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    public void shouldFindProductById() {
+        final Optional<Product> specification = repository.findProductById(
+                "product123-en");
+        assertThat(specification, isPresentAnd(notNullValue()));
+        assertThat(specification.get().getProductId(), is("product123"));
+        assertThat(specification.get().getCategoryId(), is("categoryId123"));
+        assertThat(specification.get().getIndustryId(), is("industryId123"));
+    }
+
+    @Test
     public void shouldReturnOptionalEmptyByIdDoesNotExist() {
         final Optional<Specification> specification = repository.findOne(
                 "product123-en1");

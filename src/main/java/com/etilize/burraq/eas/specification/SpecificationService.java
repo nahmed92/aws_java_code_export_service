@@ -28,6 +28,8 @@
 
 package com.etilize.burraq.eas.specification;
 
+import java.util.Optional;
+
 /**
  * It contains business logic to maintain detailed and basic specifications.
  *
@@ -59,4 +61,13 @@ public interface SpecificationService {
      * @param request {@link UpdateSpecificationRequest}
      */
     void updateSpecifications(UpdateSpecificationRequest request);
+
+    /**
+     *
+     * It returns product basic info
+     *
+     * @param productId productId
+     * @return Optional<Product>
+     */
+    Optional<Product> findProductByProductId(String productId);
 }

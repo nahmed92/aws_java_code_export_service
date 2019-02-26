@@ -28,6 +28,8 @@
 
 package com.etilize.burraq.eas.specification;
 
+import java.util.Optional;
+
 /**
  * It defines customization for {@link BasicSpecificationRepository}
  *
@@ -36,4 +38,12 @@ package com.etilize.burraq.eas.specification;
  */
 public interface BasicSpecificationCustomRepository
         extends SpecificationCustomRepository {
+
+    /**
+     * It returns product's categoryId, industryId and productId
+     *
+     * @param id productId-localeId
+     * @return Optional<Product>
+     */
+    Optional<Product> findProductById(String id);
 }
