@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.barcode;
+package com.etilize.burraq.eas.kafka.neo4j;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -37,37 +37,37 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  *
  * @author Nasir Ahmed
  *
+ * @Since 1.0
+ *
  */
-public class BarcodeKafkaMesssagePojo {
 
-    private String productId;
+public class AccessoryKafkaMesssagePojo {
 
-    private String type;
+    private final String productId;
 
-    private String code;
+    private final String marketId;
 
-    private String customerId;
+    private final String accessoryId;
 
-    private String operationType;
+    private final String operationType;
 
-    private String recordType;
+    private final String recordType;
 
     /**
-     * Initialize {@link BarcodeKafkaMesssagePojo}
-     * @param productId product Id
-     * @param type Type of Barcode
-     * @param code bar code
-     * @param customerId customer Id
-     * @param operationType e.g Add, Delete, link, unlink
-     * @param recordType e.g node , relationship
+     * create {@link AccessoryKafkaMesssagePojo} instance
+     * 
+     * @param productId accessory productId
+     * @param marketId accessory market
+     * @param accessoryId accessory accessoryId
+     * @param operationType [add delete link unlink]
+     * @param recordType [node relationship]
      */
-    public BarcodeKafkaMesssagePojo(final String productId, final String type,
-            final String code, final String customerId, final String operationType,
+    public AccessoryKafkaMesssagePojo(final String productId, final String marketId,
+            final String accessoryId, final String operationType,
             final String recordType) {
         this.productId = productId;
-        this.type = type;
-        this.code = code;
-        this.customerId = customerId;
+        this.marketId = marketId;
+        this.accessoryId = accessoryId;
         this.operationType = operationType;
         this.recordType = recordType;
     }
@@ -80,24 +80,17 @@ public class BarcodeKafkaMesssagePojo {
     }
 
     /**
-     * @return the type
+     * @return the marketId
      */
-    public String getType() {
-        return type;
+    public String getMarketId() {
+        return marketId;
     }
 
     /**
-     * @return the code
+     * @return the accessoryId
      */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * @return the customerId
-     */
-    public String getCustomerId() {
-        return customerId;
+    public String getAccessoryId() {
+        return accessoryId;
     }
 
     /**
@@ -122,15 +115,14 @@ public class BarcodeKafkaMesssagePojo {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BarcodeKafkaMesssagePojo)) {
+        if (!(obj instanceof AccessoryKafkaMesssagePojo)) {
             return false;
         }
-        final BarcodeKafkaMesssagePojo barcodeKafkaMesssagePojo = (BarcodeKafkaMesssagePojo) obj;
+        final AccessoryKafkaMesssagePojo accessoryKafkaMesssagePojo = (AccessoryKafkaMesssagePojo) obj;
         return new EqualsBuilder() //
-                .append(getProductId(), barcodeKafkaMesssagePojo.getProductId()) //
-                .append(getType(), barcodeKafkaMesssagePojo.getType()) //
-                .append(getCode(), barcodeKafkaMesssagePojo.getCode()) //
-                .append(getCustomerId(), barcodeKafkaMesssagePojo.getCustomerId()) //
+                .append(getProductId(), accessoryKafkaMesssagePojo.getProductId()) //
+                .append(getMarketId(), accessoryKafkaMesssagePojo.getMarketId()) //
+                .append(getAccessoryId(), accessoryKafkaMesssagePojo.getAccessoryId()) //
                 .isEquals();
     }
 
@@ -138,9 +130,8 @@ public class BarcodeKafkaMesssagePojo {
     public final int hashCode() {
         return new HashCodeBuilder() //
                 .append(getProductId()) //
-                .append(getType()) //
-                .append(getCode()) //
-                .append(getCustomerId()) //
+                .append(getMarketId()) //
+                .append(getAccessoryId()) //
                 .toHashCode();
     }
 
@@ -148,9 +139,8 @@ public class BarcodeKafkaMesssagePojo {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("ProductId", getProductId()) //
-                .append("Type", getType()) //
-                .append("Code", getCode()) //
-                .append("CustomerId", getCustomerId()) //
+                .append("MarketId", getMarketId()) //
+                .append("AccessoryId", getAccessoryId()) //
                 .toString();
     }
 

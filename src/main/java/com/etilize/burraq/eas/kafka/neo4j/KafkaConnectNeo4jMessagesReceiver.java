@@ -39,7 +39,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import com.etilize.burraq.eas.barcode.BarcodeKafkaMesssagePojo;
+import com.etilize.burraq.eas.accessory.AccessoryService;
 import com.etilize.burraq.eas.barcode.BarcodeService;
 import com.google.gson.JsonParser;
 
@@ -61,6 +61,9 @@ public class KafkaConnectNeo4jMessagesReceiver {
     @Autowired
     private BarcodeService barcodeService;
 
+    @Autowired
+    private AccessoryService accessoryService;
+
     /**
      * Process barcode-service originated messages
      *
@@ -74,6 +77,7 @@ public class KafkaConnectNeo4jMessagesReceiver {
     public void processBarcodeMessages(final Message<String> message)
             throws JsonParseException, JsonMappingException, IOException {
         logger.info("Received message from barcode-service [{}]", message);
+
         final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
                 new JsonParser().parse(
                         message.getPayload().toString()).getAsJsonObject());
@@ -107,10 +111,25 @@ public class KafkaConnectNeo4jMessagesReceiver {
      * Process product-accessory-service originated messages
      *
      * @param message
-     *            {@link Message<String>} message of type {@link String}
+     *            {@link AccessoryKafkaMesssagePojo} message of type {@link String}
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pas}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processProductAsseccoryServiceMessages(final Message<String> message) {
-        logger.info("Received message from product-accessory-service [{}]", message);
+    public void processProductAsseccoryServiceMessages(final Message<String> message)
+            throws JsonParseException, JsonMappingException, IOException {
+        logger.info("Received message from product-accessories-service [{}]", message);
+        final AccessoryKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
+                new JsonParser().parse(
+                        message.getPayload().toString()).getAsJsonObject());
+        if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                accessoryService.save(parsedMessage.getProductId(), //
+                        parsedMessage.getMarketId(), //
+                        parsedMessage.getAccessoryId());
+            } else {
+                accessoryService.delete(parsedMessage.getProductId(), //
+                        parsedMessage.getMarketId(), //
+                        parsedMessage.getAccessoryId());
+            }
+        }
     }
 }
