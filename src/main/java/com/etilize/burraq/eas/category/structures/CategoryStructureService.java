@@ -64,4 +64,21 @@ public interface CategoryStructureService {
      */
     Map<String, String> findDetailedSpecsOfferingAttributes(String categoryId);
 
+    /**
+     * It return boolean rather attribute exists in rich basic offering for category.
+     *
+     * @param categoryId category id
+     * @param attributeId attribute id
+     * @return boolean
+     */
+    boolean hasBasicMediaOfferingAttribute(String categoryId, String attributeId);
+
+    /**
+     * It return boolean rather attribute exists in rich media offering for category.
+     *
+     * @param categoryId category id
+     * @param attributeId attribute id
+     * @return boolean
+     */
+    boolean hasRichMediaOfferingAttribute(String categoryId, String attributeId);
 }

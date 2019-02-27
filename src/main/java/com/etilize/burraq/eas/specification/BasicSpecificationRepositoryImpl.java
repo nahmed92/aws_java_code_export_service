@@ -39,6 +39,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 
 /**
  * It defines implementation customization for {@link BasicSpecificationRepository}
@@ -48,6 +49,14 @@ import com.amazonaws.services.dynamodbv2.document.Table;
  */
 public class BasicSpecificationRepositoryImpl
         implements BasicSpecificationCustomRepository {
+
+    private static final String CATEGORY_ID = "categoryId";
+
+    private static final String PRODUCT_ID = "productId";
+
+    private static final String LOCALE_ID = "localeId";
+
+    private static final String INDUSTRY_ID = "industryId";
 
     private final Table table;
 
@@ -84,13 +93,27 @@ public class BasicSpecificationRepositoryImpl
         if (item != null) {
             specs = new BasicSpecification();
             specs.setId(id);
-            specs.setCategoryId(item.getString("categoryId"));
-            specs.setIndustryId(item.getString("industryId"));
-            specs.setLocaleId(item.getString("localeId"));
-            specs.setProductId(item.getString("productId"));
+            specs.setCategoryId(item.getString(CATEGORY_ID));
+            specs.setIndustryId(item.getString(INDUSTRY_ID));
+            specs.setLocaleId(item.getString(LOCALE_ID));
+            specs.setProductId(item.getString(PRODUCT_ID));
             specs.setAttributes(item.getRawMap(ATTRIBUTES));
         }
         return Optional.ofNullable(specs);
     }
 
+    @Override
+    public Optional<Product> findProductById(final String id) {
+        Product product = null;
+        final Item item = table.getItem(new GetItemSpec().withPrimaryKey(
+                new PrimaryKey(ID, id)).withAttributesToGet(CATEGORY_ID, INDUSTRY_ID,
+                        PRODUCT_ID));
+        if (item != null) {
+            product = new Product();
+            product.setCategoryId(item.getString(CATEGORY_ID));
+            product.setIndustryId(item.getString(INDUSTRY_ID));
+            product.setProductId(item.getString(PRODUCT_ID));
+        }
+        return Optional.ofNullable(product);
+    }
 }

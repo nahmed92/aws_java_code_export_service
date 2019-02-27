@@ -30,10 +30,15 @@ package com.etilize.burraq.eas.media.specification;
 
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.etilize.burraq.eas.category.structures.CategoryStructureService;
+import com.etilize.burraq.eas.specification.Product;
+import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.specification.status.SpecificationStatus;
 import com.etilize.burraq.eas.specification.status.SpecificationStatusRepository;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
@@ -56,7 +61,13 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 public class MediaSpecificationServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Mock
+    private CategoryStructureService categoryStructureService;
+
+    @Mock
     private SpecificationStatusRepository specsStatusRepository;
+
+    @Mock
+    private SpecificationService specificationService;
 
     @Autowired
     private BasicMediaSpecificationRepository basicSpecificationRepository;
@@ -68,7 +79,8 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
 
     @Override
     public void before() {
-        service = new MediaSpecificationServiceImpl(basicSpecificationRepository,
+        service = new MediaSpecificationServiceImpl(categoryStructureService,
+                specificationService, basicSpecificationRepository,
                 detailedSpecificationRepository, specsStatusRepository);
         final SpecificationStatus specsStatus1 = new SpecificationStatus();
         specsStatus1.setId("product123-en_US");
@@ -82,6 +94,12 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         specsStatus2.setProductId("product123");
         when(specsStatusRepository.findAllByProductId("product123")) //
                 .thenReturn(Lists.newArrayList(specsStatus1, specsStatus2));
+        final Product product = new Product();
+        product.setProductId("product123");
+        product.setCategoryId("categoryId123");
+        product.setIndustryId("industryId123");
+        when(specificationService.findProductByProductId("product123")) //
+                .thenReturn(Optional.of(product));
     }
 
     @Test
@@ -95,6 +113,12 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_update_attribute_for_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeForAllLocaleWhenUpdatedForEN() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "thumbnailId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "thumbnailId")) //
+                        .thenReturn(true);
         service.saveAttribute("product123", "en", "thumbnailId", Status.ASSOCIATED,
                 "http://abcde");
         verify(specsStatusRepository).findAllByProductId("product123");
@@ -104,7 +128,73 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_update_attribute_for_non_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenUpdatedForNonEN() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "thumbnailId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "thumbnailId")) //
+                        .thenReturn(true);
         service.saveAttribute("product123", "en_US", "thumbnailId", Status.ASSOCIATED,
+                "http://abcde");
+        verify(specsStatusRepository, never()).findAllByProductId("product123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_update_attribute_for_en_only_for_detailed.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeForAllLocaleWhenUpdatedForENOnlyInDetailedOffer() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "largeId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "largeId")) //
+                        .thenReturn(true);
+        service.saveAttribute("product123", "en", "largeId", Status.ASSOCIATED,
+                "http://abcdef");
+        verify(specsStatusRepository).findAllByProductId("product123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_update_attribute_for_non_en_only_for_detailed.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAttributeWhenUpdatedForNonENOnlyInDetailedOffer() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "largeId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "largeId")) //
+                        .thenReturn(true);
+        service.saveAttribute("product123", "en_US", "largeId", Status.ASSOCIATED,
+                "http://abcdef");
+        verify(specsStatusRepository, never()).findAllByProductId("product123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldNotUpdateAttributeForAllLocaleWhenUpdatedForENAndAttributeIsNotInAnyOffering() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "notExistId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "notExistId")) //
+                        .thenReturn(false);
+        service.saveAttribute("product123", "en", "notExistId", Status.ASSOCIATED,
+                "http://abcde");
+        verify(specsStatusRepository).findAllByProductId("product123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldNotUpdateAttributeWhenUpdatedForNonENOnlyAndAttributeIsNotInAnyOffering() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "notExistId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "notExistId")) //
+                        .thenReturn(false);
+        service.saveAttribute("product123", "en_US", "notExistId", Status.ASSOCIATED,
                 "http://abcde");
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
@@ -121,6 +211,12 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldDeleteAttributeForAllLocaleWhenUpdatedForENWithStatusDELETED() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
         service.saveAttribute("product123", "en", "maxId", Status.DELETED, null);
         verify(specsStatusRepository).findAllByProductId("product123");
     }
@@ -129,6 +225,55 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_non_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldDeleteAttributeWhenUpdatedForNonENWithStatusDELETED() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        service.saveAttribute("product123", "en_US", "maxId", Status.DELETED, null);
+        verify(specsStatusRepository, never()).findAllByProductId("product123");
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/media_specifications/media_specifications_before_delete.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_en_from_detailed_specs.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldDeleteAttributeWhenUpdatedForENWithStatusDELETEDForDetailedOffering() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        service.saveAttribute("product123", "en", "maxId", Status.DELETED, null);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/media_specifications/media_specifications_before_delete.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_non_en_from_detailed_specs.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldDeleteAttributeWhenUpdatedForNonENWithStatusDELETEDForDetailedOffering() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        service.saveAttribute("product123", "en_US", "maxId", Status.DELETED, null);
+        verify(specsStatusRepository, never()).findAllByProductId("product123");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldNotDeleteAttributeWhenUpdatedForNonENWithStatusDELETEDAndAttributeNotInAnyOffering() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(false);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(false);
         service.saveAttribute("product123", "en_US", "maxId", Status.DELETED, null);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
@@ -137,6 +282,12 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_non_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldDeleteAttributeWhenUpdatedForNonENWithStatusEXCEPTION() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
         service.saveAttribute("product123", "en_US", "maxId", Status.EXCEPTION, null);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
@@ -145,6 +296,12 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications_after_delete_attribute_for_non_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldDeleteAttributeWhenUpdatedForNonENWithStatusPENDING() {
+        when(categoryStructureService.hasBasicMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
+        when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
+                "maxId")) //
+                        .thenReturn(true);
         service.saveAttribute("product123", "en_US", "maxId", Status.PENDING, null);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }

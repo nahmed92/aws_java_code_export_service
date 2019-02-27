@@ -176,19 +176,24 @@ public class SpecificationServiceImpl implements SpecificationService {
 
     @Override
     public void updateSpecifications(final UpdateSpecificationRequest request) {
-        final Specification specs = getBasicSpecification(request.getProductId(),
-                LOCALE_EN).get();
+        final Product product = findProductByProductId(request.getProductId()).get();
         final UpdateSpecificationRequest basicSpecsRequest = filterRequestForBasicOffering(
-                specs.getCategoryId(), request);
+                product.getCategoryId(), request);
         final UpdateSpecificationRequest detailedSpecsRequest = filterRequestForDetailedOffering(
-                specs.getCategoryId(), request);
+                product.getCategoryId(), request);
         if (request.getLocaleId().startsWith(LANGUAGE_EN)) {
-            updateDataAcrossLocales(specs.getIndustryId(), basicSpecsRequest,
+            updateDataAcrossLocales(product.getIndustryId(), basicSpecsRequest,
                     detailedSpecsRequest, getAttributesUsedInRequest(request));
         } else {
             basicSpecificationRepository.saveAttributes(basicSpecsRequest);
             detailedSpecificationRepository.saveAttributes(detailedSpecsRequest);
         }
+    }
+
+    @Override
+    public Optional<Product> findProductByProductId(final String productId) {
+        return basicSpecificationRepository.findProductById(
+                generateId(productId, LOCALE_EN));
     }
 
     private void updateDataAcrossLocales(final String industryId,
