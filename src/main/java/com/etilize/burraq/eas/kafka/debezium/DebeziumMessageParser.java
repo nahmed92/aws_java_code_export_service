@@ -30,24 +30,17 @@ package com.etilize.burraq.eas.kafka.debezium;
 
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import com.etilize.burraq.eas.kafka.debezium.SpecificationUpdateOperation;
 import com.etilize.burraq.eas.media.specification.Status;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -122,103 +115,31 @@ public class DebeziumMessageParser {
         Optional<String> localeId = Optional.empty();
         if (record.get(PATCH) != null) {
             final JsonObject patchJo = new JsonParser().parse(
-                    record.get(PATCH).toString()).getAsJsonObject();
-            final String[] keySet = patchJo.get(SET) //
-                    .getAsJsonObject() //
-                    .keySet() //
-                    .toArray(new String[0]);
-            localeId = Optional.of(keySet[0]);
+                    record.get(PATCH).toString()) //
+                    .getAsJsonObject();
+            if (patchJo.has(SET)) {
+                final String[] keySet = patchJo.get(SET) //
+                        .getAsJsonObject() //
+                        .keySet() //
+                        .toArray(new String[0]);
+                if (keySet[0].contains(".")) {
+                    localeId = Optional.of(keySet[0].split("\\.")[0]);
+                } else {
+                    localeId = Optional.of(keySet[0]);
+                }
+            } else if (patchJo.has(UNSET)) {
+                final String[] keySet = patchJo.get(UNSET) //
+                        .getAsJsonObject() //
+                        .keySet() //
+                        .toArray(new String[0]);
+                if (keySet[0].contains(".")) {
+                    localeId = Optional.of(keySet[0].split("\\.")[0]);
+                } else {
+                    localeId = Optional.of(keySet[0]);
+                }
+            }
         }
         return localeId;
-    }
-
-    /**
-     * Convert update json to operation Map
-     * @param productId Product Id
-     * @param updateJson json for update operation
-     * @return Map<String, Object> return update index operation map
-     * @throws IOException json parsing throws IO exception
-     */
-    @SuppressWarnings("unchecked")
-    private static Queue<SpecificationUpdateOperation> getUpdateOperationMap(
-            final String productId, final String updateJson) throws IOException {
-        final Queue<SpecificationUpdateOperation> operatonList = new LinkedList<>();
-        final ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map;
-        // convert JSON string to Map
-        map = mapper.readValue(updateJson, new TypeReference<Map<String, Object>>() {
-        });
-        map.remove("$v");
-        Map<String, Object> attributeMap = null;
-
-        final Set<Entry<String, Object>> operations = map.entrySet();
-        for (final Entry<String, Object> operation : operations) {
-            final SpecificationUpdateOperation specificationUpdateOperation = new SpecificationUpdateOperation();
-            //Geting mongo DB operation
-            if (operation.getKey().equals(SET)) {
-                attributeMap = (Map<String, Object>) operation.getValue();
-                specificationUpdateOperation.setOperationType(UPDATE_OPERATION);
-            } else if (operation.getKey().equals(UNSET)) {
-                // unset only coming in REMOVE case
-                attributeMap = (Map<String, Object>) operation.getValue();
-                specificationUpdateOperation.setOperationType(REMOVE_OPERATION);
-            } else if (operation.getKey().equals(PUSH)) {
-                // unset only coming in REMOVE case
-                attributeMap = (Map<String, Object>) operation.getValue();
-                specificationUpdateOperation.setOperationType(ADD_TO_SET_OPERATION);
-            } else if (operation.getKey().equals(PULL)) {
-                // unset only coming in REMOVE case
-                attributeMap = (Map<String, Object>) operation.getValue();
-                specificationUpdateOperation.setOperationType(REMOVE_FROM_SET_OPERATION);
-            }
-            final Queue<Map<String, Object>> paramsList = getAllOperationsAndParamsMap(
-                    productId, specificationUpdateOperation, attributeMap);
-            specificationUpdateOperation.setQueryParams(paramsList);
-            operatonList.add(specificationUpdateOperation);
-        }
-        return operatonList;
-    }
-
-    private static Queue<Map<String, Object>> getAllOperationsAndParamsMap(
-            final String productId,
-            final SpecificationUpdateOperation specificationUpdateOperation,
-            final Map<String, Object> attributeMap) {
-        final Queue<Map<String, Object>> paramsList = new LinkedList<>();
-        String[] valuesArray;
-        Map<String, Object> values;
-        final Set<Entry<String, Object>> entrySet = attributeMap.entrySet();
-        for (final Entry<String, Object> entry : entrySet) {
-            values = new HashMap<>();
-            valuesArray = entry.getKey().split("\\.");
-            final String localeId = valuesArray[LOCALE_ID_INDEX];
-            specificationUpdateOperation.setDocId(productId + "-" + localeId);
-            if (valuesArray.length > ATTRIBUTE_ID_INDEX) {
-                final String attributeId = valuesArray[ATTRIBUTE_ID_INDEX];
-                values.put(KEY, attributeId);
-            }
-            values.put(VALUE_FIELD, entry.getValue());
-            if (valuesArray.length > ELEMENT_ID_INDEX) {
-                values.put(ELEMENT, valuesArray[ELEMENT_ID_INDEX]);
-            }
-            if (!specificationUpdateOperation.getOperationType().equals(
-                    REMOVE_OPERATION)) {
-                setValueInQueryParameter(values, false);
-                values.remove(ELEMENT);
-            }
-            if (specificationUpdateOperation.getOperationType() == null) {
-                specificationUpdateOperation.setOperationType(EMPTY_INDEX_OPERATION);
-            }
-            if (specificationUpdateOperation.getOperationType().equals(
-                    REMOVE_FROM_SET_OPERATION)) {
-                values.put(OPERATION_FIELD, REMOVE_FROM_SET_OPERATION);
-            } else if (specificationUpdateOperation.getOperationType().equals(
-                    ADD_TO_SET_OPERATION)) {
-                values.put(OPERATION_FIELD, ADD_TO_SET_OPERATION);
-            }
-            paramsList.add(values);
-        }
-
-        return paramsList;
     }
 
     /**
@@ -276,23 +197,6 @@ public class DebeziumMessageParser {
     }
 
     /**
-     * Extract update operations.
-     *
-     * @param productId Product Id
-     * @param record Update Product Specification Command.
-     *
-     * @return {@link Optional<SpecificationUpdateOperation>}
-     * @throws IOException Parsing IO Exception
-     */
-    public Queue<SpecificationUpdateOperation> parseToUpdateOperationMap(
-            final String productId, final GenericData.Record record) throws IOException {
-        final JsonObject jsonRecord = new JsonParser().parse(
-                record.toString()).getAsJsonObject();
-        return getUpdateOperationMap(productId,
-                new JsonParser().parse(jsonRecord.get(PATCH).getAsString()).toString());
-    }
-
-    /**
      * Extracts productId from Debezium messages
      *
      * @param key {@link ConsumerRecord<Object, String>} message key
@@ -303,11 +207,17 @@ public class DebeziumMessageParser {
         final JsonObject keyJO = new JsonParser().parse(key.key() //
                 .toString()) //
                 .getAsJsonObject();
-        final String productId = new JsonParser().parse(keyJO.get(ID) //
-                .getAsString()) //
-                .getAsJsonObject() //
-                .get(ID) //
-                .getAsString();
+        final String productId;
+        if (new JsonParser().parse(keyJO.get(ID).getAsString()).isJsonObject()) {
+            productId = new JsonParser().parse(keyJO.get(ID) //
+                    .getAsString()) //
+                    .getAsJsonObject() //
+                    .get(ID) //
+                    .getAsString();
+        } else {
+            productId = keyJO.get(ID) //
+                    .getAsString();
+        }
         return productId;
     }
 

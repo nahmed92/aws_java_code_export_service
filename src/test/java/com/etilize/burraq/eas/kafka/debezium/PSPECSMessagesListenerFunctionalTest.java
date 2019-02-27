@@ -40,14 +40,22 @@ import org.mockito.Mock;
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
 import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
+import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
+import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
 /**
- * Contains integration tests for product-specifications-service message listener.
+ * Contains functional tests for product-specifications-service message listener.
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class PSPECSMessagesListenerTest extends AbstractIntegrationTest {
+@UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+@CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
+public class PSPECSMessagesListenerFunctionalTest extends AbstractIntegrationTest {
 
     private KafkaConnectDebeziumMessagesReceiver messageReceiver;
 
@@ -61,13 +69,14 @@ public class PSPECSMessagesListenerTest extends AbstractIntegrationTest {
     public void before() {
         messageReceiver = new KafkaConnectDebeziumMessagesReceiver(
                 new DebeziumMessageParser(), mediaSpecificationsService,
-                specificationService);
+                specificationService, new PSPECSMessageParser());
     }
 
     @Test
     public void shouldProcessAssociateCategoryCommand() throws IOException {
         final GenericData.Record associateCategoryCommand = DebeziumMessageTestFixtures.getPSPECSAssociateCategoryCommandValueObject();
-        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPSPECSDebeziumMessagesKeyObject();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPSPECSDebeziumMessagesKeyObjectForProductId(
+                "ppsh");
         doNothing().when(specificationService) //
                 .createProduct("ppsh", "ind1", "cat1");
         messageReceiver.processProductSpecificationUpdates(associateCategoryCommand, key);
@@ -77,7 +86,8 @@ public class PSPECSMessagesListenerTest extends AbstractIntegrationTest {
     @Test
     public void shouldProcessAddProductLocaleMessage() throws IOException {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getAddProductLocaleMessage();
-        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPSPECSDebeziumMessagesKeyObject();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPSPECSDebeziumMessagesKeyObjectForProductId(
+                "ppsh");
         doNothing().when(specificationService) //
                 .addLocale("ppsh", "en_US");
         messageReceiver.processProductSpecificationUpdates(addProductLocaleMessage, key);

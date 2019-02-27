@@ -62,7 +62,7 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
     public void before() {
         messageReceiver = new KafkaConnectDebeziumMessagesReceiver(
                 new DebeziumMessageParser(), mediaSpecificationService,
-                specificationService);
+                specificationService, new PSPECSMessageParser());
     }
 
     @Test

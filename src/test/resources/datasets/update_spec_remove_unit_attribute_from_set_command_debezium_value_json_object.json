@@ -1,1 +1,15 @@
-{"after":null,"patch":"{\"$v\" : 1,\"$set\" : {\"en_US.1\" : [{\"value\" : \"1\", \"unit\" : \"kg\",\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1403081023954},\"_class\" : \"com.etilize.burraq.pspecs.specification.UnitAttribute\"}, {\"value\" : \"0.25\", \"unit\" : \"kg\",\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1403081023954},\"_class\" : \"com.etilize.burraq.pspecs.specification.UnitAttribute\"}]}}","source":{"version":{"string":"0.8.0.Final"},"name":"burraq","rs":"rs0","ns":"product-specifications-service.specifications","sec":1538543253,"ord":1,"h":{"long":4939996966385256529},"initsync":{"boolean":false}},"op":{"string":"u"},"ts_ms":{"long":1538543253931}}
+{
+  "after":null,
+  "patch":"{\"$v\" : 1,\"$set\" : {\"en_US.777\" : [{\"value\" : {\"EXTRACTED\" : {\"unit\" : \"GB\",\"value\" : 3},\"BASE\" : {\"unit\" : \"bytes\",\"value\" : 30072}},\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1550733862979},\"_class\" : \"com.etilize.burraq.pspecs.specification.value.UnitValue\"}]}}",
+  "source":{
+    "name":"burraq",
+    "rs":"rs0",
+    "ns":"product-specifications-service.specifications",
+    "sec":1550733863,
+    "ord":1,
+    "h":-5480839180305845252,
+    "initsync":null
+  },
+  "op":"u",
+  "ts_ms":1550733863101
+}

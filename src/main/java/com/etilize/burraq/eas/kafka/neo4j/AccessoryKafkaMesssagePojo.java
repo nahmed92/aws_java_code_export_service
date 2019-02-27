@@ -55,7 +55,7 @@ public class AccessoryKafkaMesssagePojo {
 
     /**
      * create {@link AccessoryKafkaMesssagePojo} instance
-     * 
+     *
      * @param productId accessory productId
      * @param marketId accessory market
      * @param accessoryId accessory accessoryId
