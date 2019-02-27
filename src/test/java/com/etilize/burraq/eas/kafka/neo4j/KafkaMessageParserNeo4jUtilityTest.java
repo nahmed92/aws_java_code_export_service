@@ -105,4 +105,35 @@ public class KafkaMessageParserNeo4jUtilityTest extends AbstractIntegrationTest 
         assertThat(parsedProperies.getAccessoryId(), is("1000009365"));
     }
 
+    @Test
+    public void shouldGetProductCodeCreatedMessage() throws IOException {
+
+        final String productCodeKafkaMessage = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH + "/productcode_create_message.json"),
+                "UTF-8");
+        final ProductCodeKafkaMesssagePojo parsedProperies = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
+                new JsonParser().parse(productCodeKafkaMessage).getAsJsonObject());
+        assertThat(parsedProperies.getRecordType(), is("relationship"));
+        assertThat(parsedProperies.getOperationType(), is("created"));
+        assertThat(parsedProperies.getProductId(), is("55555"));
+        assertThat(parsedProperies.getMarket(), is("EU"));
+        assertThat(parsedProperies.getCustomerId(), is("IM_UK"));
+        assertThat(parsedProperies.getCode(), is("0010343843173"));
+    }
+
+    @Test
+    public void shouldGetProductCodeDeleteMessage() throws IOException {
+        final String productCodeKafkaMessage = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH + "/productcode_delete_message.json"),
+                "UTF-8");
+        final ProductCodeKafkaMesssagePojo parsedProperies = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
+                new JsonParser().parse(productCodeKafkaMessage).getAsJsonObject());
+        assertThat(parsedProperies.getRecordType(), is("relationship"));
+        assertThat(parsedProperies.getOperationType(), is("deleted"));
+        assertThat(parsedProperies.getProductId(), is("55555"));
+        assertThat(parsedProperies.getMarket(), is("US"));
+        assertThat(parsedProperies.getCustomerId(), is("IM_US"));
+        assertThat(parsedProperies.getCode(), is("0010343843172"));
+    }
+
 }

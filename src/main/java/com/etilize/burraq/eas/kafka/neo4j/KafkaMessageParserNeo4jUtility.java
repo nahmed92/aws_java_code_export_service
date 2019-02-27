@@ -36,7 +36,33 @@ import com.google.gson.JsonObject;
  * @author Nasir Ahmed
  * @since 1.0
  */
-public class KafkaMessageParserNeo4jUtility {
+public final class KafkaMessageParserNeo4jUtility {
+
+    private static final String BEFORE = "before";
+
+    private static final String AFTER = "after";
+
+    private static final String VALUE = "value";
+
+    private static final String OPERATION = "operation";
+
+    private static final String PROPERTIES = "properties";
+
+    private static final String PRODUCTID = "productId";
+
+    private static final String META = "meta";
+
+    private static final String DELETED = "deleted";
+
+    private static final String PAYLOAD = "payload";
+
+    /**
+     * Add to remove sonar error
+     * sonar suggestion to add a private constructor to hide the implicit public one.
+     */
+    private KafkaMessageParserNeo4jUtility() {
+
+    }
 
     /**
      * Process barcode-service originated messages
@@ -49,22 +75,21 @@ public class KafkaMessageParserNeo4jUtility {
             final JsonObject jsonRecord) {
         // Parsing BACS Neo4j message
         //Get Operation that hold Operation information created or deleted
-        final String operationType = jsonRecord.getAsJsonObject("value").getAsJsonObject(
-                "meta").get("operation").getAsString();
-        // PAYLOAD holds actual values like productId, type, code, customerId in before and after property and identify it's node data or relationship data
-        final JsonObject PAYLOAD = jsonRecord.getAsJsonObject("value").getAsJsonObject(
-                "payload");
-        // BEFORE_OR_AFTER_PROPERTY holds actual value of productId, type, code, customerId
-        final JsonObject BEFORE_OR_AFTER_PROPERTY = operationType.equals("deleted")
-                ? PAYLOAD.getAsJsonObject("before") : PAYLOAD.getAsJsonObject("after");
-        final JsonObject jsonObect = BEFORE_OR_AFTER_PROPERTY.getAsJsonObject(
-                "properties");
-        return new BarcodeKafkaMesssagePojo(jsonObect.get("productId").getAsString(), //
+        final String operationType = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                META).get(OPERATION).getAsString();
+        // payLoad holds actual values like productId, type, code, customerId in before and after property and identify it's node data or relationship data
+        final JsonObject payLoad = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                PAYLOAD);
+        // beforeAndAfterProperty holds actual value of productId, type, code, customerId
+        final JsonObject beforeAndAfterProperty = operationType.equals(DELETED)
+                ? payLoad.getAsJsonObject(BEFORE) : payLoad.getAsJsonObject(AFTER);
+        final JsonObject jsonObect = beforeAndAfterProperty.getAsJsonObject(PROPERTIES);
+        return new BarcodeKafkaMesssagePojo(jsonObect.get(PRODUCTID).getAsString(), //
                 jsonObect.get("type").getAsString(), //
                 jsonObect.get("code").getAsString(), //
                 jsonObect.get("customerId").getAsString(), //
                 operationType, //
-                PAYLOAD.get("type").getAsString());
+                payLoad.get("type").getAsString());
 
     }
 
@@ -79,24 +104,56 @@ public class KafkaMessageParserNeo4jUtility {
             final JsonObject jsonRecord) {
         // Parsing PAS Neo4j message
         //Get Operation that hold Operation information created or deleted
-        final String operationType = jsonRecord.getAsJsonObject("value").getAsJsonObject(
-                "meta").get("operation").getAsString();
-        // PAYLOAD holds actual values like productId, market, accessoryId, type in before
+        final String operationType = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                META).get(OPERATION).getAsString();
+        // payload holds actual values like productId, market, accessoryId, type in before
         // and after property and identify it's node data or relationship data
-        final JsonObject PAYLOAD = jsonRecord.getAsJsonObject("value").getAsJsonObject(
-                "payload");
-        // BEFORE_OR_AFTER_PROPERTY holds actual value of productId, type, code, customerId
-        final JsonObject BEFORE_OR_AFTER_PROPERTY = operationType.equals("deleted")
-                ? PAYLOAD.getAsJsonObject("before") : PAYLOAD.getAsJsonObject("after");
+        final JsonObject payload = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                PAYLOAD);
+        // beforeAndAfterProperty holds actual value of productId, type, code, customerId
+        final JsonObject beforeAndAfterProperty = operationType.equals(DELETED)
+                ? payload.getAsJsonObject(BEFORE) : payload.getAsJsonObject(AFTER);
 
-        final JsonObject jsonObect = BEFORE_OR_AFTER_PROPERTY.getAsJsonObject(
-                "properties");
+        final JsonObject jsonObect = beforeAndAfterProperty.getAsJsonObject(PROPERTIES);
         // operationType property specify Node or relationship data
         // if Node data recordType is node, relationship relationship record
-        return new AccessoryKafkaMesssagePojo(jsonObect.get("productId").getAsString(), //
+        return new AccessoryKafkaMesssagePojo(jsonObect.get(PRODUCTID).getAsString(), //
                 jsonObect.get("markets").getAsString(), //
                 jsonObect.get("accessoryId").getAsString(), //
                 operationType, //
-                PAYLOAD.get("type").getAsString());
+                payload.get("type").getAsString());
+    }
+
+    /**
+     * Process product-code-service originated messages
+     *
+     * @param jsonRecord {@link JsonObject}
+     *
+     * @return {@link ProductCodeKafkaMesssagePojo}
+     */
+    public static ProductCodeKafkaMesssagePojo parseProductCodeKafkaMessage(
+            final JsonObject jsonRecord) {
+        // Parsing PCS Neo4j message
+        //Get Operation that hold Operation information created or deleted
+        final String operationType = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                META).get(OPERATION).getAsString();
+        // payLoad holds actual values like productId, market, accessoryId, type in before
+        // and after property and identify it's node data or relationship data
+        final JsonObject payLoad = jsonRecord.getAsJsonObject(VALUE).getAsJsonObject(
+                PAYLOAD);
+        // beforeAndAfterProperty holds actual value of productId, type, code, customerId
+        final JsonObject beforeAndAfterProperty = operationType.equals(DELETED)
+                ? payLoad.getAsJsonObject(BEFORE) : payLoad.getAsJsonObject(AFTER);
+
+        final JsonObject jsonObect = beforeAndAfterProperty.getAsJsonObject(PROPERTIES);
+        final String recordType = payLoad.get("type").getAsString();
+        return KafkaConnectNeo4jMessagesReceiver.RECORD_TYPE.equals(recordType)
+                ? new ProductCodeKafkaMesssagePojo(jsonObect.get(PRODUCTID).getAsString(), //
+                        jsonObect.get("market").getAsString(), //
+                        jsonObect.get("customerId").getAsString(), //
+                        jsonObect.get("code").getAsString(), //
+                        operationType, //
+                        recordType)
+                : null;
     }
 }
