@@ -28,10 +28,6 @@
 
 package com.etilize.burraq.eas.kafka.neo4j;
 
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.etilize.burraq.eas.accessory.AccessoryService;
 import com.etilize.burraq.eas.barcode.BarcodeService;
+import com.etilize.burraq.eas.customer.code.CustomerCodeService;
 import com.google.gson.JsonParser;
 
 /**
@@ -54,7 +51,7 @@ public class KafkaConnectNeo4jMessagesReceiver {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String RECORD_TYPE = "relationship";
+    public static final String RECORD_TYPE = "relationship";
 
     private static final String OPERATION_TYPE = "created";
 
@@ -64,18 +61,17 @@ public class KafkaConnectNeo4jMessagesReceiver {
     @Autowired
     private AccessoryService accessoryService;
 
+    @Autowired
+    private CustomerCodeService customerCodeService;
+
     /**
      * Process barcode-service originated messages
      *
      * @param message
      *            {@link Message<String>} message of type {@link String}
-     * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.bacs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processBarcodeMessages(final Message<String> message)
-            throws JsonParseException, JsonMappingException, IOException {
+    public void processBarcodeMessages(final Message<String> message) {
         logger.info("Received message from barcode-service [{}]", message);
 
         final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
@@ -105,6 +101,20 @@ public class KafkaConnectNeo4jMessagesReceiver {
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pcs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
     public void processProductCodeServiceMessages(final Message<String> message) {
         logger.info("Received message from product-code-service [{}]", message);
+        final ProductCodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
+                new JsonParser().parse(
+                        message.getPayload().toString()).getAsJsonObject());
+        if (parsedMessage != null && RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                customerCodeService.save(parsedMessage.getProductId(), //
+                        parsedMessage.getMarket(), //
+                        parsedMessage.getCode(), parsedMessage.getCustomerId());
+            } else {
+                customerCodeService.delete(parsedMessage.getProductId(), //
+                        parsedMessage.getMarket(), //
+                        parsedMessage.getCode(), parsedMessage.getCustomerId());
+            }
+        }
     }
 
     /**
@@ -114,8 +124,7 @@ public class KafkaConnectNeo4jMessagesReceiver {
      *            {@link AccessoryKafkaMesssagePojo} message of type {@link String}
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pas}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processProductAsseccoryServiceMessages(final Message<String> message)
-            throws JsonParseException, JsonMappingException, IOException {
+    public void processProductAsseccoryServiceMessages(final Message<String> message) {
         logger.info("Received message from product-accessories-service [{}]", message);
         final AccessoryKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
                 new JsonParser().parse(
