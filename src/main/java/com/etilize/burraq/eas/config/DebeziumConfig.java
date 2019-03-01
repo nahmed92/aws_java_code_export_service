@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.etilize.burraq.eas.kafka.debezium.DebeziumMessageParser;
+import com.etilize.burraq.eas.kafka.debezium.PSPECSMessageParser;
 
 /**
  * General configurations related to Bean dependencies etc.
@@ -50,5 +51,15 @@ public class DebeziumConfig {
     @Bean
     public DebeziumMessageParser debeziumMessageParser() {
         return new DebeziumMessageParser();
+    }
+    
+    /**
+     * Produces an instance of {@link PSPECSMessageParser}
+     *
+     * @return {@link PSPECSMessageParser}
+     */
+    @Bean
+    public PSPECSMessageParser pspecsMessageParser() {
+        return new PSPECSMessageParser();
     }
 }

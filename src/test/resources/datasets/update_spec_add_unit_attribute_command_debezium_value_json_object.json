@@ -1,26 +1,15 @@
 {
-    "after": null,
-    "patch": "{\"$v\" : 1,\"$set\" : {\"de_DE.2\" : {\"unit\" : \"kg\",\"value\" : \"0.5\",\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1403081023954},\"_class\" : \"com.etilize.burraq.pspecs.specification.UnitAttribute\"}}}",
-    "source": {
-        "version": {
-            "string": "0.8.0.Final"
-        },
-        "name": "burraq",
-        "rs": "rs0",
-        "ns": "product-specifications-service.specifications",
-        "sec": 1538375618,
-        "ord": 1,
-        "h": {
-            "long": -8013922333266823000
-        },
-        "initsync": {
-            "boolean": false
-        }
-    },
-    "op": {
-        "string": "u"
-    },
-    "ts_ms": {
-        "long": 1538375618061
-    }
+  "after":null,
+  "patch":"{\"$v\" : 1,\"$set\" : {\"en_US.30\" : {\"value\" : {\"EXTRACTED\" : {\"unit\" : \"GB\",\"value\" : 3},\"BASE\" : {\"unit\" : \"bytes\",\"value\" : 30072}},\"lastModifiedBy\" : \"user123\",\"lastModifiedDate\" : {\"$date\" : 1550659401551},\"_class\" : \"com.etilize.burraq.pspecs.specification.value.UnitValue\"}}}",
+  "source":{
+    "name":"burraq",
+    "rs":"rs0",
+    "ns":"product-specifications-service.specifications",
+    "sec":1550659401,
+    "ord":1,
+    "h":58477712475042474,
+    "initsync":null
+  },
+  "op":"u",
+  "ts_ms":1550659401597
 }

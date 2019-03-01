@@ -33,7 +33,6 @@ import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Queue;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -47,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
 import com.etilize.burraq.eas.specification.SpecificationService;
+import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
 
 /**
  * Houses listeners for all incoming Apache Kafka Debezium messages
@@ -61,6 +61,8 @@ public class KafkaConnectDebeziumMessagesReceiver {
 
     private final DebeziumMessageParser debeziumMessageParser;
 
+    private final PSPECSMessageParser pspecsMessageParser;
+
     private final MediaSpecificationService mediaSpecificationService;
 
     private final SpecificationService specificationService;
@@ -71,15 +73,18 @@ public class KafkaConnectDebeziumMessagesReceiver {
      * @param debeziumMessageParser {@link @DebeziumMessageParser}
      * @param mediaSpecificationService {@link MediaSpecificationService}
      * @param specificationService {@link SpecificationService}
+     * @param pspecsMessageParser {@link PSPECSMessageParser}
      */
     @Autowired
     public KafkaConnectDebeziumMessagesReceiver(
             final DebeziumMessageParser debeziumMessageParser,
             final MediaSpecificationService mediaSpecificationService,
-            final SpecificationService specificationService) {
+            final SpecificationService specificationService,
+            final PSPECSMessageParser pspecsMessageParser) {
         this.debeziumMessageParser = debeziumMessageParser;
         this.mediaSpecificationService = mediaSpecificationService;
         this.specificationService = specificationService;
+        this.pspecsMessageParser = pspecsMessageParser;
     }
 
     /**
@@ -91,8 +96,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
     */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pspecs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
     public void processProductSpecificationUpdates(final GenericData.Record record,
-            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key)
-            throws IOException {
+            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         final String productId = debeziumMessageParser.getProductIdFromDebeziumMessageKey(
                 key);
         final Optional<String> operation = debeziumMessageParser.extractOperationType(
@@ -181,14 +185,12 @@ public class KafkaConnectDebeziumMessagesReceiver {
     }
 
     private void processUpdateSpecificationAttributeCommand(final String productId,
-            final GenericData.Record record) throws IOException {
+            final GenericData.Record record) {
         logger.info(
                 "Received Debezium's Update Producut Specifications Command from pspecs [{}]",
                 record);
-        final Queue<SpecificationUpdateOperation> operations = debeziumMessageParser.parseToUpdateOperationMap(
+        final UpdateSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
                 productId, record);
-        operations.forEach(operation -> {
-            //TODO: processing will be implemented here !
-        });
+        specificationService.updateSpecifications(request);
     }
 }

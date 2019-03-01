@@ -40,6 +40,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.util.ResourceUtils;
 
+import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
+import com.etilize.burraq.eas.specification.UpdateSpecificationRequestFixture;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -163,6 +165,38 @@ public class DebeziumMessageTestFixtures {
      * @throws FileNotFoundException in case of error during file reading.
      * @throws IOException in case of IO errors during file reading.
      */
+    public static GenericData.Record getMiscUpdateAttributesDataFromPSPECS()
+            throws FileNotFoundException, IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumUpdateSpecsAddAttributeCommand = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_miscellaneous_update_attributes.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumUpdateSpecsAddAttributeCommand).getAsJsonObject();
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put(OPERATION, OPERATION_UPDATE);
+        command.put(AFTER, null);
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return command;
+    }
+
+    /**
+     * Returns an {@link GenericData.Record} instance initialized with default values.
+     *
+     * @return {@link GenericData.Record}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
     public static GenericData.Record getUpdateProductSpecsAddValueAttributeValueData()
             throws FileNotFoundException, IOException {
         final String debeziumMessageJsonSchema = FileUtils.readFileToString(
@@ -179,9 +213,10 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
         command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
         return command;
     }
 
@@ -208,9 +243,10 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
         command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
         return command;
     }
 
@@ -237,9 +273,10 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
         command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
         return command;
     }
 
@@ -266,9 +303,12 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
         return command;
     }
 
@@ -295,9 +335,11 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
         return command;
     }
 
@@ -324,9 +366,11 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
         return command;
     }
 
@@ -353,9 +397,44 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return command;
+    }
+
+    /**
+     * Returns an {@link GenericData.Record} instance initialized with default values.
+     *
+     * @return {@link GenericData.Record}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static GenericData.Record getUpdateProductSpecsRemoveTextAttributeData()
+            throws FileNotFoundException, IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumUpdateSpecsAddAttributeCommand = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/update_spec_remove_text_attribute_command_debezium_value_json_object.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumUpdateSpecsAddAttributeCommand).getAsJsonObject();
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put(OPERATION, OPERATION_UPDATE);
+        command.put(AFTER, null);
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
         return command;
     }
 
@@ -440,9 +519,12 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
         return command;
     }
 
@@ -469,9 +551,12 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
-        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
-        command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
         return command;
     }
 
@@ -667,7 +752,8 @@ public class DebeziumMessageTestFixtures {
         final GenericData.Record command = new GenericData.Record(schema);
         command.put(OPERATION, OPERATION_UPDATE);
         command.put(AFTER, null);
-        command.put(PATCH, object.get(PATCH));
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
         command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
         command.put(TS_MS, object.get(TS_MS).getAsJsonObject());
         return command;
@@ -795,13 +881,14 @@ public class DebeziumMessageTestFixtures {
 
     /**
      * Returns {@link ConsumerRecord<String, String>} containing the mongodb object key.
+     * @param productId TODO
      *
      * @return {@link ConsumerRecord<String, String>}
      * @throws FileNotFoundException in case of error during file reading.
      * @throws IOException in case of IO errors during file reading.
      */
-    public static ConsumerRecord<Object, String> getPSPECSDebeziumMessagesKeyObject()
-            throws FileNotFoundException, IOException {
+    public static ConsumerRecord<Object, String> getPSPECSDebeziumMessagesKeyObjectForProductId(
+            final String productId) throws FileNotFoundException, IOException {
 
         final String debeziumMessageKeyJsonSchema = FileUtils.readFileToString(
                 ResourceUtils.getFile(
@@ -809,7 +896,7 @@ public class DebeziumMessageTestFixtures {
                 "UTF-8");
         final Schema schema = new Schema.Parser().parse(debeziumMessageKeyJsonSchema);
         final GenericData.Record command = new GenericData.Record(schema);
-        command.put("_id", "{\"_id\" : \"ppsh\"}");
+        command.put("_id", "{\"_id\" : \"" + productId + "\"}");
         return new ConsumerRecord<>(
                 "burraq.product-specifications-service.specifications", 0, 0, command,
                 null);
@@ -882,5 +969,72 @@ public class DebeziumMessageTestFixtures {
         message.put(TS_MS, object.get(TS_MS) //
                 .getAsLong());
         return message;
+    }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PSPECS UpdateSpecificationsAttributeCommand.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getUpdateSpecificationsAttributeCommand()
+            throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/pspecs_add_product_locale_message_command.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonParser jsonParser = new JsonParser();
+        final JsonObject object = jsonParser.parse(debeziumMessageJsonObject) //
+                .getAsJsonObject();
+        final JsonObject patch = jsonParser.parse(object.get(PATCH) //
+                .getAsString()).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(PATCH, patch.toString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsJsonNull());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        message.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return message;
+    }
+
+    /**
+     * Returns an {@link GenericData.Record} for the {@link UpdateSpecificationRequest} from UpdateSpecificationRequestFixture.createWithUpdatedAttributes().
+     *
+     * @return {@link GenericData.Record}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static GenericData.Record getUpdatedAttributesMessage()
+            throws FileNotFoundException, IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumUpdateSpecsAddAttributeCommand = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_update_attributes_message.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumUpdateSpecsAddAttributeCommand).getAsJsonObject();
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put(OPERATION, OPERATION_UPDATE);
+        command.put(AFTER, null);
+        command.put(PATCH, object.get(PATCH) //
+                .getAsString());
+        command.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS) //
+                .getAsLong());
+        return command;
     }
 }
