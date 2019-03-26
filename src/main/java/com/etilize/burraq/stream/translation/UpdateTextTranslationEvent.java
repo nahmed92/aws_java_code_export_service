@@ -26,12 +26,13 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.spring.cloud.stream;
+package com.etilize.burraq.stream.translation;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.etilize.burraq.eas.spring.cloud.stream.Message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;

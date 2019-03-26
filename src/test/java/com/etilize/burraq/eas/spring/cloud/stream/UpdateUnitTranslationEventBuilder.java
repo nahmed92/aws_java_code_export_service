@@ -30,7 +30,7 @@ package com.etilize.burraq.eas.spring.cloud.stream;
 
 import java.util.Date;
 
-import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEvent;
+import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 import com.fluentinterface.annotation.Constructs;
 import com.fluentinterface.builder.Builder;
 

@@ -32,7 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEvent;
+import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 import com.fluentinterface.ReflectionBuilder;
 
 /**
