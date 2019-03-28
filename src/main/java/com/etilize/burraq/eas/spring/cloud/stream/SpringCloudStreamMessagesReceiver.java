@@ -36,6 +36,8 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
+import com.etilize.burraq.stream.translation.UpdateTextTranslationEvent;
+import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 
 /**
  * Houses message handlers for spring cloud stream based messages.

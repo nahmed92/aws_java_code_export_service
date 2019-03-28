@@ -26,7 +26,7 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.spring.cloud.stream;
+package com.etilize.burraq.stream.translation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
@@ -36,7 +36,8 @@ import java.text.ParseException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 
-import com.etilize.burraq.eas.spring.cloud.stream.UpdateTextTranslationEvent;
+import com.etilize.burraq.eas.spring.cloud.stream.UpdateUnitTranslationEventFixture;
+import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
@@ -52,15 +53,15 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 /**
- * POJO tests for {@link UpdateTextTranslationEvent}
+ * POJO tests for {@link UpdateUnitTranslationEvent}
  *
  * @author Affan Hasan
  * @since 1.0
  */
-public class UpdateTextTranslationEventPojoTest {
+public class UpdateUnitTranslationEventPojoTest {
 
     @Test
-    public void validateUpdateTextTranslationEventPojo() {
+    public void validateUpdateUnitTranslationEventPojo() {
         final Validator validator;
         validator = ValidatorBuilder.create() //
                 .with(new GetterMustExistRule()) //
@@ -72,20 +73,20 @@ public class UpdateTextTranslationEventPojoTest {
                 .with(new GetterTester()) //
                 .build();
         validator.validate(
-                PojoClassFactory.getPojoClass(UpdateTextTranslationEvent.class));
+                PojoClassFactory.getPojoClass(UpdateUnitTranslationEvent.class));
     }
 
     @Test
     public void shouldFollowEqualsContract() {
-        EqualsVerifier.forClass(UpdateTextTranslationEvent.class) //
+        EqualsVerifier.forClass(UpdateUnitTranslationEvent.class) //
                 .suppress(Warning.NONFINAL_FIELDS) //
                 .verify();
     }
 
     @Test
     public void shouldContainToString() throws ParseException {
-        final UpdateTextTranslationEvent updateTextTranslationEvent = UpdateTextTranslationEventFixture.createWithDefaults();
-        assertThat(ObjectUtils.identityToString(updateTextTranslationEvent),
-                not(updateTextTranslationEvent.toString()));
+        final UpdateUnitTranslationEvent updateUnitTranslationEvent = UpdateUnitTranslationEventFixture.createWithDefaults();
+        assertThat(ObjectUtils.identityToString(updateUnitTranslationEvent),
+                not(updateUnitTranslationEvent.toString()));
     }
 }
