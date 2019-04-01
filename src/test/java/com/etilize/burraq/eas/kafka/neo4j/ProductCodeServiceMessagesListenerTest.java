@@ -28,59 +28,56 @@
 
 package com.etilize.burraq.eas.kafka.neo4j;
 
-import java.util.*;
+import static org.mockito.Mockito.*;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.assertj.core.util.Lists;
-import org.junit.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.test.rule.KafkaEmbedded;
-import org.springframework.kafka.test.utils.KafkaTestUtils;
+import java.util.Map;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
+
+import com.etilize.burraq.eas.accessory.AccessoryService;
+import com.etilize.burraq.eas.barcode.BarcodeService;
+import com.etilize.burraq.eas.customer.code.CustomerCodeService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.google.common.collect.Maps;
 
 public class ProductCodeServiceMessagesListenerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private KafkaEmbedded kafkaEmbedded;
-
-    @Value("${spring.kafka.consumer.properties.topic.pcs}")
-    private String productCodeServiceTopic;
-
-    @Autowired
-    private ConcurrentKafkaListenerContainerFactory<String, String> listener;
-
-    Producer<String, String> producer;
-
-    Consumer<String, String> consumer;
-
+	private KafkaConnectNeo4jMessagesReceiver mr;
+	
+    @Mock
+    private BarcodeService barcodeService;
+    
+    @Mock
+    private AccessoryService accessoryService;
+    
+    @Mock
+    private CustomerCodeService customerCodeService;
+    
     @Before
-    public void init() {
-        final Map<String, Object> producerConfigs = new HashMap<>(
-                KafkaTestUtils.producerProps(kafkaEmbedded));
-        producer = new DefaultKafkaProducerFactory<>(producerConfigs,
-                new StringSerializer(), new StringSerializer()).createProducer();
-        consumer = listener.getConsumerFactory().createConsumer();
-        consumer.subscribe(Lists.newArrayList(productCodeServiceTopic));
-        consumer.poll(0);
-    }
-
-    @After
-    public void conclude() {
-        consumer.close();
-        producer.close();
+    public void init(){
+    	mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService, customerCodeService);
     }
 
     @Test
     public void shouldCreateProductMessage() {
-        final String createProductWithOutCustomerCodesMessageValue = "{\"key\":\"neo4j\",\"value\":{\"meta\":{\"timestamp\":1544161009713,\"username\":\"neo4j\",\"txId\":300,\"txEventId\":0,\"txEventsCount\":1,\"operation\":\"created\",\"source\":{\"hostname\":\"localhost\"}},\"payload\":{\"id\":\"154\",\"before\":null,\"after\":{\"properties\":{\"productId\":\"1900\"},\"labels\":[\"Product\"]},\"type\":\"node\"},\"schema\":{\"properties\":[],\"constraints\":null}}}";
-        producer.send(new ProducerRecord<>(productCodeServiceTopic, "sample-key",
-                createProductWithOutCustomerCodesMessageValue));
-        producer.flush();
-        KafkaTestUtils.getRecords(consumer, 3000);
+    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final String createProductWithCustomerCodesMessageValue = "{\"payload\":{\"id\":\"1620892\",\"start\":{\"id\":\"2318213\",\"labels\":[\"Product\"]},\"end\":{\"id\":\"2318215\",\"labels\":[\"CustomerCode\"]},\"before\":null,\"after\":{\"properties\":{\"market\":\"US\",\"code\":\"test1ss2ss5566544\",\"productId\":\"a2703865-1f83-4cea-b037-39c83ce83761\",\"customerId\":\"Valvolinen\"}},\"label\":\"IDENTIFIED_BY\",\"type\":\"relationship\"},\"meta\":{\"timestamp\":1554111179578,\"username\":\"neo4j\",\"txId\":975021,\"txEventId\":1,\"txEventsCount\":2,\"operation\":\"created\",\"source\":{\"hostname\":\"vmnode0018\"}},\"schema\":{\"properties\":[],\"constraints\":null}}";
+        final Message<String> message = new GenericMessage<String>(createProductWithCustomerCodesMessageValue, headers);
+    	doNothing() //
+    	.when(customerCodeService).save("a2703865-1f83-4cea-b037-39c83ce83761", "US", "test1ss2ss5566544", "Valvolinen");
+    	mr.processProductCodeServiceMessages(message);
+    	verify(customerCodeService, times(1)).save("a2703865-1f83-4cea-b037-39c83ce83761", "US", "test1ss2ss5566544", "Valvolinen");
+    }
+    
+    @Test(expected=IllegalStateException.class)
+    public void shouldThrowJsonParseExceptionWhenJsonIsNotValid() {
+    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final String payload = "\"e400�0test_user@etilizepak.com�����ZHa2703865-1f83-4cea-b037-39c83ce83761token 1\"";
+        final Message<String> message = new GenericMessage<String>(payload, headers);
+    	mr.processProductCodeServiceMessages(message);
     }
 }
