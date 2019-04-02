@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 public class KafkaMessageParserNeo4jUtilityTest extends AbstractIntegrationTest {
@@ -60,7 +61,7 @@ public class KafkaMessageParserNeo4jUtilityTest extends AbstractIntegrationTest 
         assertThat(parsedProperies.getCode(), is("0885170129832"));
         assertThat(parsedProperies.getCustomerId(), is("Lenovo"));
     }
-
+   
     @Test
     public void shouldParseDeleteMessage() throws IOException {
         final String barcodeKafkaMessage = FileUtils.readFileToString(

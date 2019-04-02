@@ -28,59 +28,56 @@
 
 package com.etilize.burraq.eas.kafka.neo4j;
 
-import java.util.*;
+import static org.mockito.Mockito.*;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.assertj.core.util.Lists;
-import org.junit.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.test.rule.KafkaEmbedded;
-import org.springframework.kafka.test.utils.KafkaTestUtils;
+import java.util.Map;
 
-import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 
-public class BarcodeServiceMessagesListenerTest extends AbstractIntegrationTest {
+import com.etilize.burraq.eas.accessory.AccessoryService;
+import com.etilize.burraq.eas.barcode.BarcodeService;
+import com.etilize.burraq.eas.customer.code.CustomerCodeService;
+import com.etilize.burraq.eas.test.AbstractRestIntegrationTest;
+import com.google.common.collect.Maps;
 
-    @Autowired
-    private KafkaEmbedded kafkaEmbedded;
-
-    @Value("${spring.kafka.consumer.properties.topic.bacs}")
-    private String barcodeServiceTopic;
-
-    @Autowired
-    private ConcurrentKafkaListenerContainerFactory<String, String> listener;
-
-    Producer<String, String> producer;
-
-    Consumer<String, String> consumer;
-
+public class BarcodeServiceMessagesListenerTest extends AbstractRestIntegrationTest {
+	
+	private KafkaConnectNeo4jMessagesReceiver mr;
+	
+    @Mock
+    private BarcodeService barcodeService;
+    
+    @Mock
+    private AccessoryService accessoryService;
+    
+    @Mock
+    private CustomerCodeService customerCodeService;
+    
     @Before
-    public void init() {
-        final Map<String, Object> producerConfigs = new HashMap<>(
-                KafkaTestUtils.producerProps(kafkaEmbedded));
-        producer = new DefaultKafkaProducerFactory<>(producerConfigs,
-                new StringSerializer(), new StringSerializer()).createProducer();
-        consumer = listener.getConsumerFactory().createConsumer();
-        consumer.subscribe(Lists.newArrayList(barcodeServiceTopic));
-        consumer.poll(0);
-    }
-
-    @After
-    public void conclude() {
-        consumer.close();
-        producer.close();
+    public void init(){
+    	mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService, customerCodeService);
     }
 
     @Test
     public void shouldCreateProductMessage() {
-        final String createProductWithOutBarcodesValue = "{\"key\":\"neo4j\",\"value\":{\"meta\":{\"timestamp\":1546584495532,\"username\":\"neo4j\",\"txId\":314,\"txEventId\":0,\"txEventsCount\":1,\"operation\":\"created\",\"source\":{\"hostname\":\"localhost\"}},\"payload\":{\"id\":\"206\",\"before\":null,\"after\":{\"properties\":{\"productId\":\"ppp1\"},\"labels\":[\"Product\"]},\"type\":\"node\"},\"schema\":{\"properties\":[],\"constraints\":null}}}";
-        producer.send(new ProducerRecord<>(barcodeServiceTopic, "sample-key",
-                createProductWithOutBarcodesValue));
-        producer.flush();
-        KafkaTestUtils.getRecords(consumer, 3000);
+    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+    	final String createProductWithOutBarcodesValue = "{\"payload\":{\"id\":\"1620242\",\"start\":{\"id\":\"2318213\",\"labels\":[\"Product\"]},\"end\":{\"id\":\"2318521\",\"labels\":[\"Barcode\"]},\"before\":null,\"after\":{\"properties\":{\"code\":\"0000095050003\",\"productId\":\"a2703865-1f83-4cea-b037-39c83ce83761\",\"customerId\":\"test\",\"type\":\"EAN\"}},\"label\":\"RELATED_TO\",\"type\":\"relationship\"},\"meta\":{\"timestamp\":1554116960944,\"username\":\"neo4j\",\"txId\":975087,\"txEventId\":3,\"txEventsCount\":6,\"operation\":\"created\",\"source\":{\"hostname\":\"vmnode0018\"}},\"schema\":{\"properties\":[],\"constraints\":null}}";
+    	final Message<String> message = new GenericMessage<String>(createProductWithOutBarcodesValue, headers);
+    	doNothing() //
+    	.when(barcodeService).save("a2703865-1f83-4cea-b037-39c83ce83761", "EAN", "0000095050003", "test");
+    	mr.processBarcodeMessages(message);
+    	verify(barcodeService, times(1)).save("a2703865-1f83-4cea-b037-39c83ce83761", "EAN", "0000095050003", "test");
+    }
+    
+    @Test(expected=IllegalStateException.class)
+    public void shouldThrowJsonParseExceptionWhenJsonIsNotValid() {
+    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final String barcodeKafkaMessage = "\"barcode-service400�Barcode is not valid for Type=UPC,Code=0112345889643862,CustomerId=tasla, error:Invalid Barcode 0112345889643862, it's having length other than 8, 12, 13 or 14., Barcode is not valid for Type=EAN,Code=0112345889643862,CustomerId=tasla, error:Invalid Barcode 0112345889643862, it's having length other than 8, 12, 13 or 14., Barcode is not valid for Type=GTIN,Code=0112345889643862,CustomerId=tasla, error:Invalid Barcode 0112345889643862, it's having length other than 8, 12, 13 or 14.0test_user@etilizepak.com�����ZHa2703865-1f83-4cea-b037-39c83ce83761token 1\"";
+        final Message<String> message = new GenericMessage<String>(barcodeKafkaMessage, headers);
+    	mr.processBarcodeMessages(message);
     }
 }
