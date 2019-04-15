@@ -28,8 +28,10 @@
 
 package com.etilize.burraq.eas.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cloud.stream.annotation.StreamMessageConverter;
 import org.springframework.cloud.stream.schema.avro.AvroMessageConverterProperties;
@@ -39,6 +41,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
 import com.fasterxml.jackson.dataformat.avro.AvroMapper;
@@ -100,15 +103,24 @@ public class StreamConfig {
     }
 
     /**
-     * Confluent Schema Registry Client
+     * Confluent Schema Registry Client.
      *
+     * @param restTemplateBuilder {@link RestTemplateBuilder}
      * @param endpoint the end-point where schema registry is running
+     * @param username key
+     * @param password secret key
      * @return Confluent Schema Registry Client
      */
     @Bean
     public SchemaRegistryClient schemaRegistryClient(
-            @Value("${spring.kafka.consumer.properties.schema.registry.url}") final String endpoint) {
-        final ConfluentSchemaRegistryClient client = new ConfluentSchemaRegistryClient();
+            final RestTemplateBuilder restTemplateBuilder,
+            @Value("${spring.kafka.consumer.properties.schema.registry.url}") final String endpoint,
+            @Value("${spring.kafka.consumer.properties.username:''}") final String username,
+            @Value("${spring.kafka.consumer.properties.password:''}") final String password) {
+        final RestTemplate restTemplate = (StringUtils.isEmpty(username) ? restTemplateBuilder
+                : restTemplateBuilder.basicAuthorization(username, password)).build();
+        final ConfluentSchemaRegistryClient client = new ConfluentSchemaRegistryClient(
+                restTemplate);
         client.setEndpoint(endpoint);
         return client;
     }
