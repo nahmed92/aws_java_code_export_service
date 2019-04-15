@@ -8,6 +8,8 @@ spring:
     consumer:
       properties:
          schema.registry.url: http://localhost:8081
+         username: <username-key>
+         password: <password-secret-key>
          topic.pspecs: burraq.product-specifications-service.specifications
          topic.tas: translation-service
          topic.bacs: barcode-service
