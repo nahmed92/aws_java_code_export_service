@@ -52,7 +52,7 @@ public abstract class MediaSpecification extends AbstractDynamoEntity {
 
     private String localeId;
 
-    private Map<String, String> attributes;
+    private Map<String, MediaAttributeValue> attributes;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
@@ -92,14 +92,14 @@ public abstract class MediaSpecification extends AbstractDynamoEntity {
     /**
      * @return the attributes
      */
-    public Map<String, String> getAttributes() {
+    public Map<String, MediaAttributeValue> getAttributes() {
         return attributes;
     }
 
     /**
      * @param attributes the attributes to set
      */
-    public void setAttributes(final Map<String, String> attributes) {
+    public void setAttributes(final Map<String, MediaAttributeValue> attributes) {
         this.attributes = attributes;
     }
 

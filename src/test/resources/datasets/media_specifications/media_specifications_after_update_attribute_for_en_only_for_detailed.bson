@@ -13,7 +13,11 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               }
             }
          },
@@ -34,7 +38,11 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcde1"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde1"
+	              }
+	            }
               }
             }
          },
@@ -57,7 +65,11 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcdef"
+				"M":{
+	              "url" : {
+	                "S":"http://abcdef"
+	              }
+	            }
               }
             }
          },
@@ -78,7 +90,11 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcdef"
+				"M":{
+	              "url" : {
+	                "S":"http://abcdef"
+	              }
+	            }
               }
             }
          },

@@ -13,7 +13,11 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               }
             }
          },
@@ -34,7 +38,11 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcde1"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde1"
+	              }
+	            }
               }
             }
          },
@@ -55,7 +63,11 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               }
             }
          },
@@ -63,9 +75,7 @@
             "N":1546528059097
          }
       }
-  ]
-},
-{
+  ],
    "rich_media_specifications":[
       {
          "id":{
@@ -80,7 +90,11 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               }
             }
          },
@@ -101,7 +115,11 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcde1"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde1"
+	              }
+	            }
               }
             }
          },
@@ -122,7 +140,11 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               }
             }
          },

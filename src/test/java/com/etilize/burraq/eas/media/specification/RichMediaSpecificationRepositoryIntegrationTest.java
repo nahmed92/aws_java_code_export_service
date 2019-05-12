@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
 import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
@@ -79,7 +80,14 @@ public class RichMediaSpecificationRepositoryIntegrationTest
                 isIn(Arrays.asList("en", "en_US")));
         assertThat(specifications.get(0).getAttributes(), notNullValue());
         assertThat(specifications.get(0).getAttributes().get("maxId"), notNullValue());
-        assertThat(specifications.get(0).getAttributes().get("maxId"), is("http://abcd"));
+        assertThat(specifications.get(0).getAttributes().get("maxId").getUrl(),
+                is("http://abcd"));
+        assertThat(specifications.get(0).getAttributes().get("maxId").getWidth(),
+                is(160));
+        assertThat(specifications.get(0).getAttributes().get("maxId").getHeight(),
+                is(190));
+        assertThat(specifications.get(0).getAttributes().get("maxId").getTags(),
+                contains("Prod Specs"));
         assertThat(specifications.get(1).getId(),
                 isIn(Arrays.asList("product123-en", "product123-en_US")));
         assertThat(specifications.get(1).getProductId(),
@@ -88,8 +96,8 @@ public class RichMediaSpecificationRepositoryIntegrationTest
                 isIn(Arrays.asList("en", "en_US")));
         assertThat(specifications.get(1).getAttributes(), notNullValue());
         assertThat(specifications.get(1).getAttributes().get("maxId"), notNullValue());
-        assertThat(specifications.get(1).getAttributes().get("maxId"),
-                is("http://abcde"));
+        assertThat(specifications.get(1).getAttributes().get("maxId").getUrl(),
+                is("http://abcd"));
     }
 
     @Test
@@ -102,14 +110,20 @@ public class RichMediaSpecificationRepositoryIntegrationTest
         assertThat(specification.get().getLocaleId(), is("en"));
         assertThat(specification.get().getAttributes(), notNullValue());
         assertThat(specification.get().getAttributes().get("maxId"), notNullValue());
-        assertThat(specification.get().getAttributes().get("maxId"), is("http://abcd"));
+        assertThat(specification.get().getAttributes().get("maxId").getUrl(),
+                is("http://abcd"));
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/rich_media_specifications/rich_media_specifications_after_create.bson")
     public void shouldCreateNewRichMediaSpecification() {
-        final Map<String, String> attributes = Maps.newHashMap();
-        attributes.put("maxId", "http://abc");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abc");
+        value.setHeight(190);
+        value.setWidth(190);
+        value.setTags(Sets.newHashSet("Prod Specs"));
+        final Map<String, MediaAttributeValue> attributes = Maps.newHashMap();
+        attributes.put("maxId", value);
         final RichMediaSpecification specs = new RichMediaSpecification();
         specs.setId("product1234-en");
         specs.setAttributes(attributes);
@@ -123,9 +137,14 @@ public class RichMediaSpecificationRepositoryIntegrationTest
     @ShouldMatchDataSet(location = "/datasets/rich_media_specifications/rich_media_specifications_after_update.bson")
     @Test
     public void shouldUpdateRichMediaSpecification() {
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abc");
+        value.setHeight(190);
+        value.setWidth(160);
+        value.setTags(Sets.newHashSet("Prod Specs"));
         final RichMediaSpecification specs = repository.findById(
                 "product123-en_US").get();
-        specs.getAttributes().put("maxId", "http://abc");
+        specs.getAttributes().put("maxId", value);
         repository.save(specs);
     }
 
@@ -139,14 +158,23 @@ public class RichMediaSpecificationRepositoryIntegrationTest
     @ShouldMatchDataSet(location = "/datasets/rich_media_specifications/rich_media_specifications_after_update_attribute_one_record.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeValueForId() {
-        repository.updateAttribute("product123-en_US", "maxId", "http://xy.png");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://xy.png");
+        value.setWidth(160);
+        value.setTags(Sets.newHashSet("Prod Specs"));
+        repository.updateAttribute("product123-en_US", "maxId", value);
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/rich_media_specifications/rich_media_specifications_after_add_attribute_one_record.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldAddAttributeValueForId() {
-        repository.updateAttribute("product123-en_US", "thumbnailId", "http://xy.png");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://xy.png");
+        value.setHeight(190);
+        value.setWidth(160);
+        value.setTags(Sets.newHashSet("Prod Specs"));
+        repository.updateAttribute("product123-en_US", "thumbnailId", value);
     }
 
     @Test

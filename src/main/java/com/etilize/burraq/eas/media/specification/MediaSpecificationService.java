@@ -51,9 +51,9 @@ public interface MediaSpecificationService {
      * @param localeId locale id
      * @param attributeId attribute id
      * @param status status
-     * @param value attribute value, it is optional, will have value only when status is ASSOCIATED
+     * @param value {@link MediaAttributeValue}, it is optional, will have url, height,width and tags only when status is ASSOCIATED or will have tags for any status
      */
     void saveAttribute(String productId, String localeId, String attributeId,
-            Status status, String value);
+            Status status, MediaAttributeValue value);
 
 }

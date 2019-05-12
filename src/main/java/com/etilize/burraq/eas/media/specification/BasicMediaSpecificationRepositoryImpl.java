@@ -58,18 +58,12 @@ public class BasicMediaSpecificationRepositoryImpl
         table = db.getTable(BasicMediaSpecification.TABLE_NAME);
     }
 
-    /* (non-Javadoc)
-     * @see com.etilize.burraq.eas.media.specification.BasicMediaSpecificationCustomRepository#updateAttribute(java.lang.String, java.lang.String, java.lang.String)
-     */
     @Override
     public void updateAttribute(final String id, final String attributeId,
-            final String value) {
+            final MediaAttributeValue value) {
         table.updateItem(updateAttributeItem(id, attributeId, value));
     }
 
-    /* (non-Javadoc)
-     * @see com.etilize.burraq.eas.media.specification.BasicMediaSpecificationCustomRepository#removeAttribute(java.lang.String, java.lang.String)
-     */
     @Override
     public void removeAttribute(final String id, final String attributeId) {
         table.updateItem(removeAttributeItem(id, attributeId));

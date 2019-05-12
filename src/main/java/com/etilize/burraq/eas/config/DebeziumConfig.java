@@ -52,7 +52,7 @@ public class DebeziumConfig {
     public DebeziumMessageParser debeziumMessageParser() {
         return new DebeziumMessageParser();
     }
-    
+
     /**
      * Produces an instance of {@link PSPECSMessageParser}
      *

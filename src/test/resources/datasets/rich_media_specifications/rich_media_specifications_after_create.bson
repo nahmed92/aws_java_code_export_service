@@ -13,7 +13,20 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+	            "M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              },
+	              "width" : {
+	                "N":160
+	              },
+	              "height" : {
+	                "N":"190"
+	              },
+	              "tags" : {
+	                "SS":["Prod Specs"]
+	              }
+	            }
               }
             }
          },
@@ -34,14 +47,27 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcde"
+	            "M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              },
+	              "width" : {
+	                "N":160
+	              },
+	              "height" : {
+	                "N":"190"
+	              },
+	              "tags" : {
+	                "SS":["Prod Specs"]
+	              }
+	            }
               }
             }
          },
          "lastUpdateDate":{
             "N":1546528059097
          }
-      },
+     },
       {
          "id":{
             "S":"product1234-en"
@@ -55,7 +81,20 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abc"
+	            "M":{
+	              "url" : {
+	                "S":"http://abc"
+	              },
+	              "width" : {
+	                "N":190
+	              },
+	              "height" : {
+	                "N":"190"
+	              },
+	              "tags" : {
+	                "SS":["Prod Specs"]
+	              }
+	            }
               }
             }
          },
@@ -63,6 +102,5 @@
             "N":1546528059097
          }
       }
-
   ]
 }

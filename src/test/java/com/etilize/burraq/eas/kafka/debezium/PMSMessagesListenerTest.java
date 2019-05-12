@@ -38,6 +38,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.etilize.burraq.eas.media.specification.MediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
 import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
@@ -80,11 +81,13 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
             throws IOException {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithURLAndStatusAssociated();
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://www.google.com");
         doNothing().when(mediaSpecificationService) //
-                .saveAttribute("mp5", "de_DE", "1", ASSOCIATED, "http://www.google.com");
+                .saveAttribute("mp5", "de_DE", "1", ASSOCIATED, value);
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
         verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "de_DE", "1",
-                ASSOCIATED, "http://www.google.com");
+                ASSOCIATED, value);
     }
 
     @Test

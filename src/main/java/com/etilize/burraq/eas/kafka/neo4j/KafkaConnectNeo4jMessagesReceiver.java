@@ -58,24 +58,24 @@ public class KafkaConnectNeo4jMessagesReceiver {
     private final BarcodeService barcodeService;
 
     private final AccessoryService accessoryService;
-    
+
     private final CustomerCodeService customerCodeService;
-    
+
     /**
      * Constructor to create instance
-     * 
+     *
      * @param barcodeService {@link BarcodeService}
      * @param accessoryService {@link AccessoryService}
      * @param customerCodeService {@link CustomerCodeService}
      */
     @Autowired
     public KafkaConnectNeo4jMessagesReceiver(final BarcodeService barcodeService,
-    		final AccessoryService accessoryService,
-    		final CustomerCodeService customerCodeService) {
-    	this.barcodeService = barcodeService;
-    	this.accessoryService = accessoryService;
+            final AccessoryService accessoryService,
+            final CustomerCodeService customerCodeService) {
+        this.barcodeService = barcodeService;
+        this.accessoryService = accessoryService;
         this.customerCodeService = customerCodeService;
-	}
+    }
 
     /**
      * Process barcode-service originated messages
@@ -85,7 +85,8 @@ public class KafkaConnectNeo4jMessagesReceiver {
      * @throws IllegalStateException when message payload is not a valie json
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.bacs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processBarcodeMessages(final Message<String> message) throws IllegalStateException {
+    public void processBarcodeMessages(final Message<String> message)
+            throws IllegalStateException {
         logger.info("Received message from barcode-service [{}]", message);
 
         final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
@@ -113,7 +114,8 @@ public class KafkaConnectNeo4jMessagesReceiver {
      *            {@link Message<String>} message of type {@link String}
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pcs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processProductCodeServiceMessages(final Message<String> message) throws IllegalStateException {
+    public void processProductCodeServiceMessages(final Message<String> message)
+            throws IllegalStateException {
         logger.info("Received message from product-code-service [{}]", message);
         final ProductCodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
                 new JsonParser().parse(
@@ -138,7 +140,8 @@ public class KafkaConnectNeo4jMessagesReceiver {
      *            {@link AccessoryKafkaMesssagePojo} message of type {@link String}
      */
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pas}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getStringMessagesListenerContainerFactory")
-    public void processProductAsseccoryServiceMessages(final Message<String> message) throws IllegalStateException {
+    public void processProductAsseccoryServiceMessages(final Message<String> message)
+            throws IllegalStateException {
         logger.info("Received message from product-accessories-service [{}]", message);
         final AccessoryKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
                 new JsonParser().parse(

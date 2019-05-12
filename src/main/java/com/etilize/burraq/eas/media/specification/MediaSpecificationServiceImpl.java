@@ -132,14 +132,15 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
 
     @Override
     public void saveAttribute(final String productId, final String localeId,
-            final String attributeId, final Status status, final String value) {
+            final String attributeId, final Status status,
+            final MediaAttributeValue value) {
         Assert.hasText(productId, PRODUCT_ID_IS_REQUIRED);
         Assert.hasText(localeId, LOCALE_ID_IS_REQUIRED);
         Assert.hasText(attributeId, ATTRIBUTE_ID_IS_REQUIRED);
         Assert.notNull(status, STATUS_IS_REQUIRED);
         switch (status) {
             case ASSOCIATED:
-                if (StringUtils.isNotBlank(value)) {
+                if (value!=null && StringUtils.isNotBlank(value.getUrl())) {
                     updateAttribute(productId, localeId, attributeId, value);
                 }
                 break;
@@ -154,7 +155,7 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
     }
 
     private void updateAttribute(final String productId, final String localeId,
-            final String attributeId, final String value) {
+            final String attributeId, final MediaAttributeValue value) {
         final Product product = specificationService.findProductByProductId(
                 productId).get();
         final boolean isOfferedInBasic = categoryStructureService.hasBasicMediaOfferingAttribute(
@@ -216,8 +217,8 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
         }
     }
 
-    private Map<String, String> getDetailedSpecAtributesOfEN(final String productId,
-            final String localeId) {
+    private Map<String, MediaAttributeValue> getDetailedSpecAtributesOfEN(
+            final String productId, final String localeId) {
         Optional<RichMediaSpecification> detailedSpecsOfEN = Optional.empty();
         if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
             detailedSpecsOfEN = getDetailedSpecification(productId, LOCALE_EN);
@@ -226,8 +227,8 @@ public class MediaSpecificationServiceImpl implements MediaSpecificationService 
                 : Maps.newHashMap();
     }
 
-    private Map<String, String> getBasicSpecAtributesOfEN(final String productId,
-            final String localeId) {
+    private Map<String, MediaAttributeValue> getBasicSpecAtributesOfEN(
+            final String productId, final String localeId) {
         Optional<BasicMediaSpecification> basicSpecsOfEN = Optional.empty();
         if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
             basicSpecsOfEN = getBasicSpecification(productId, LOCALE_EN);
