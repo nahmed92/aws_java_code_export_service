@@ -117,7 +117,8 @@ public class StreamConfig {
             @Value("${spring.kafka.consumer.properties.schema.registry.url}") final String endpoint,
             @Value("${spring.kafka.consumer.properties.username:''}") final String username,
             @Value("${spring.kafka.consumer.properties.password:''}") final String password) {
-        final RestTemplate restTemplate = (StringUtils.isEmpty(username) ? restTemplateBuilder
+        final RestTemplate restTemplate = (StringUtils.isEmpty(username)
+                ? restTemplateBuilder
                 : restTemplateBuilder.basicAuthorization(username, password)).build();
         final ConfluentSchemaRegistryClient client = new ConfluentSchemaRegistryClient(
                 restTemplate);

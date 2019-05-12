@@ -74,7 +74,7 @@ public final class KafkaMessageParserNeo4jUtility {
         // Parsing BACS Neo4j message
         //Get Operation that hold Operation information created or deleted
         final String operationType = jsonRecord.getAsJsonObject(META) //
-        		.get(OPERATION).getAsString();
+                .get(OPERATION).getAsString();
         // payLoad holds actual values like productId, type, code, customerId in before and after property and identify it's node data or relationship data
         final JsonObject payLoad = jsonRecord.getAsJsonObject(PAYLOAD);
         // beforeAndAfterProperty holds actual value of productId, type, code, customerId
@@ -101,8 +101,8 @@ public final class KafkaMessageParserNeo4jUtility {
             final JsonObject jsonRecord) {
         // Parsing PAS Neo4j message
         //Get Operation that hold Operation information created or deleted
-        final String operationType = jsonRecord.getAsJsonObject(
-                META).get(OPERATION).getAsString();
+        final String operationType = jsonRecord.getAsJsonObject(META).get(
+                OPERATION).getAsString();
         // payload holds actual values like productId, market, accessoryId, type in before
         // and after property and identify it's node data or relationship data
         final JsonObject payload = jsonRecord.getAsJsonObject(PAYLOAD);
@@ -131,12 +131,11 @@ public final class KafkaMessageParserNeo4jUtility {
             final JsonObject jsonRecord) {
         // Parsing PCS Neo4j message
         //Get Operation that hold Operation information created or deleted
-        final String operationType = jsonRecord.getAsJsonObject(
-                META).get(OPERATION).getAsString();
+        final String operationType = jsonRecord.getAsJsonObject(META).get(
+                OPERATION).getAsString();
         // payLoad holds actual values like productId, market, accessoryId, type in before
         // and after property and identify it's node data or relationship data
-        final JsonObject payLoad = jsonRecord.getAsJsonObject(
-                PAYLOAD);
+        final JsonObject payLoad = jsonRecord.getAsJsonObject(PAYLOAD);
         // beforeAndAfterProperty holds actual value of productId, type, code, customerId
         final JsonObject beforeAndAfterProperty = operationType.equals(DELETED)
                 ? payLoad.getAsJsonObject(BEFORE) : payLoad.getAsJsonObject(AFTER);

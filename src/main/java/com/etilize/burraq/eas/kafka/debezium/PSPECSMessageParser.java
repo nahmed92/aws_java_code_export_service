@@ -69,9 +69,10 @@ public class PSPECSMessageParser {
      */
     public UpdateSpecificationRequest getUpdateSpecificationRequest(
             final String productId, final GenericData.Record record) {
-    	final DebeziumMessageParser debeziumMessageParser = new DebeziumMessageParser();
-        final String localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(record) //
-        		.get();
+        final DebeziumMessageParser debeziumMessageParser = new DebeziumMessageParser();
+        final String localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
+                record) //
+                .get();
         UpdateSpecificationRequest request = null;
         final JsonObject patch = extractPatchObject(record);
 
@@ -123,8 +124,7 @@ public class PSPECSMessageParser {
                 request.addAddedToSetAttributes(attributeId,
                         convertToValue(entrySetValue));
             } else {// It means update value attribute
-                request.addUpdatedAttributes(attributeId,
-                		convertToValue(entrySetValue));
+                request.addUpdatedAttributes(attributeId, convertToValue(entrySetValue));
             }
         } else if (isUpdateExceptionCodeOperation(entrySetValue)) { // It means exception code
             request.addRemovedAttributeIds(entrySetValue.get(EXCEPTION) //
@@ -248,15 +248,15 @@ public class PSPECSMessageParser {
 
     private UnitValue convertToUnitValue(final JsonObject unitJson) {
         final Map<String, UnitAttribute> map = Maps.newLinkedHashMap();
-        for(String key : unitJson.keySet()) {
-        	map.put(key, new Gson().fromJson(unitJson.get(key), UnitAttribute.class));
+        for (String key : unitJson.keySet()) {
+            map.put(key, new Gson().fromJson(unitJson.get(key), UnitAttribute.class));
         }
         return new UnitValue(map);
     }
-    
+
     private Value<String> convertToValue(final JsonObject valueJson) {
         @SuppressWarnings("unchecked")
-		final Value<String> value = new Gson().fromJson(valueJson, Value.class);
+        final Value<String> value = new Gson().fromJson(valueJson, Value.class);
         return value;
     }
 }

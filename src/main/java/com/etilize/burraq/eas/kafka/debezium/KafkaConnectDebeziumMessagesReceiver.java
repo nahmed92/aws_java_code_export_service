@@ -44,6 +44,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.etilize.burraq.eas.media.specification.MediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
 import com.etilize.burraq.eas.specification.SpecificationService;
 import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
@@ -152,9 +153,12 @@ public class KafkaConnectDebeziumMessagesReceiver {
         } else {// It means ProductMediaEvent
             final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
                     record, key);
+            final MediaAttributeValue value = new MediaAttributeValue();
+            // TODO need take care cases, when height, width and tags are also coming.
+            value.setUrl(request.getValue());
             mediaSpecificationService.saveAttribute(request.getProductId(),
                     request.getLocaleId(), request.getAttributeId(), request.getStatus(),
-                    request.getValue());
+                    value);
         }
     }
 

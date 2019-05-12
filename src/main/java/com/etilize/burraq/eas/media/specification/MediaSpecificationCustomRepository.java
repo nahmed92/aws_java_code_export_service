@@ -29,10 +29,14 @@
 package com.etilize.burraq.eas.media.specification;
 
 import java.util.Date;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.google.common.collect.Maps;
 
 /**
  * It has common methods which are used for customization made in
@@ -56,9 +60,9 @@ public interface MediaSpecificationCustomRepository {
      *
      * @param id record id
      * @param attributeId attribute's id
-     * @param value attribute's value, media url
+     * @param value {@link MediaAttributeValue}
      */
-    void updateAttribute(String id, String attributeId, String value);
+    void updateAttribute(String id, String attributeId, MediaAttributeValue value);
 
     /**
      * Removed attribute's value in attributes
@@ -73,20 +77,57 @@ public interface MediaSpecificationCustomRepository {
      *
      * @param id record id
      * @param attributeId attribute id
-     * @param value attribute's value, a url
+     * @param value {@link MediaAttributeValue}
      * @return {@link UpdateItemSpec}
      */
     default UpdateItemSpec updateAttributeItem(final String id, final String attributeId,
-            final String value) {
+            final MediaAttributeValue value) {
         final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
         final StringBuilder updateExp = new StringBuilder();
-        valueMap.withString(":value", value);
         nameMap.with("#attrId", attributeId);
-        updateExp.append(String.format("SET %s.#attrId=:value ", ATTRIBUTES));
-        updateExp.append(String.format(", %s=%s", //
-                LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
+        updateExp.append(
+                String.format("SET %s=%s", LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
+        final Map<String, Object> map = Maps.newHashMap();
+        if (StringUtils.isNotBlank(value.getUrl())) {
+            map.put("url", value.getUrl());
+        }
+        if (value.getTags() != null) {
+            map.put("tags", value.getTags());
+        }
+        if (value.getHeight() != null) {
+            map.put("height", value.getHeight());
+        }
+        if (value.getWidth() != null) {
+            map.put("width", value.getWidth());
+        }
+        valueMap.withMap(":value", map);
+        updateExp.append(String.format(", %s.#attrId=:value ", ATTRIBUTES));
+        System.out.println(value);
+        /*if (StringUtils.isNotBlank(value.getUrl())) {
+            valueMap.withString(":url", value.getUrl());
+            nameMap.with("#url", "url");
+            updateExp.append(String.format(", %s.#attrId.#url=:url ", ATTRIBUTES));
+        }
+        if (value.getTags()!=null) {
+            valueMap.withList(":tags", value.getTags());
+            nameMap.with("#tags", "tags");
+            updateExp.append(String.format(", %s.#attrId.#tags=:tags ", ATTRIBUTES));
+        }
+        if (value.getHeight()!=null) {
+            valueMap.withNumber(":height", value.getHeight());
+            nameMap.with("#height", "height");
+            updateExp.append(String.format(", %s.#attrId.#height=:height ", ATTRIBUTES));
+        }
+        if (value.getWidth()!=null) {
+            valueMap.withNumber(":width", value.getWidth());
+            nameMap.with("#width", "width");
+            updateExp.append(String.format(", %s.#attrId.#width=:width ", ATTRIBUTES));
+        }*/
+        System.out.println(valueMap);
+        System.out.println(updateExp);
+
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
                 .withUpdateExpression(updateExp.toString()) //
                 .withNameMap(nameMap) //

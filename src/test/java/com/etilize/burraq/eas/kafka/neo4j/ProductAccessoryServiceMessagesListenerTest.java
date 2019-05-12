@@ -46,38 +46,42 @@ import com.google.common.collect.Maps;
 
 public class ProductAccessoryServiceMessagesListenerTest extends AbstractIntegrationTest {
 
-	private KafkaConnectNeo4jMessagesReceiver mr;
-	
+    private KafkaConnectNeo4jMessagesReceiver mr;
+
     @Mock
     private BarcodeService barcodeService;
-    
+
     @Mock
     private AccessoryService accessoryService;
-    
+
     @Mock
     private CustomerCodeService customerCodeService;
-    
+
     @Before
-    public void init(){
-    	mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService, customerCodeService);
+    public void init() {
+        mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService,
+                customerCodeService);
     }
-	
+
     @Test
     public void shouldCreateProductMessage() {
-    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final Map<String, Object> headers = Maps.newLinkedHashMap();
         final String createProductWithOutAsseccoriesMessageValue = "{\"payload\":{\"id\":\"1620576\",\"start\":{\"id\":\"2318393\",\"labels\":[\"Product\"]},\"end\":{\"id\":\"2316815\",\"labels\":[\"Product\"]},\"before\":null,\"after\":{\"properties\":{\"markets\":[\"US\"],\"productId\":\"e205cc8b-e7d3-4fb5-b10d-e0a6715d76ac\",\"accessoryId\":\"5e24567a-074a-48a4-9989-7506eff91f97\"}},\"label\":\"HAS_ACCESSORY\",\"type\":\"relationship\"},\"meta\":{\"timestamp\":1554118111953,\"username\":\"neo4j\",\"txId\":975090,\"txEventId\":0,\"txEventsCount\":1,\"operation\":\"created\",\"source\":{\"hostname\":\"vmnode0018\"}},\"schema\":{\"properties\":[],\"constraints\":null}}";
-        final Message<String> message = new GenericMessage<String>(createProductWithOutAsseccoriesMessageValue, headers);
-    	doNothing() //
-    	.when(accessoryService).save("e205cc8b-e7d3-4fb5-b10d-e0a6715d76ac", "US", "5e24567a-074a-48a4-9989-7506eff91f97");
-    	mr.processProductAsseccoryServiceMessages(message);
-    	verify(accessoryService, times(1)).save("e205cc8b-e7d3-4fb5-b10d-e0a6715d76ac", "US", "5e24567a-074a-48a4-9989-7506eff91f97");
+        final Message<String> message = new GenericMessage<String>(
+                createProductWithOutAsseccoriesMessageValue, headers);
+        doNothing() //
+                .when(accessoryService).save("e205cc8b-e7d3-4fb5-b10d-e0a6715d76ac", "US",
+                        "5e24567a-074a-48a4-9989-7506eff91f97");
+        mr.processProductAsseccoryServiceMessages(message);
+        verify(accessoryService, times(1)).save("e205cc8b-e7d3-4fb5-b10d-e0a6715d76ac",
+                "US", "5e24567a-074a-48a4-9989-7506eff91f97");
     }
-    
-    @Test(expected=IllegalStateException.class)
+
+    @Test(expected = IllegalStateException.class)
     public void shouldThrowJsonParseExceptionWhenJsonIsNotValid() {
-    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final Map<String, Object> headers = Maps.newLinkedHashMap();
         final String payload = "\"e400�0test_user@etilizepak.com�����ZHa2703865-1f83-4cea-b037-39c83ce83761token 1\"";
         final Message<String> message = new GenericMessage<String>(payload, headers);
-    	mr.processProductAsseccoryServiceMessages(message);
+        mr.processProductAsseccoryServiceMessages(message);
     }
 }

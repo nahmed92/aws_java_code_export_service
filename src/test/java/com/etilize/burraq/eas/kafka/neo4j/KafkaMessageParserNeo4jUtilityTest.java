@@ -61,7 +61,7 @@ public class KafkaMessageParserNeo4jUtilityTest extends AbstractIntegrationTest 
         assertThat(parsedProperies.getCode(), is("0885170129832"));
         assertThat(parsedProperies.getCustomerId(), is("Lenovo"));
     }
-   
+
     @Test
     public void shouldParseDeleteMessage() throws IOException {
         final String barcodeKafkaMessage = FileUtils.readFileToString(

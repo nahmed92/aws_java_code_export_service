@@ -119,8 +119,10 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "thumbnailId")) //
                         .thenReturn(true);
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcde");
         service.saveAttribute("product123", "en", "thumbnailId", Status.ASSOCIATED,
-                "http://abcde");
+                value);
         verify(specsStatusRepository).findAllByProductId("product123");
     }
 
@@ -134,8 +136,10 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "thumbnailId")) //
                         .thenReturn(true);
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcde");
         service.saveAttribute("product123", "en_US", "thumbnailId", Status.ASSOCIATED,
-                "http://abcde");
+                value);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
 
@@ -149,8 +153,9 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "largeId")) //
                         .thenReturn(true);
-        service.saveAttribute("product123", "en", "largeId", Status.ASSOCIATED,
-                "http://abcdef");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcdef");
+        service.saveAttribute("product123", "en", "largeId", Status.ASSOCIATED, value);
         verify(specsStatusRepository).findAllByProductId("product123");
     }
 
@@ -164,8 +169,9 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "largeId")) //
                         .thenReturn(true);
-        service.saveAttribute("product123", "en_US", "largeId", Status.ASSOCIATED,
-                "http://abcdef");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcdef");
+        service.saveAttribute("product123", "en_US", "largeId", Status.ASSOCIATED, value);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
 
@@ -179,8 +185,9 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "notExistId")) //
                         .thenReturn(false);
-        service.saveAttribute("product123", "en", "notExistId", Status.ASSOCIATED,
-                "http://abcde");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcde");
+        service.saveAttribute("product123", "en", "notExistId", Status.ASSOCIATED, value);
         verify(specsStatusRepository).findAllByProductId("product123");
     }
 
@@ -194,8 +201,10 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
         when(categoryStructureService.hasRichMediaOfferingAttribute("categoryId123",
                 "notExistId")) //
                         .thenReturn(false);
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("http://abcde");
         service.saveAttribute("product123", "en_US", "notExistId", Status.ASSOCIATED,
-                "http://abcde");
+                value);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
 
@@ -203,7 +212,10 @@ public class MediaSpecificationServiceIntegrationTest extends AbstractIntegratio
     @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specifications.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldNotUpdateAttributeForAllLocaleWhenValueIsEmpty() {
-        service.saveAttribute("product123", "en", "thumbnailId", Status.ASSOCIATED, "");
+        final MediaAttributeValue value = new MediaAttributeValue();
+        value.setUrl("");
+        service.saveAttribute("product123", "en", "thumbnailId", Status.ASSOCIATED,
+                value);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
     }
 

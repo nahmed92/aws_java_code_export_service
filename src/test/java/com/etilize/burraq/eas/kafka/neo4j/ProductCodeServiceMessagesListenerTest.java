@@ -46,38 +46,42 @@ import com.google.common.collect.Maps;
 
 public class ProductCodeServiceMessagesListenerTest extends AbstractIntegrationTest {
 
-	private KafkaConnectNeo4jMessagesReceiver mr;
-	
+    private KafkaConnectNeo4jMessagesReceiver mr;
+
     @Mock
     private BarcodeService barcodeService;
-    
+
     @Mock
     private AccessoryService accessoryService;
-    
+
     @Mock
     private CustomerCodeService customerCodeService;
-    
+
     @Before
-    public void init(){
-    	mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService, customerCodeService);
+    public void init() {
+        mr = new KafkaConnectNeo4jMessagesReceiver(barcodeService, accessoryService,
+                customerCodeService);
     }
 
     @Test
     public void shouldCreateProductMessage() {
-    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final Map<String, Object> headers = Maps.newLinkedHashMap();
         final String createProductWithCustomerCodesMessageValue = "{\"payload\":{\"id\":\"1620892\",\"start\":{\"id\":\"2318213\",\"labels\":[\"Product\"]},\"end\":{\"id\":\"2318215\",\"labels\":[\"CustomerCode\"]},\"before\":null,\"after\":{\"properties\":{\"market\":\"US\",\"code\":\"test1ss2ss5566544\",\"productId\":\"a2703865-1f83-4cea-b037-39c83ce83761\",\"customerId\":\"Valvolinen\"}},\"label\":\"IDENTIFIED_BY\",\"type\":\"relationship\"},\"meta\":{\"timestamp\":1554111179578,\"username\":\"neo4j\",\"txId\":975021,\"txEventId\":1,\"txEventsCount\":2,\"operation\":\"created\",\"source\":{\"hostname\":\"vmnode0018\"}},\"schema\":{\"properties\":[],\"constraints\":null}}";
-        final Message<String> message = new GenericMessage<String>(createProductWithCustomerCodesMessageValue, headers);
-    	doNothing() //
-    	.when(customerCodeService).save("a2703865-1f83-4cea-b037-39c83ce83761", "US", "test1ss2ss5566544", "Valvolinen");
-    	mr.processProductCodeServiceMessages(message);
-    	verify(customerCodeService, times(1)).save("a2703865-1f83-4cea-b037-39c83ce83761", "US", "test1ss2ss5566544", "Valvolinen");
+        final Message<String> message = new GenericMessage<String>(
+                createProductWithCustomerCodesMessageValue, headers);
+        doNothing() //
+                .when(customerCodeService).save("a2703865-1f83-4cea-b037-39c83ce83761",
+                        "US", "test1ss2ss5566544", "Valvolinen");
+        mr.processProductCodeServiceMessages(message);
+        verify(customerCodeService, times(1)).save("a2703865-1f83-4cea-b037-39c83ce83761",
+                "US", "test1ss2ss5566544", "Valvolinen");
     }
-    
-    @Test(expected=IllegalStateException.class)
+
+    @Test(expected = IllegalStateException.class)
     public void shouldThrowJsonParseExceptionWhenJsonIsNotValid() {
-    	final Map<String, Object> headers = Maps.newLinkedHashMap();
+        final Map<String, Object> headers = Maps.newLinkedHashMap();
         final String payload = "\"e400�0test_user@etilizepak.com�����ZHa2703865-1f83-4cea-b037-39c83ce83761token 1\"";
         final Message<String> message = new GenericMessage<String>(payload, headers);
-    	mr.processProductCodeServiceMessages(message);
+        mr.processProductCodeServiceMessages(message);
     }
 }

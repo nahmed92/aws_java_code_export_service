@@ -13,7 +13,20 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+	            "M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              },
+	              "width" : {
+	                "N":160
+	              },
+	              "height" : {
+	                "N":"190"
+	              },
+	              "tags" : {
+	                "SS":["Prod Specs"]
+	              }
+	            }
               }
             }
          },
@@ -34,7 +47,20 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcde"
+	            "M":{
+	              "url" : {
+	                "S":"http://abcde"
+	              },
+	              "width" : {
+	                "N":160
+	              },
+	              "height" : {
+	                "N":"190"
+	              },
+	              "tags" : {
+	                "SS":["Prod Specs"]
+	              }
+	            }
               }
             }
          },

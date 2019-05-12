@@ -13,10 +13,18 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               },
               "thumbnailId" : {
-                "S":"http://abcde"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde"
+	              }
+	            }
               }
             }
          },
@@ -37,10 +45,18 @@
          "attributes":{
             "M":{
               "maxId" : {
-                "S":"http://abcde1"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde1"
+	              }
+	            }
               },
               "thumbnailId" : {
-                "S":"http://abcde"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde"
+	              }
+	            }
               }
             }
          },
@@ -63,10 +79,18 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcd"
+				"M":{
+	              "url" : {
+	                "S":"http://abcd"
+	              }
+	            }
               },
               "thumbnailId" : {
-                "S":"http://abcde"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde"
+	              }
+	            }
               }
             }
          },
@@ -87,10 +111,18 @@
          "attributes":{
             "M":{
               "largeId" : {
-                "S":"http://abcde1"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde1"
+	              }
+	            }
               },
               "thumbnailId" : {
-                "S":"http://abcde"
+				"M":{
+	              "url" : {
+	                "S":"http://abcde"
+	              }
+	            }
               }
             }
          },
