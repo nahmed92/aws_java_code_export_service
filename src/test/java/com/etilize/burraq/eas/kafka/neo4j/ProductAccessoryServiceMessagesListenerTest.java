@@ -38,9 +38,9 @@ import org.mockito.Mock;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
-import com.etilize.burraq.eas.accessory.AccessoryService;
-import com.etilize.burraq.eas.barcode.BarcodeService;
-import com.etilize.burraq.eas.customer.code.CustomerCodeService;
+import com.etilize.burraq.eas.accessory.ProductAccessoryService;
+import com.etilize.burraq.eas.barcode.ProductBarcodeService;
+import com.etilize.burraq.eas.customer.code.ProductCustomerCodeService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 
@@ -49,13 +49,13 @@ public class ProductAccessoryServiceMessagesListenerTest extends AbstractIntegra
     private KafkaConnectNeo4jMessagesReceiver mr;
 
     @Mock
-    private BarcodeService barcodeService;
+    private ProductBarcodeService barcodeService;
 
     @Mock
-    private AccessoryService accessoryService;
+    private ProductAccessoryService accessoryService;
 
     @Mock
-    private CustomerCodeService customerCodeService;
+    private ProductCustomerCodeService customerCodeService;
 
     @Before
     public void init() {

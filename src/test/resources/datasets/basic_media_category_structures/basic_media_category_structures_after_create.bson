@@ -1,5 +1,5 @@
 {
-   "basic_media_category_structures":[
+   "category-basic-media-specifications":[
       {
          "categoryId":{
             "S":"categoryId123"

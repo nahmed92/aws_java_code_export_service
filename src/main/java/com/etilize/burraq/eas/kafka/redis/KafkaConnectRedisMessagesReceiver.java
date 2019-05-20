@@ -42,8 +42,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import com.etilize.burraq.eas.media.status.MediaStatusService;
-import com.etilize.burraq.eas.specification.status.SpecificationStatusService;
+import com.etilize.burraq.eas.media.status.ProductMediaStatusService;
+import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusService;
 
 /**
  * Houses listeners for all incoming Apache Kafka Redis messages
@@ -56,20 +56,20 @@ public class KafkaConnectRedisMessagesReceiver {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private SpecificationStatusService specificationStatusService;
+    private ProductSpecificationStatusService specificationStatusService;
 
-    private MediaStatusService mediaStatusService;
+    private ProductMediaStatusService mediaStatusService;
 
     /**
      * Constructor to instantiate object instance.
      *
-     * @param specificationStatusService {@link SpecificationStatusService}
-     * @param mediaStatusService {@link MediaStatusService}
+     * @param specificationStatusService {@link ProductSpecificationStatusService}
+     * @param mediaStatusService {@link ProductMediaStatusService}
      */
     @Autowired
     public KafkaConnectRedisMessagesReceiver(
-            final SpecificationStatusService specificationStatusService,
-            final MediaStatusService mediaStatusService) {
+            final ProductSpecificationStatusService specificationStatusService,
+            final ProductMediaStatusService mediaStatusService) {
         this.specificationStatusService = specificationStatusService;
         this.mediaStatusService = mediaStatusService;
     }

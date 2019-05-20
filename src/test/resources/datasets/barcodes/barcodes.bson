@@ -1,5 +1,5 @@
 {
-   "barcodes":[
+   "product-barcodes":[
       {
          "id":{
             "S":"productId123-en_US"

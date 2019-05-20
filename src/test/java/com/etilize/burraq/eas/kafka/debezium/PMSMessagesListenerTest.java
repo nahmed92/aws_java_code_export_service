@@ -38,9 +38,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.etilize.burraq.eas.media.specification.MediaAttributeValue;
-import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
-import com.etilize.burraq.eas.specification.SpecificationService;
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
+import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
+import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 
 /**
@@ -54,10 +54,10 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
     KafkaConnectDebeziumMessagesReceiver messageReceiver;
 
     @Mock
-    MediaSpecificationService mediaSpecificationService;
+    ProductMediaSpecificationService mediaSpecificationService;
 
     @Mock
-    SpecificationService specificationService;
+    ProductSpecificationService specificationService;
 
     @Override
     public void before() {
@@ -81,7 +81,7 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
             throws IOException {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithURLAndStatusAssociated();
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
-        final MediaAttributeValue value = new MediaAttributeValue();
+        final ProductMediaAttributeValue value = new ProductMediaAttributeValue();
         value.setUrl("http://www.google.com");
         doNothing().when(mediaSpecificationService) //
                 .saveAttribute("mp5", "de_DE", "1", ASSOCIATED, value);
@@ -96,9 +96,9 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithoutURLAndStatusPending();
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
         doNothing().when(mediaSpecificationService) //
-                .saveAttribute("mp5", "en_US", "1", PENDING, null);
+                .saveAttribute("mp5", "en_US", "1", PENDING, new ProductMediaAttributeValue());
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
         verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "en_US", "1",
-                PENDING, null);
+                PENDING, new ProductMediaAttributeValue());
     }
 }

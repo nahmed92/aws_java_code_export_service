@@ -40,8 +40,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.util.ResourceUtils;
 
-import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
-import com.etilize.burraq.eas.specification.UpdateSpecificationRequestFixture;
+import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -1007,7 +1006,7 @@ public class DebeziumMessageTestFixtures {
     }
 
     /**
-     * Returns an {@link GenericData.Record} for the {@link UpdateSpecificationRequest} from UpdateSpecificationRequestFixture.createWithUpdatedAttributes().
+     * Returns an {@link GenericData.Record} for the {@link UpdateProductSpecificationRequest} from UpdateProductSpecificationRequestFixture.createWithUpdatedAttributes().
      *
      * @return {@link GenericData.Record}
      * @throws FileNotFoundException in case of error during file reading.
