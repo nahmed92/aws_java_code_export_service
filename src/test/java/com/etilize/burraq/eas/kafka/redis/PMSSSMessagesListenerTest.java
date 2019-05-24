@@ -39,8 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
-import com.etilize.burraq.eas.media.status.MediaStatusService;
-import com.etilize.burraq.eas.specification.status.SpecificationStatusService;
+import com.etilize.burraq.eas.media.status.ProductMediaStatusService;
+import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.google.common.collect.Maps;
 
@@ -56,10 +56,10 @@ public class PMSSSMessagesListenerTest extends AbstractIntegrationTest {
     KafkaConnectRedisMessagesReceiver messageReceiver = null;
 
     @Mock
-    SpecificationStatusService specificationStatusService;
+    ProductSpecificationStatusService specificationStatusService;
 
     @Mock
-    MediaStatusService mediaStatusService;
+    ProductMediaStatusService mediaStatusService;
 
     @Override
     public void before() {

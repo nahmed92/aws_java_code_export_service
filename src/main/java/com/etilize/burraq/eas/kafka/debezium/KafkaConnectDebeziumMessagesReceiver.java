@@ -44,10 +44,10 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import com.etilize.burraq.eas.media.specification.MediaAttributeValue;
-import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
-import com.etilize.burraq.eas.specification.SpecificationService;
-import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
+import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
+import com.etilize.burraq.eas.specification.ProductSpecificationService;
+import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
 
 /**
  * Houses listeners for all incoming Apache Kafka Debezium messages
@@ -64,23 +64,23 @@ public class KafkaConnectDebeziumMessagesReceiver {
 
     private final PSPECSMessageParser pspecsMessageParser;
 
-    private final MediaSpecificationService mediaSpecificationService;
+    private final ProductMediaSpecificationService mediaSpecificationService;
 
-    private final SpecificationService specificationService;
+    private final ProductSpecificationService specificationService;
 
     /**
      * Constructor to instantiate object instance.
      *
      * @param debeziumMessageParser {@link @DebeziumMessageParser}
-     * @param mediaSpecificationService {@link MediaSpecificationService}
-     * @param specificationService {@link SpecificationService}
+     * @param mediaSpecificationService {@link ProductMediaSpecificationService}
+     * @param specificationService {@link ProductSpecificationService}
      * @param pspecsMessageParser {@link PSPECSMessageParser}
      */
     @Autowired
     public KafkaConnectDebeziumMessagesReceiver(
             final DebeziumMessageParser debeziumMessageParser,
-            final MediaSpecificationService mediaSpecificationService,
-            final SpecificationService specificationService,
+            final ProductMediaSpecificationService mediaSpecificationService,
+            final ProductSpecificationService specificationService,
             final PSPECSMessageParser pspecsMessageParser) {
         this.debeziumMessageParser = debeziumMessageParser;
         this.mediaSpecificationService = mediaSpecificationService;
@@ -153,7 +153,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
         } else {// It means ProductMediaEvent
             final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
                     record, key);
-            final MediaAttributeValue value = new MediaAttributeValue();
+            final ProductMediaAttributeValue value = new ProductMediaAttributeValue();
             // TODO need take care cases, when height, width and tags are also coming.
             value.setUrl(request.getValue());
             mediaSpecificationService.saveAttribute(request.getProductId(),
@@ -193,7 +193,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
         logger.info(
                 "Received Debezium's Update Producut Specifications Command from pspecs [{}]",
                 record);
-        final UpdateSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
                 productId, record);
         specificationService.updateSpecifications(request);
     }

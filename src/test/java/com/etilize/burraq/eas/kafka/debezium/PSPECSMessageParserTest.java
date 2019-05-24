@@ -38,7 +38,7 @@ import java.util.List;
 import org.apache.avro.generic.GenericData;
 import org.junit.Test;
 
-import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
+import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
 import com.etilize.burraq.eas.specification.value.UnitValue;
 import com.etilize.burraq.eas.specification.value.Value;
 
@@ -52,7 +52,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractTextAttributeFromPSPECSUpdateAttributeOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddValueAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -68,7 +68,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractUnitAttributeFromPSPECSUpdateAttributeOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddUnitValueAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -98,7 +98,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractExceptionCodeFromPSPECS()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddExceptionAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -113,7 +113,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRemovedTextAttributeIdFromPSPECSRemoveAttributeOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsRemoveTextAttributeData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -131,7 +131,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRemovedUnitAttributeIdFromPSPECSRemoveAttributeOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsRemoveAttributeData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -146,7 +146,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRepeatableTextAttributeFromPSPECSUpdateAttributeOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddRepatableValueAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -166,7 +166,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRepeatableTextAttributeFromPSPECSAddToSetOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddRepatable2ndValueAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -182,7 +182,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRepeatableUnitAttributeFromPSPECS()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getUpdateProductSpecsAddRepatableUnitAttributeValueData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -219,7 +219,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRepeatableValueAttributeFromPSPECSRemoveFromSetOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getProductSpecsRemoveValueAttributeFromSetData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));
@@ -237,7 +237,7 @@ public class PSPECSMessageParserTest {
     public void shouldExtractRepeatableUnitAttributeFromPSPECSRemoveFromSetOperation()
             throws FileNotFoundException, IOException {
         final GenericData.Record record = DebeziumMessageTestFixtures.getProductSpecsRemoveUnitAttributeFromSetData();
-        final UpdateSpecificationRequest request = parser.getUpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = parser.getUpdateSpecificationRequest(
                 "ppsh", record);
         assertThat(request.getProductId(), is("ppsh"));
         assertThat(request.getLocaleId(), is("en_US"));

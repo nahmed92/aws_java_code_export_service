@@ -36,7 +36,7 @@ import java.util.Map;
 
 import org.apache.avro.generic.GenericData;
 
-import com.etilize.burraq.eas.specification.UpdateSpecificationRequest;
+import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
 import com.etilize.burraq.eas.specification.value.UnitAttribute;
 import com.etilize.burraq.eas.specification.value.UnitValue;
 import com.etilize.burraq.eas.specification.value.Value;
@@ -59,21 +59,21 @@ public class PSPECSMessageParser {
     private static final int THREE = 3;
 
     /**
-     * Converts update specifications message from PSPECS into an instance of {@link UpdateSpecificationRequest}
+     * Converts update specifications message from PSPECS into an instance of {@link UpdateProductSpecificationRequest}
      *
      * @param productId
      *            {@link String} productId
      * @param record
      *            {@link GenericData.Record}
-     * @return {@link UpdateSpecificationRequest}
+     * @return {@link UpdateProductSpecificationRequest}
      */
-    public UpdateSpecificationRequest getUpdateSpecificationRequest(
+    public UpdateProductSpecificationRequest getUpdateSpecificationRequest(
             final String productId, final GenericData.Record record) {
         final DebeziumMessageParser debeziumMessageParser = new DebeziumMessageParser();
         final String localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
                 record) //
                 .get();
-        UpdateSpecificationRequest request = null;
+        UpdateProductSpecificationRequest request = null;
         final JsonObject patch = extractPatchObject(record);
 
         // If not then it is a remove attribute operation
@@ -86,9 +86,9 @@ public class PSPECSMessageParser {
         return request;
     }
 
-    private UpdateSpecificationRequest getRequestForUpdateOperation(
+    private UpdateProductSpecificationRequest getRequestForUpdateOperation(
             final String productId, final String localeId, final JsonObject patch) {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = new UpdateProductSpecificationRequest(
                 productId, localeId);
         final JsonObject setCommand = patch.get(SET) //
                 .getAsJsonObject();
@@ -110,7 +110,7 @@ public class PSPECSMessageParser {
     }
 
     private void updateRequestForNonRepeatableAttributes(
-            final UpdateSpecificationRequest request, final JsonObject setCommand,
+            final UpdateProductSpecificationRequest request, final JsonObject setCommand,
             final String key, final String attributeId) {
         final JsonObject entrySetValue = setCommand.get(key) //
                 .getAsJsonObject();
@@ -133,7 +133,7 @@ public class PSPECSMessageParser {
     }
 
     private void updateRequestForRepeatableAttributes(
-            final UpdateSpecificationRequest request, final JsonObject setCommand,
+            final UpdateProductSpecificationRequest request, final JsonObject setCommand,
             final String key, final String attributeId) {
         final JsonArray keyValue = setCommand.get(key) //
                 .getAsJsonArray();
@@ -161,9 +161,9 @@ public class PSPECSMessageParser {
         }
     }
 
-    private UpdateSpecificationRequest getRequestForRemoveAttributeOperation(
+    private UpdateProductSpecificationRequest getRequestForRemoveAttributeOperation(
             final String productId, final String localeId, final JsonObject patch) {
-        final UpdateSpecificationRequest request = new UpdateSpecificationRequest(
+        final UpdateProductSpecificationRequest request = new UpdateProductSpecificationRequest(
                 productId, localeId);
         final JsonObject setCommandJO = patch.get(UNSET) //
                 .getAsJsonObject();

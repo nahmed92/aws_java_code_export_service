@@ -1,5 +1,5 @@
 {
-   "basic_category_structures":[
+   "category-basic-specifications":[
       {
          "categoryId":{
             "S":"categoryId123"
@@ -34,9 +34,9 @@
          }
       }
   ],
-  "detailed_category_structures":[
+  "category-detailed-specifications":[
   ],
-  "basic_media_category_structures":[
+  "category-basic-media-specifications":[
        {
          "categoryId":{
             "S":"categoryId123"
@@ -98,7 +98,7 @@
          }
       }
   ],
-  "rich_media_category_structures":[
+  "category-rich-media-specifications":[
   ]
 
 }

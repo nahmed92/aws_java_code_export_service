@@ -35,9 +35,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import com.etilize.burraq.eas.accessory.AccessoryService;
-import com.etilize.burraq.eas.barcode.BarcodeService;
-import com.etilize.burraq.eas.customer.code.CustomerCodeService;
+import com.etilize.burraq.eas.accessory.ProductAccessoryService;
+import com.etilize.burraq.eas.barcode.ProductBarcodeService;
+import com.etilize.burraq.eas.customer.code.ProductCustomerCodeService;
 import com.google.gson.JsonParser;
 
 /**
@@ -55,23 +55,23 @@ public class KafkaConnectNeo4jMessagesReceiver {
 
     private static final String OPERATION_TYPE = "created";
 
-    private final BarcodeService barcodeService;
+    private final ProductBarcodeService barcodeService;
 
-    private final AccessoryService accessoryService;
+    private final ProductAccessoryService accessoryService;
 
-    private final CustomerCodeService customerCodeService;
+    private final ProductCustomerCodeService customerCodeService;
 
     /**
      * Constructor to create instance
      *
-     * @param barcodeService {@link BarcodeService}
-     * @param accessoryService {@link AccessoryService}
-     * @param customerCodeService {@link CustomerCodeService}
+     * @param barcodeService {@link ProductBarcodeService}
+     * @param accessoryService {@link ProductAccessoryService}
+     * @param customerCodeService {@link ProductCustomerCodeService}
      */
     @Autowired
-    public KafkaConnectNeo4jMessagesReceiver(final BarcodeService barcodeService,
-            final AccessoryService accessoryService,
-            final CustomerCodeService customerCodeService) {
+    public KafkaConnectNeo4jMessagesReceiver(final ProductBarcodeService barcodeService,
+            final ProductAccessoryService accessoryService,
+            final ProductCustomerCodeService customerCodeService) {
         this.barcodeService = barcodeService;
         this.accessoryService = accessoryService;
         this.customerCodeService = customerCodeService;

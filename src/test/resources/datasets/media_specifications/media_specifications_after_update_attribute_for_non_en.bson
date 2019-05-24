@@ -1,5 +1,5 @@
 {
-   "basic_media_specifications":[
+   "product-basic-media-specifications":[
       {
          "id":{
             "S":"product123-en"
@@ -58,7 +58,7 @@
          }
       }
   ],
-   "rich_media_specifications":[
+   "product-rich-media-specifications":[
       {
          "id":{
             "S":"product123-en"

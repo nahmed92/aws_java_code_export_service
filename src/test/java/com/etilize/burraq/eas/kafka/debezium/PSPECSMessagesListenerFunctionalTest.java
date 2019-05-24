@@ -37,8 +37,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.etilize.burraq.eas.media.specification.MediaSpecificationService;
-import com.etilize.burraq.eas.specification.SpecificationService;
+import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
+import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
 import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
@@ -60,10 +60,10 @@ public class PSPECSMessagesListenerFunctionalTest extends AbstractIntegrationTes
     private KafkaConnectDebeziumMessagesReceiver messageReceiver;
 
     @Mock
-    private MediaSpecificationService mediaSpecificationsService;
+    private ProductMediaSpecificationService mediaSpecificationsService;
 
     @Mock
-    private SpecificationService specificationService;
+    private ProductSpecificationService specificationService;
 
     @Override
     public void before() {

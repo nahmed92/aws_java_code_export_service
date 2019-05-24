@@ -1,5 +1,5 @@
-{
-   "customer_codes":[
+   {
+   "product-customer-codes":[
       {
          "id":{
             "S":"productId123-en_US"

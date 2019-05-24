@@ -1,5 +1,5 @@
 {
-   "basic_category_structures":[
+   "category-basic-specifications":[
       {
          "categoryId":{
             "S":"categoryId123"

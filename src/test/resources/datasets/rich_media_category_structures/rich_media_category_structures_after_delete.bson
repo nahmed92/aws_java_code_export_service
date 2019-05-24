@@ -1,5 +1,5 @@
 {
-   "rich_media_category_structures":[
+   "category-rich-media-specifications":[
       {
          "categoryId":{
             "S":"categoryId123"
