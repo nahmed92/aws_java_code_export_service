@@ -45,10 +45,9 @@ spring:
       access-key: dev-access-key
       secret-key: dev-secret-key
       ddl:
-        enabled: true
+        enabled: false
       # https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html
       regions: US_EAST_2
-      timeout: 60000
 
 ---
 spring:
@@ -60,7 +59,6 @@ spring:
       access-key: dev-access-key
       secret-key: dev-secret-key
       ddl:
-        enabled: true
+        enabled: false
       # https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html
       regions: US_EAST_2
-      timeout: 60000
