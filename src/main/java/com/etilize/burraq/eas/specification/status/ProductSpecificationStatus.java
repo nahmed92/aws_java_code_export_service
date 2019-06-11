@@ -35,14 +35,15 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.etilize.burraq.eas.base.AbstractDynamoEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This class represents POJO for specification status.
@@ -51,12 +52,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
  * @since 1.0
  */
 @DynamoDBTable(tableName = TABLE_NAME)
-public class ProductSpecificationStatus {
+public class ProductSpecificationStatus extends AbstractDynamoEntity {
 
     public static final String TABLE_NAME = "product-specification-statuses";
 
-    @Id
-    private ProductSpecificationStatusKey specificationStatusKey;
+    @JsonIgnore
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "product-status-index")
+    private String productId;
 
     private String localeId;
 
@@ -70,40 +72,17 @@ public class ProductSpecificationStatus {
     }
 
     /**
-     * @return the id
-     */
-    @DynamoDBHashKey(attributeName = "id")
-    public String getId() {
-        return specificationStatusKey != null ? specificationStatusKey.getId() : null;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(final String id) {
-        if (specificationStatusKey == null) {
-            specificationStatusKey = new ProductSpecificationStatusKey();
-        }
-        specificationStatusKey.setId(id);
-    }
-
-    /**
      * @return the productId
      */
-    @DynamoDBRangeKey(attributeName = "productId")
     public String getProductId() {
-        return specificationStatusKey != null ? specificationStatusKey.getProductId()
-                : null;
+        return productId;
     }
 
     /**
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
-        if (specificationStatusKey == null) {
-            specificationStatusKey = new ProductSpecificationStatusKey();
-        }
-        specificationStatusKey.setProductId(productId);
+        this.productId = productId;
     }
 
     /**

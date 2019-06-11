@@ -88,11 +88,8 @@ public class ProductSpecificationStatusRepositoryIntegrationTest
 
     @Test
     public void shouldFindSpecificationStatusById() {
-        final ProductSpecificationStatusKey productStatusId = new ProductSpecificationStatusKey();
-        productStatusId.setId("product123-en");
-        productStatusId.setProductId("product123");
         final Optional<ProductSpecificationStatus> specification = repository.findById(
-                productStatusId);
+                "product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));
@@ -109,18 +106,10 @@ public class ProductSpecificationStatusRepositoryIntegrationTest
                 isIn(Arrays.asList("product123-en", "product123-en_US")));
         assertThat(specifications.get(0).getProductId(),
                 isIn(Arrays.asList("product123")));
-        assertThat(specifications.get(0).getLocaleId(),
-                isIn(Arrays.asList("en", "en_US")));
-        assertThat(specifications.get(0).getStatusId(),
-                isIn(Arrays.asList("PUBLISHED", "NEW")));
         assertThat(specifications.get(1).getId(),
                 isIn(Arrays.asList("product123-en", "product123-en_US")));
         assertThat(specifications.get(1).getProductId(),
                 isIn(Arrays.asList("product123")));
-        assertThat(specifications.get(1).getLocaleId(),
-                isIn(Arrays.asList("en", "en_US")));
-        assertThat(specifications.get(1).getStatusId(),
-                isIn(Arrays.asList("PUBLISHED", "NEW")));
     }
 
     @Test
@@ -158,10 +147,7 @@ public class ProductSpecificationStatusRepositoryIntegrationTest
     @Test
     @ShouldMatchDataSet(location = "/datasets/specification_statuses/specification_statuses_after_delete.bson")
     public void shouldDeleteSpecificationStatusById() {
-        final ProductSpecificationStatusKey productStatusId = new ProductSpecificationStatusKey();
-        productStatusId.setId("product123-en_US");
-        productStatusId.setProductId("product123");
-        repository.deleteById(productStatusId);
+        repository.deleteById("product123-en_US");
     }
 
     @Test
