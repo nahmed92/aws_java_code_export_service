@@ -43,7 +43,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface ProductSpecificationStatusRepository
-        extends DynamoDBCrudRepository<ProductSpecificationStatus, ProductSpecificationStatusKey> {
+        extends DynamoDBCrudRepository<ProductSpecificationStatus, String> {
 
     /**
      * It return all records matching with productId
