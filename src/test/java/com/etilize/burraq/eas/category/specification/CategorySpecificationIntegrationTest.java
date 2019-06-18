@@ -90,6 +90,9 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
     @Autowired
     private CategoryRichMediaSpecificationRepository richMediaCategoryStructureRepository;
 
+    @Autowired
+    private CategoryAccessorySpecificationRepository accessoryCategoryStructureRepository;
+
     private CategorySpecificationService service;
 
     @Override
@@ -97,7 +100,8 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
         service = new CategorySpecificationServiceImpl(basicCategoryStructureRepository,
                 detailedCategoryStructureRepository,
                 basicMediaCategoryStructureRepository,
-                richMediaCategoryStructureRepository, translationService, taxonomyService,
+                richMediaCategoryStructureRepository, accessoryCategoryStructureRepository,
+                translationService, taxonomyService,
                 localeService);
         when(localeService.findAllLocaleIds()) //
                 .thenReturn(Lists.newArrayList("en_US", "enuk_UK", "en"));
@@ -156,5 +160,13 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateRichMediaCategoryStructure() {
         service.save("categoryId123", "RICH_MEDIA", Sets.newHashSet("maxId"));
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/category_structures/category_structures_after_update_accessory_offering.bson")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateAccessoryCategoryStructure() {
+        service.save("categoryId123", "ACCESSORY_SPECS",
+                Sets.newHashSet("colorId", "mfgPartNoId"));
     }
 }
