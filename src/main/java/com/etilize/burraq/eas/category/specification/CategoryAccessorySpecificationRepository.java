@@ -26,28 +26,20 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas;
+package com.etilize.burraq.eas.category.specification;
+
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
- * It is defining constants used in this service.
- * @author Umar Zubair
+ * It represents dynamodb repository for {@link CategoryAccessorySpecification}.
  *
+ * @author Kaiser Raja
+ * @since 1.0
  */
-public interface ExportAggregationConstants {
-
-    String LOCALE_EN = "en";
-
-    String LOCALE_EN_US = "en_US";
-
-    String LANGUAGE_EN = "en";
-
-    String OFFERING_BASIC_SPECS = "BASIC_SPECS";
-
-    String OFFERING_DETAILED_SPECS = "DETAILED_SPECS";
-
-    String OFFERING_BASIC_MEDIA = "BASIC_MEDIA";
-
-    String OFFERING_RICH_MEDIA = "RICH_MEDIA";
-
-    String OFFERING_ACCESSORY_SPECS = "ACCESSORY_SPECS";
+@EnableScan
+@RestResource(exported = false)
+public interface CategoryAccessorySpecificationRepository
+        extends DynamoDBCrudRepository<CategoryAccessorySpecification, CategorySpecificationKey> {
 }

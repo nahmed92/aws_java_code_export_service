@@ -69,6 +69,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
 
     private final CategoryRichMediaSpecificationRepository richMediaCategoryStructureRepository;
 
+    private final CategoryAccessorySpecificationRepository accessoryCategoryStructureRepository;
+
     private final TranslationService translationService;
 
     private final TaxonomyService taxonomyService;
@@ -92,6 +94,7 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
             final CategoryDetailedSpecificationRepository detailedCategoryStructureRepository,
             final CategoryBasicMediaSpecificationRepository basicMediaCategoryStructureRepository,
             final CategoryRichMediaSpecificationRepository richMediaCategoryStructureRepository,
+            final CategoryAccessorySpecificationRepository accessoryCategoryStructureRepository,
             final TranslationService translationService,
             final TaxonomyService taxonomyService, final LocaleService localeService) {
         Assert.notNull(basicCategoryStructureRepository,
@@ -109,6 +112,7 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         this.detailedCategoryStructureRepository = detailedCategoryStructureRepository;
         this.basicMediaCategoryStructureRepository = basicMediaCategoryStructureRepository;
         this.richMediaCategoryStructureRepository = richMediaCategoryStructureRepository;
+        this.accessoryCategoryStructureRepository = accessoryCategoryStructureRepository;
         this.translationService = translationService;
         this.taxonomyService = taxonomyService;
         this.localeService = localeService;
@@ -152,6 +156,10 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
             case OFFERING_RICH_MEDIA:
                 categoryStructure.setAttributes(findMediaAttributeNames(attributeIds));
                 saveRichMediaCategoryStructure(categoryStructure, localeIds);
+                break;
+            case OFFERING_ACCESSORY_SPECS:
+                categoryStructure.setAttributes(findAttributeNames(attributeIds));
+                saveAccessoryCategoryStructure(categoryStructure, localeIds);
                 break;
             default:
                 break;
@@ -351,6 +359,38 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
                     translateAttributes(categoryStructure.getIndustryId(), localeId,
                             categoryStructure.getAttributes()));
             richMediaCategoryStructureRepository.save(localizedCategoryStructure);
+        });
+    }
+
+    private void saveAccessoryCategoryStructure(final CategorySpecification categoryStructure,
+            final List<String> localeIds) {
+        final CategoryAccessorySpecification accessoryCategoryStructure = new CategoryAccessorySpecification();
+        accessoryCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
+        accessoryCategoryStructure.setLocaleId(categoryStructure.getLocaleId());
+        accessoryCategoryStructure.setParentCategoryId(
+                categoryStructure.getParentCategoryId());
+        accessoryCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
+        accessoryCategoryStructure.setIndustryName(categoryStructure.getIndustryName());
+        accessoryCategoryStructure.setAttributes(categoryStructure.getAttributes());
+        accessoryCategoryStructure.setLastUpdateDate(categoryStructure.getLastUpdateDate());
+        accessoryCategoryStructureRepository.save(accessoryCategoryStructure);
+        localeIds.forEach(localeId -> {
+            final CategoryAccessorySpecification localizedCategoryStructure = new CategoryAccessorySpecification();
+            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
+            localizedCategoryStructure.setCategoryName(
+                    translationService.translateText(categoryStructure.getIndustryId(),
+                            localeId, categoryStructure.getCategoryName()));
+            localizedCategoryStructure.setLocaleId(localeId);
+            localizedCategoryStructure.setParentCategoryId(
+                    categoryStructure.getParentCategoryId());
+            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
+            localizedCategoryStructure.setIndustryName(
+                    translationService.translateText(categoryStructure.getIndustryId(),
+                            localeId, categoryStructure.getIndustryName()));
+            localizedCategoryStructure.setAttributes(
+                    translateAttributes(categoryStructure.getIndustryId(), localeId,
+                            categoryStructure.getAttributes()));
+            accessoryCategoryStructureRepository.save(localizedCategoryStructure);
         });
     }
 
