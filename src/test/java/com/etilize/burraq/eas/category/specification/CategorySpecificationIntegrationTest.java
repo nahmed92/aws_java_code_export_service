@@ -100,8 +100,8 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
         service = new CategorySpecificationServiceImpl(basicCategoryStructureRepository,
                 detailedCategoryStructureRepository,
                 basicMediaCategoryStructureRepository,
-                richMediaCategoryStructureRepository, accessoryCategoryStructureRepository,
-                translationService, taxonomyService,
+                richMediaCategoryStructureRepository,
+                accessoryCategoryStructureRepository, translationService, taxonomyService,
                 localeService);
         when(localeService.findAllLocaleIds()) //
                 .thenReturn(Lists.newArrayList("en_US", "enuk_UK", "en"));

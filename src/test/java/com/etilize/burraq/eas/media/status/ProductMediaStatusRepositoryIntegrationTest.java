@@ -63,7 +63,8 @@ public class ProductMediaStatusRepositoryIntegrationTest extends AbstractIntegra
 
     @Test
     public void shouldFindAllMediaStatuses() {
-        final List<ProductMediaStatus> specifications = Lists.newArrayList(repository.findAll());
+        final List<ProductMediaStatus> specifications = Lists.newArrayList(
+                repository.findAll());
         assertThat(specifications, is(notNullValue()));
         assertThat(specifications, hasSize(2));
         assertThat(specifications.get(0).getId(),
@@ -86,7 +87,8 @@ public class ProductMediaStatusRepositoryIntegrationTest extends AbstractIntegra
 
     @Test
     public void shouldFindMediaStatusById() {
-        final Optional<ProductMediaStatus> specification = repository.findById("product123-en");
+        final Optional<ProductMediaStatus> specification = repository.findById(
+                "product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));

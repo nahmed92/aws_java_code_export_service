@@ -65,7 +65,8 @@ public class ProductAccessoryRepositoryIntegrationTest extends AbstractIntegrati
 
     @Test
     public void shouldFindAccessoryById() {
-        final Optional<ProductAccessory> accessory = repository.findById("productId123-en_US");
+        final Optional<ProductAccessory> accessory = repository.findById(
+                "productId123-en_US");
         assertThat(accessory, isPresentAnd(notNullValue()));
         assertThat(accessory.get().getId(), is("productId123-en_US"));
         assertThat(accessory.get().getProductId(), is("productId123"));

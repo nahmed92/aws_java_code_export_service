@@ -62,7 +62,8 @@ public class UpdateProductSpecificationRequest {
      * @param productId product id
      * @param localeId locale id
      */
-    public UpdateProductSpecificationRequest(final String productId, final String localeId) {
+    public UpdateProductSpecificationRequest(final String productId,
+            final String localeId) {
         this.productId = productId;
         this.localeId = localeId;
     }

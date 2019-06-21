@@ -43,7 +43,8 @@ import org.springframework.util.Assert;
  * @since 1.0
  */
 @Service
-public class ProductSpecificationStatusServiceImpl implements ProductSpecificationStatusService {
+public class ProductSpecificationStatusServiceImpl
+        implements ProductSpecificationStatusService {
 
     private static final String PRODICTID_IS_REQUIRED = "productId is required";
 

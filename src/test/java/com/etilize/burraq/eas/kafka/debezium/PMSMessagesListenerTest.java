@@ -96,7 +96,8 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getPMSProductMediaEventValueObjectWithoutURLAndStatusPending();
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
         doNothing().when(mediaSpecificationService) //
-                .saveAttribute("mp5", "en_US", "1", PENDING, new ProductMediaAttributeValue());
+                .saveAttribute("mp5", "en_US", "1", PENDING,
+                        new ProductMediaAttributeValue());
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
         verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "en_US", "1",
                 PENDING, new ProductMediaAttributeValue());

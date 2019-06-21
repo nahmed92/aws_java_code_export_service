@@ -40,6 +40,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
  */
 @EnableScan
 @RestResource(exported = false)
-public interface CategoryRichMediaSpecificationRepository
-        extends DynamoDBCrudRepository<CategoryRichMediaSpecification, CategorySpecificationKey> {
+public interface CategoryRichMediaSpecificationRepository extends
+        DynamoDBCrudRepository<CategoryRichMediaSpecification, CategorySpecificationKey> {
 }

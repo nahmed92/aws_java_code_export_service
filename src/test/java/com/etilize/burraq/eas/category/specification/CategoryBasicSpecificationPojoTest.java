@@ -69,7 +69,8 @@ public class CategoryBasicSpecificationPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(CategoryBasicSpecification.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(CategoryBasicSpecification.class));
     }
 
     @Test
