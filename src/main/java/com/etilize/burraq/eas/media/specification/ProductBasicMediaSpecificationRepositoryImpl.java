@@ -52,7 +52,8 @@ public class ProductBasicMediaSpecificationRepositoryImpl
      * @param amazonDynamoDB amazonDynamoDB
      */
     @Autowired
-    public ProductBasicMediaSpecificationRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
+    public ProductBasicMediaSpecificationRepositoryImpl(
+            final AmazonDynamoDB amazonDynamoDB) {
         Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
         final DynamoDB db = new DynamoDB(amazonDynamoDB);
         table = db.getTable(ProductBasicMediaSpecification.TABLE_NAME);

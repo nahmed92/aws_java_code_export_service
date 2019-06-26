@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.kafka.debezium;
 
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
+import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -204,21 +205,21 @@ public class DebeziumMessageParser {
      */
     public String getProductIdFromDebeziumMessageKey(
             final ConsumerRecord<Object, String> key) {
-        final JsonObject keyJO = new JsonParser().parse(key.key() //
+        final JsonObject idKey = new JsonParser().parse(key.key() //
                 .toString()) //
                 .getAsJsonObject();
         final String productId;
-        if (new JsonParser().parse(keyJO.get(ID).getAsString()).isJsonObject()) {
-            productId = new JsonParser().parse(keyJO.get(ID) //
-                    .getAsString()) //
-                    .getAsJsonObject() //
-                    .get(ID) //
-                    .getAsString();
+        if (idKey.get("id") != null) {
+            productId = idKey.get("id") //
+                    .toString();
         } else {
-            productId = keyJO.get(ID) //
-                    .getAsString();
+            productId = idKey.get("_id") //
+                    .toString();
         }
-        return productId;
+        return remove(remove(
+                remove(remove(remove(remove(remove(productId, "\\"), "\""), "{"), "}"),
+                        " "),
+                "_id:"), "id:");
     }
 
     /**

@@ -47,7 +47,8 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
  */
 @UsingDataSet(locations = "/datasets/specification_statuses/specification_statuses.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class ProductSpecificationStatusServiceIntegrationTest extends AbstractIntegrationTest {
+public class ProductSpecificationStatusServiceIntegrationTest
+        extends AbstractIntegrationTest {
 
     @Autowired
     private ProductSpecificationStatusService service;

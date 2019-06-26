@@ -56,7 +56,8 @@ import avro.shaded.com.google.common.collect.Sets;
  */
 @UsingDataSet(locations = "/datasets/customer_codes/customer_codes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class ProductCustomerCodeRepositoryIntegrationTest extends AbstractIntegrationTest {
+public class ProductCustomerCodeRepositoryIntegrationTest
+        extends AbstractIntegrationTest {
 
     @Autowired
     private ProductCustomerCodeRepository repository;

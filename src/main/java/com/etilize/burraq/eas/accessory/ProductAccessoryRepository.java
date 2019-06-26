@@ -41,6 +41,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface ProductAccessoryRepository
-        extends DynamoDBCrudRepository<ProductAccessory, String>, ProductAccessoryCustomRepository {
+        extends DynamoDBCrudRepository<ProductAccessory, String>,
+        ProductAccessoryCustomRepository {
 
 }

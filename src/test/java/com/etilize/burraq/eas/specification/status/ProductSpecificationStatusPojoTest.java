@@ -68,7 +68,8 @@ public class ProductSpecificationStatusPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(ProductSpecificationStatus.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(ProductSpecificationStatus.class));
     }
 
     @Test

@@ -46,7 +46,8 @@ import com.google.common.collect.Lists;
  * @author Umar Zubair
  * @since 1.0
  */
-public class ProductCustomerCodeRepositoryImpl implements ProductCustomerCodeCustomRepository {
+public class ProductCustomerCodeRepositoryImpl
+        implements ProductCustomerCodeCustomRepository {
 
     private static final String ID = "id";
 

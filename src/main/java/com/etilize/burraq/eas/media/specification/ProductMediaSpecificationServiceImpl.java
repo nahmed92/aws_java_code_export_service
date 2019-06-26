@@ -55,7 +55,8 @@ import com.google.common.collect.Maps;
  * @since 1.0
  */
 @Service
-public class ProductMediaSpecificationServiceImpl implements ProductMediaSpecificationService {
+public class ProductMediaSpecificationServiceImpl
+        implements ProductMediaSpecificationService {
 
     private static final String LOCALE_ID_IS_REQUIRED = "localeId is required";
 
@@ -140,7 +141,7 @@ public class ProductMediaSpecificationServiceImpl implements ProductMediaSpecifi
         Assert.notNull(status, STATUS_IS_REQUIRED);
         switch (status) {
             case ASSOCIATED:
-                if (value!=null && StringUtils.isNotBlank(value.getUrl())) {
+                if (value != null && StringUtils.isNotBlank(value.getUrl())) {
                     updateAttribute(productId, localeId, attributeId, value);
                 }
                 break;

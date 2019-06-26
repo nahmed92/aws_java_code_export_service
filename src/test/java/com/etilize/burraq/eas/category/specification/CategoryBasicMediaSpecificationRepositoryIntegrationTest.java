@@ -102,7 +102,8 @@ public class CategoryBasicMediaSpecificationRepositoryIntegrationTest
         final CategorySpecificationKey key = new CategorySpecificationKey();
         key.setCategoryId("categoryId123");
         key.setLocaleId("en_CA");
-        final Optional<CategoryBasicMediaSpecification> category = repository.findById(key);
+        final Optional<CategoryBasicMediaSpecification> category = repository.findById(
+                key);
         assertThat(category.isPresent(), is(true));
         assertThat(category.get().getCategoryId(), is("categoryId123"));
         assertThat(category.get().getLocaleId(), is("en_CA"));

@@ -60,7 +60,8 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
  */
 @UsingDataSet(locations = "/datasets/basic_specifications/basic_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class ProductBasicSpecificationRepositoryIntegrationTest extends AbstractIntegrationTest {
+public class ProductBasicSpecificationRepositoryIntegrationTest
+        extends AbstractIntegrationTest {
 
     @Autowired
     private ProductBasicSpecificationRepository repository;
@@ -141,7 +142,8 @@ public class ProductBasicSpecificationRepositoryIntegrationTest extends Abstract
     @Test
     @UsingDataSet(locations = "/datasets/basic_specifications/basic_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void shouldFindBasicSpecificationById() {
-        final Optional<ProductSpecification> specification = repository.findOne("product123-en");
+        final Optional<ProductSpecification> specification = repository.findOne(
+                "product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));
@@ -192,7 +194,8 @@ public class ProductBasicSpecificationRepositoryIntegrationTest extends Abstract
     @Test
     @ShouldMatchDataSet(location = "/datasets/basic_specifications/basic_specifications_after_update.bson")
     public void shouldUpdateBasicSpecification() {
-        final ProductBasicSpecification specs = repository.findById("product123-en_US").get();
+        final ProductBasicSpecification specs = repository.findById(
+                "product123-en_US").get();
         specs.setCategoryId("categoryId1234");
         specs.setIndustryId("industryId1234");
         repository.save(specs);

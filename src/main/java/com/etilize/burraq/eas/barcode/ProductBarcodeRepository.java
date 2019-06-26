@@ -42,6 +42,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface ProductBarcodeRepository
-        extends DynamoDBCrudRepository<ProductBarcode, ProductBarcodeKey>, ProductBarcodeCustomRepository {
+        extends DynamoDBCrudRepository<ProductBarcode, ProductBarcodeKey>,
+        ProductBarcodeCustomRepository {
 
 }

@@ -58,7 +58,8 @@ import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
  */
 @UsingDataSet(locations = "/datasets/media_specifications/media_specifications.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class ProductMediaSpecificationServiceIntegrationTest extends AbstractIntegrationTest {
+public class ProductMediaSpecificationServiceIntegrationTest
+        extends AbstractIntegrationTest {
 
     @Mock
     private CategorySpecificationService categoryStructureService;

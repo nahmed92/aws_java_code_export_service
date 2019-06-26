@@ -266,8 +266,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         });
     }
 
-    private void saveDetailedCategoryStructure(final CategorySpecification categoryStructure,
-            final List<String> localeIds) {
+    private void saveDetailedCategoryStructure(
+            final CategorySpecification categoryStructure, final List<String> localeIds) {
         final CategoryDetailedSpecification detailedCategoryStructure = new CategoryDetailedSpecification();
         detailedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
         detailedCategoryStructure.setCategoryName(categoryStructure.getCategoryName());
@@ -330,8 +330,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         });
     }
 
-    private void saveRichMediaCategoryStructure(final CategorySpecification categoryStructure,
-            final List<String> localeIds) {
+    private void saveRichMediaCategoryStructure(
+            final CategorySpecification categoryStructure, final List<String> localeIds) {
         final CategoryRichMediaSpecification richMediaCategoryStructure = new CategoryRichMediaSpecification();
         richMediaCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
         richMediaCategoryStructure.setCategoryName(categoryStructure.getCategoryName());
@@ -362,8 +362,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         });
     }
 
-    private void saveAccessoryCategoryStructure(final CategorySpecification categoryStructure,
-            final List<String> localeIds) {
+    private void saveAccessoryCategoryStructure(
+            final CategorySpecification categoryStructure, final List<String> localeIds) {
         final CategoryAccessorySpecification accessoryCategoryStructure = new CategoryAccessorySpecification();
         accessoryCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
         accessoryCategoryStructure.setLocaleId(categoryStructure.getLocaleId());
@@ -372,7 +372,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         accessoryCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
         accessoryCategoryStructure.setIndustryName(categoryStructure.getIndustryName());
         accessoryCategoryStructure.setAttributes(categoryStructure.getAttributes());
-        accessoryCategoryStructure.setLastUpdateDate(categoryStructure.getLastUpdateDate());
+        accessoryCategoryStructure.setLastUpdateDate(
+                categoryStructure.getLastUpdateDate());
         accessoryCategoryStructureRepository.save(accessoryCategoryStructure);
         localeIds.forEach(localeId -> {
             final CategoryAccessorySpecification localizedCategoryStructure = new CategoryAccessorySpecification();

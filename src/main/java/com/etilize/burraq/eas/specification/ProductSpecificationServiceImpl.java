@@ -278,9 +278,9 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 || originatedLocaleId.equals(localeId);
     }
 
-    private UpdateProductSpecificationRequest translateRequest(final String originatedLocaleId,
-            final String industryId, final String localeId,
-            final UpdateProductSpecificationRequest request,
+    private UpdateProductSpecificationRequest translateRequest(
+            final String originatedLocaleId, final String industryId,
+            final String localeId, final UpdateProductSpecificationRequest request,
             final Map<String, Attribute> attributesById) {
         final UpdateProductSpecificationRequest translatedRequest = new UpdateProductSpecificationRequest(
                 request.getProductId(), localeId);
@@ -468,8 +468,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return translatedValue;
     }
 
-    private Optional<ProductSpecification> getDetailedSpecification(final String productId,
-            final String localeId) {
+    private Optional<ProductSpecification> getDetailedSpecification(
+            final String productId, final String localeId) {
         return detailedSpecificationRepository.findOne(generateId(productId, localeId));
     }
 
@@ -478,7 +478,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return basicSpecificationRepository.findOne(generateId(productId, localeId));
     }
 
-    private ProductBasicSpecification getBasicSpecification(final ProductSpecification specs) {
+    private ProductBasicSpecification getBasicSpecification(
+            final ProductSpecification specs) {
         final ProductBasicSpecification basicSpecs = new ProductBasicSpecification();
         basicSpecs.setId(specs.getId());
         basicSpecs.setAttributes(specs.getAttributes());

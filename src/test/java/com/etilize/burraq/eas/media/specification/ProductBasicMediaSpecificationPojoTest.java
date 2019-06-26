@@ -70,7 +70,8 @@ public class ProductBasicMediaSpecificationPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(ProductBasicMediaSpecification.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(ProductBasicMediaSpecification.class));
     }
 
     @Test

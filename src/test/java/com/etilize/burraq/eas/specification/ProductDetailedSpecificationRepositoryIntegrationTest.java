@@ -142,7 +142,8 @@ public class ProductDetailedSpecificationRepositoryIntegrationTest
     @Test
     @UsingDataSet(locations = "/datasets/detailed_specifications/detailed_specifications_with_attributes.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void shouldFindDetailedSpecificationById() {
-        final Optional<ProductSpecification> specification = repository.findOne("product123-en");
+        final Optional<ProductSpecification> specification = repository.findOne(
+                "product123-en");
         assertThat(specification, isPresentAnd(notNullValue()));
         assertThat(specification.get().getId(), is("product123-en"));
         assertThat(specification.get().getProductId(), is("product123"));
@@ -182,7 +183,8 @@ public class ProductDetailedSpecificationRepositoryIntegrationTest
     @Test
     @ShouldMatchDataSet(location = "/datasets/detailed_specifications/detailed_specifications_after_update.bson")
     public void shouldUpdateDetailedSpecification() {
-        final ProductDetailedSpecification specs = repository.findById("product123-en_US").get();
+        final ProductDetailedSpecification specs = repository.findById(
+                "product123-en_US").get();
         specs.setCategoryId("categoryId1234");
         specs.setIndustryId("industryId1234");
         repository.save(specs);
