@@ -86,11 +86,14 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @Autowired
     private ProductDetailedSpecificationRepository detailedSpecificationRepository;
 
+    @Autowired
+    private ProductAccessorySpecificationRepository accessorySpecificationRepository;
+
     @Override
     public void before() {
         service = new ProductSpecificationServiceImpl(basicSpecificationRepository,
                 detailedSpecificationRepository, translationService, taxonomyService,
-                categoryStructureService, specificationStatusRepository);
+                categoryStructureService, specificationStatusRepository, accessorySpecificationRepository);
         when(taxonomyService.findAttributeById("mfgPartNoId")) //
                 .thenReturn(getAttribute("Mfg Part No", "industryId123", Type.TEXT, false,
                         false, Scope.INTERNATIONAL));
@@ -260,7 +263,7 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @Test
     @ShouldMatchDataSet(location = "/datasets/specifications/specifications_after_create.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    public void shouldCreateNewBasicAndDetailedSpecification() {
+    public void shouldCreateNewBasicAndAccessoryAndDetailedSpecification() {
         service.createProduct("product1234", "industryId123", "categoryId123");
     }
 
