@@ -35,8 +35,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cloud.stream.annotation.StreamMessageConverter;
 import org.springframework.cloud.stream.schema.avro.AvroMessageConverterProperties;
-import org.springframework.cloud.stream.schema.client.ConfluentSchemaRegistryClient;
-import org.springframework.cloud.stream.schema.client.SchemaRegistryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MessageConverter;
@@ -44,6 +42,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
+import com.etilize.avro.spring.ConfluentSchemaRegistryClientExtensionImpl;
+import com.etilize.avro.spring.SchemaRegistryClientExtension;
 import com.fasterxml.jackson.dataformat.avro.AvroMapper;
 
 /**
@@ -73,7 +73,7 @@ public class StreamConfig {
      * encoding
      *
      * @param mapper {@link AvroMapper} instance
-     * @param schemaRegistryClient {@link SchemaRegistryClient} instance
+     * @param schemaRegistryClient {@link SchemaRegistryClientExtension} instance
      * @param cacheManager {@link CacheManager} instance
      * @return an implementation of {@link MessageConverter} that converts message to/from
      *         avro encoding
@@ -81,7 +81,7 @@ public class StreamConfig {
     @Bean
     @StreamMessageConverter
     public AvroJsonSchemaRegistryClientMessageConverter avroMessageConverter(
-            final AvroMapper mapper, final SchemaRegistryClient schemaRegistryClient,
+            final AvroMapper mapper, final SchemaRegistryClientExtension schemaRegistryClient,
             final CacheManager cacheManager) {
         final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter = new AvroJsonSchemaRegistryClientMessageConverter(
                 mapper, schemaRegistryClient, cacheManager);
@@ -112,7 +112,7 @@ public class StreamConfig {
      * @return Confluent Schema Registry Client
      */
     @Bean
-    public SchemaRegistryClient schemaRegistryClient(
+    public SchemaRegistryClientExtension schemaRegistryClient(
             final RestTemplateBuilder restTemplateBuilder,
             @Value("${spring.kafka.consumer.properties.schema.registry.url}") final String endpoint,
             @Value("${spring.kafka.consumer.properties.username:''}") final String username,
@@ -120,9 +120,7 @@ public class StreamConfig {
         final RestTemplate restTemplate = (StringUtils.isEmpty(username)
                 ? restTemplateBuilder
                 : restTemplateBuilder.basicAuthorization(username, password)).build();
-        final ConfluentSchemaRegistryClient client = new ConfluentSchemaRegistryClient(
-                restTemplate);
-        client.setEndpoint(endpoint);
+        final ConfluentSchemaRegistryClientExtensionImpl client = new ConfluentSchemaRegistryClientExtensionImpl(restTemplate, endpoint);
         return client;
     }
 }
