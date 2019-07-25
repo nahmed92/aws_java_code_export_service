@@ -1,0 +1,23 @@
+spring:
+  profiles: dev
+  application:
+    name: export-aggregation-service
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}
+---
+spring:
+  profiles: staging
+  application:
+    name: export-aggregation-service
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}
+---
+spring:
+  profiles: aws-prod
+  application:
+    name: export-aggregation-service
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://burraq-config-service:8888}
