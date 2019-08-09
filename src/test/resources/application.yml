@@ -36,9 +36,20 @@ spring:
       read-capacity-units: 1
       write-capacity-units: 1
       ddl:
-        enabled: true 
+        enabled: true
   
 eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+
+---
+spring:
+  profiles: test
+  data:
+    elasticsearch:
+      node: ${burraq.embedded.elastic.node}
+      protocol: ${burraq.embedded.elastic.node.protocol}
+      service-name: none
+      region: none      
+    

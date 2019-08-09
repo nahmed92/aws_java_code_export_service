@@ -30,6 +30,9 @@ package com.etilize.burraq.eas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
 
 /**
  * Represents the Application class which houses the main entry-point to run the application
@@ -37,7 +40,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Faisal Feroz
  *
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = { ElasticsearchDataAutoConfiguration.class,
+    ElasticsearchAutoConfiguration.class,
+    ElasticsearchRepositoriesAutoConfiguration.class })
 public class ExportAggregationApplication {
 
     /**

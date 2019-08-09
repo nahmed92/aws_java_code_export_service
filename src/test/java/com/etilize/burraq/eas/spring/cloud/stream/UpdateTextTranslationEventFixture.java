@@ -67,7 +67,8 @@ public class UpdateTextTranslationEventFixture {
             return aMessage() //
                     .of("translation-service") //
                     .withIndustryId("industry123") //
-                    .withLocaleId("de_DE") //
+                    .withSourceLanguageId("EN") //
+                    .withTargetLanguageId("EN_FR") //
                     .withValue("Green") //
                     .withTranslation("Gruen") //
                     .withPerformedBy("burraq@etilizepak.com") //

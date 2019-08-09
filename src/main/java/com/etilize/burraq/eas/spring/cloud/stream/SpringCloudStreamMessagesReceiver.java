@@ -36,8 +36,8 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 import com.etilize.avro.spring.AvroJsonSchemaRegistryClientMessageConverter;
+import com.etilize.burraq.eas.category.specification.CategoryAttributeUpdateService;
 import com.etilize.burraq.stream.translation.UpdateTextTranslationEvent;
-import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 
 /**
  * Houses message handlers for spring cloud stream based messages.
@@ -48,9 +48,13 @@ import com.etilize.burraq.stream.translation.UpdateUnitTranslationEvent;
 @Service
 public class SpringCloudStreamMessagesReceiver {
 
+    private static final String LANGUAGE_EN = "en";
+
     private final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private CategoryAttributeUpdateService categoryAttributeUpdateService;
 
     /**
      * Constructor to instantiate object instance
@@ -59,8 +63,10 @@ public class SpringCloudStreamMessagesReceiver {
      */
     @Autowired
     public SpringCloudStreamMessagesReceiver(
-            final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter) {
+            final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter,
+            final CategoryAttributeUpdateService categoryAttributeUpdateService) {
         this.avroJsonSchemaRegistryClientMessageConverter = avroJsonSchemaRegistryClientMessageConverter;
+        this.categoryAttributeUpdateService = categoryAttributeUpdateService;
     }
 
     /**
@@ -81,13 +87,15 @@ public class SpringCloudStreamMessagesReceiver {
                     message, UpdateTextTranslationEvent.class);
             logger.info("Received UpdateTextTranslationEvent [{}]",
                     updateTextTranslationEvent);
-            //TODO: further processing needs to be implemented
-        } else if (contentType.contains("updateunittranslationevent")) {
-            final UpdateUnitTranslationEvent updateUnitTranslationEvent = (UpdateUnitTranslationEvent) avroJsonSchemaRegistryClientMessageConverter.fromMessage(
-                    message, UpdateUnitTranslationEvent.class);
-            logger.info("Received UpdateUnitTranslationEvent [{}]",
-                    updateUnitTranslationEvent);
-            //TODO: further processing needs to be implemented
+            //TODO: LANGUAGE_EN replace with Enum constant
+            if (updateTextTranslationEvent.getSourceLanguageId().equalsIgnoreCase(
+                    LANGUAGE_EN)) {
+                categoryAttributeUpdateService.updateAttributeTranslation(
+                        updateTextTranslationEvent.getIndustryId(),
+                        updateTextTranslationEvent.getSource(),
+                        updateTextTranslationEvent.getTranslation(),
+                        updateTextTranslationEvent.getTargetLanguageId());
+            }
         }
     }
 }

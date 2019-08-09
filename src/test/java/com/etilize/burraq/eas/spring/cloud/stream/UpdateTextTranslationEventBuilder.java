@@ -46,7 +46,9 @@ public interface UpdateTextTranslationEventBuilder
     @Constructs
     UpdateTextTranslationEventBuilder of(String source);
 
-    UpdateTextTranslationEventBuilder withLocaleId(String localeId);
+    UpdateTextTranslationEventBuilder withSourceLanguageId(String sourceLanguageId);
+
+    UpdateTextTranslationEventBuilder withTargetLanguageId(String targetLanguageId);
 
     UpdateTextTranslationEventBuilder withIndustryId(String indsutryId);
 

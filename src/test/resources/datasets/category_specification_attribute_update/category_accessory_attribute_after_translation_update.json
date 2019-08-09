@@ -1,0 +1,103 @@
+{
+    "category-accessory-specifications": [
+        {
+            "industryName": {
+                "S": "IT"
+            },
+            "industryId": {
+                "S": "industryId123"
+            },
+            "lastUpdateDate": {
+                "N": "1546528059097"
+            },
+            "attributes": {
+                "M": {
+                    "sizeId": {
+                        "S": "Size"
+                    },
+                    "mfgPartNoId": {
+                        "S": "Updated Part Number"
+                    }
+                }
+            },
+            "parentCategoryId": {
+                "S": "parentCategoryId123"
+            },
+            "categoryName": {
+                "S": "Notebook"
+            },
+            "categoryId": {
+                "S": "categoryId123"
+            },
+            "localeId": {
+                "S": "en_CA"
+            }
+        },
+        {
+            "industryName": {
+                "S": "IT"
+            },
+            "industryId": {
+                "S": "industryId123"
+            },
+            "lastUpdateDate": {
+                "N": "1546528059097"
+            },
+            "parentCategoryId": {
+                "S": "parentCategoryId123"
+            },
+            "attributes": {
+                "M": {
+                    "sizeId": {
+                        "S": "Size"
+                    },
+                    "mfgPartNoId": {
+                        "S": "Updated Part Number"
+                    }
+                }
+            },
+            "categoryName": {
+                "S": "Notebook"
+            },
+            "categoryId": {
+                "S": "categoryId123"
+            },
+            "localeId": {
+                "S": "en_US"
+            }
+        },
+      {  
+         "categoryId":{  
+            "S":"categoryId124"
+         },
+         "localeId":{  
+            "S":"en_US"
+         },
+         "industryId":{  
+            "S":"industryId123"
+         },
+         "parentCategoryId":{  
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{  
+            "S":"LED"
+         },
+         "industryName":{  
+            "S":"TECH"
+         },
+         "attributes":{  
+            "M":{  
+               "sizeId":{  
+                  "S":"Size"
+               },
+               "mfgPartNoId":{  
+                  "S":"Mfg Part Number"
+               }
+            }
+         },
+         "lastUpdateDate":{  
+            "N":1546528059097
+         }
+      }
+    ]
+}

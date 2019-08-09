@@ -30,13 +30,22 @@ package com.etilize.burraq.eas.test;
 
 import static com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule.DynamoDbRuleBuilder.*;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import com.github.wonwoo.dynamodb.test.autoconfigure.AutoConfigureDynamo;
 import com.lordofthejars.nosqlunit.dynamodb.DynamoDbRule;
+
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
@@ -55,12 +64,60 @@ public abstract class AbstractIntegrationTest extends AbstractTest {
     @Autowired
     protected ApplicationContext context;
 
+    // Rendom port from 20k to max
+    private static final int ES_PORT = (int) (Math.random() * ((65500 - 20000) + 1))
+            + 20000;
+
+    // Rendom port from 20k to max
+    private static final int ES_HTTP_PORT = (int) (Math.random() * ((6550 - 2000) + 1))
+            + 2000;
+
+    // Fixed cluster name
+    private static final String ES_CLUSTER_NAME = "burraq_cluster";
+
+    private static EmbeddedElastic embeddedElastic;
+
+    private static boolean isRunningembeddedElastic = false;
+
     @Rule
     public DynamoDbRule dynamoDbRule = newDynamoDbRule().defaultSpringDynamoDb();
 
     @BeforeClass
     public static void setupClass() throws Exception {
         System.setProperty("sqlite4java.library.path", "native-libs");
+    }
+
+    /**
+     * @ClassRule for loading embedded Elasticsearch
+     *
+     * @return TestRule TestRule
+     */
+
+    @ClassRule
+    public static TestRule getEmbeddedElasticsearch() {
+        if (!isRunningembeddedElastic) {
+            System.setProperty("burraq.embedded.elastic.node", //
+                    "localhost:" + ES_HTTP_PORT);
+            System.setProperty("burraq.embedded.elastic.node.protocol", //
+                    "http");
+
+            try {
+                if (embeddedElastic == null) {
+                    embeddedElastic = EmbeddedElastic.builder() //
+                            .withElasticVersion("6.5.0") //
+                            .withSetting(PopularProperties.TRANSPORT_TCP_PORT, ES_PORT) //
+                            .withSetting(PopularProperties.HTTP_PORT, ES_HTTP_PORT) //
+
+                            .withSetting(PopularProperties.CLUSTER_NAME, ES_CLUSTER_NAME) //
+                            .withEsJavaOpts("-Xms128m -Xmx512m") //
+                            .withStartTimeout(2, TimeUnit.MINUTES).build().start();
+                }
+                isRunningembeddedElastic = true;
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return RuleChain.emptyRuleChain();
     }
 
 }
