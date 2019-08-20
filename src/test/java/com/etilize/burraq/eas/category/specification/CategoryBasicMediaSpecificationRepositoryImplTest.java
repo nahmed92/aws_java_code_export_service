@@ -39,26 +39,31 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
 
-@UsingDataSet(locations = "/datasets/basic_category_structures/basic_category_structures.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+/**
+ * @author Nasir Ahmed
+ *
+ */
+@UsingDataSet(locations = "/datasets/basic_media_category_structures/basic_media_category_structures.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
 @CustomComparisonStrategy(comparisonStrategy = DynamoFlexibleComparisonStrategy.class)
-public class CategoryBasicSpecificationRepositoryImplTest
+
+public class CategoryBasicMediaSpecificationRepositoryImplTest
         extends AbstractIntegrationTest {
 
     @Autowired
-    private CategoryBasicSpecificationRepository repository;
+    private CategoryBasicMediaSpecificationRepository repository;
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_basic_attribute_after_offerring_attribute_update.json")
+    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_basic_media_after_offerring_attribute_update.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    public void shouldUpdateCategoryBasicAttributeSpecification() {
+    public void shouldUpdateBasicMediaCategoryAttribute() throws Exception {
         repository.updateCategoryAttribute("categoryId123", "en_CA", true, "mfgPartNoId",
                 "Updated Part Number");
     }
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_basic_specs_name_attribute_after_update.json")
+    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_basic_media_specs_name_after_update.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    public void shouldUpdateCategoryBasicSpecificationAttributeName() {
+    public void shouldUpdateMediaCategoryNameAttribute() throws Exception {
         repository.updateCategoryAttribute("categoryId123", "en_US", false,
                 "categoryName", "Notebook Updated name");
     }

@@ -28,19 +28,44 @@
 
 package com.etilize.burraq.eas.category.specification;
 
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.util.Assert;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
 
 /**
- * It represents dynamodb repository for {@link CategoryRichMediaSpecification}.
+ * CategoryRichMediaSpecificationCustomRepository implementation
  *
- * @author Umar Zubair
- * @since 1.0
+ * @author Nasir Ahmed
+ *
  */
-@EnableScan
-@RestResource(exported = false)
-public interface CategoryRichMediaSpecificationRepository extends
-        DynamoDBCrudRepository<CategoryRichMediaSpecification, CategorySpecificationKey>,
-        CategoryRichMediaSpecificationCustomRepository {
+public class CategoryRichMediaSpecificationCustomRepositoryImpl
+        implements CategoryRichMediaSpecificationCustomRepository {
+
+    public static final String TABLE_NAME = "category-rich-media-specifications";
+
+    private final Table table;
+
+    /**
+     * Constructor {@link CategoryRichMediaSpecificationCustomRepositoryImpl}
+     *
+     * @param amazonDynamoDB {@link AmazonDynamoDB}
+     */
+    public CategoryRichMediaSpecificationCustomRepositoryImpl(
+            final AmazonDynamoDB amazonDynamoDB) {
+        Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
+        final DynamoDB db = new DynamoDB(amazonDynamoDB);
+        table = db.getTable(TABLE_NAME);
+    }
+
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.category.specification.CategoryRichMediaSpecificationCustomRepository#updateCategoryAttribute(java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updateCategoryAttribute(final String categoryId, final String localeId,
+            final boolean isAttribute, final String fieldName, final String value) {
+        table.updateItem(getUpdateItemSpecForUpadateAttributeData(categoryId, fieldName,
+                isAttribute, value, localeId));
+    }
 }

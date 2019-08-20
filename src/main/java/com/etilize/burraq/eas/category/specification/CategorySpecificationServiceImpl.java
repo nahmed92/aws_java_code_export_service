@@ -196,7 +196,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
     }
 
     @Override
-    public Map<String, String> findAccessorySpecsOfferingAttributes(final String categoryId) {
+    public Map<String, String> findAccessorySpecsOfferingAttributes(
+            final String categoryId) {
         Map<String, String> attributes = Maps.newHashMap();
         final CategorySpecificationKey key = new CategorySpecificationKey();
         key.setCategoryId(categoryId);

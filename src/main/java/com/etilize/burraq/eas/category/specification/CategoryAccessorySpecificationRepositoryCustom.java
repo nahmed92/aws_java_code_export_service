@@ -34,13 +34,13 @@ public interface CategoryAccessorySpecificationRepositoryCustom
     /**
      * Update category attribute by provided name and value
      *
-     * @param categoryId Attribute CategoryId
-     * @param fieldName Attribute Name
-     * @param isAttribute is related to offering attribute
-     * @param value updated value
+     * @param categoryId CategoryId
      * @param localeId locale id
+     * @param isAttribute fieldName is for attributeId or not
+     * @param fieldName possible values {attributeId, categoryName, industryName}
+     * @param value updated value
      */
-    void updateCategoryAttribute(String categoryId, String fieldName, boolean isAttribute,
-            String value, String localeId);
+    void updateCategoryAttribute(String categoryId, String localeId, boolean isAttribute,
+            String fieldName, String value);
 
 }

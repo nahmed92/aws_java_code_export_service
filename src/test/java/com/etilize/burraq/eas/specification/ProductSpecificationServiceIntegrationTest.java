@@ -93,7 +93,8 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     public void before() {
         service = new ProductSpecificationServiceImpl(basicSpecificationRepository,
                 detailedSpecificationRepository, translationService, taxonomyService,
-                categoryStructureService, specificationStatusRepository, accessorySpecificationRepository);
+                categoryStructureService, specificationStatusRepository,
+                accessorySpecificationRepository);
         when(taxonomyService.findAttributeById("mfgPartNoId")) //
                 .thenReturn(getAttribute("Mfg Part No", "industryId123", Type.TEXT, false,
                         false, Scope.INTERNATIONAL));
