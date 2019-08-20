@@ -211,4 +211,5 @@ public class CategoryAccessorySpecification extends CategorySpecification {
     public void setAttributes(final Map<String, String> attributes) {
         this.attributes = attributes;
     }
+
 }
