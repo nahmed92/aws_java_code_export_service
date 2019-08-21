@@ -1,0 +1,70 @@
+{
+    "category-rich-media-specifications": [
+        {
+            "industryName": {
+                "S": "IT"
+            },
+            "industryId": {
+                "S": "industryId123"
+            },
+            "lastUpdateDate": {
+                "N": "1546528059097"
+            },
+            "attributes": {
+                "M": {
+                    "sizeId": {
+                        "S": "Size"
+                    },
+                    "mfgPartNoId": {
+                        "S": "Updated Part Number"
+                    }
+                }
+            },
+            "parentCategoryId": {
+                "S": "parentCategoryId123"
+            },
+            "categoryName": {
+                "S": "Notebook"
+            },
+            "categoryId": {
+                "S": "categoryId123"
+            },
+            "localeId": {
+                "S": "en_CA"
+            }
+        },
+        {
+            "industryName": {
+                "S": "IT"
+            },
+            "industryId": {
+                "S": "industryId123"
+            },
+            "lastUpdateDate": {
+                "N": "1546528059097"
+            },
+            "parentCategoryId": {
+                "S": "parentCategoryId123"
+            },
+            "attributes": {
+                "M": {
+                    "sizeId": {
+                        "S": "Size"
+                    },
+                    "mfgPartNoId": {
+                        "S": "Mfg Part No"
+                    }
+                }
+            },
+            "categoryName": {
+                "S": "Notebook"
+            },
+            "categoryId": {
+                "S": "categoryId123"
+            },
+            "localeId": {
+                "S": "en_US"
+            }
+        }
+    ]
+}

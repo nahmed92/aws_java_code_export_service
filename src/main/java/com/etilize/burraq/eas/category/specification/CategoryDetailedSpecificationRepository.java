@@ -41,5 +41,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @EnableScan
 @RestResource(exported = false)
 public interface CategoryDetailedSpecificationRepository extends
-        DynamoDBCrudRepository<CategoryDetailedSpecification, CategorySpecificationKey> {
+        DynamoDBCrudRepository<CategoryDetailedSpecification, CategorySpecificationKey>,
+        CategoryDetailedSpecificationCustomRepository {
 }

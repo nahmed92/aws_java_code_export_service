@@ -28,19 +28,19 @@
 
 package com.etilize.burraq.eas.category.specification;
 
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.springframework.data.rest.core.annotation.RestResource;
+public interface CategoryBasicMediaSpecificationCustomRepository
+        extends CategorySpecificationCustom {
 
-/**
- * It represents dynamodb repository for {@link CategoryRichMediaSpecification}.
- *
- * @author Umar Zubair
- * @since 1.0
- */
-@EnableScan
-@RestResource(exported = false)
-public interface CategoryRichMediaSpecificationRepository extends
-        DynamoDBCrudRepository<CategoryRichMediaSpecification, CategorySpecificationKey>,
-        CategoryRichMediaSpecificationCustomRepository {
+    /**
+     * Update category attribute by provided name and value
+     *
+     * @param categoryId CategoryId
+     * @param localeId locale id
+     * @param isAttribute fieldName is for attributeId or not
+     * @param fieldName possible values {attributeId, categoryName, industryName}
+     * @param value updated value
+     */
+    void updateCategoryAttribute(String categoryId, String localeId, boolean isAttribute,
+            String fieldName, String value);
+
 }

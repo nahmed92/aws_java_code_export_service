@@ -52,15 +52,15 @@ public class CategoryAccessorySpecificationRepositoryImplTest
     @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_attribute_after_offerring_attribute_update.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAccessoryCategoryAttribute() throws Exception {
-        repository.updateCategoryAttribute("categoryId123", "mfgPartNoId", true,
-                "Updated Part Number", "en_CA");
+        repository.updateCategoryAttribute("categoryId123", "en_CA", true, "mfgPartNoId",
+                "Updated Part Number");
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_accessory_attribute_name_after_update.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAccessoryCategoryNameAttribute() throws Exception {
-        repository.updateCategoryAttribute("categoryId123", "categoryName", false,
-                "Notebook Updated name", "en_US");
+        repository.updateCategoryAttribute("categoryId123", "en_US", false,
+                "categoryName", "Notebook Updated name");
     }
 }

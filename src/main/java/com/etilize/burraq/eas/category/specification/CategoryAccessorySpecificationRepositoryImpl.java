@@ -60,18 +60,12 @@ public class CategoryAccessorySpecificationRepositoryImpl
         table = db.getTable(TABLE_NAME);
     }
 
-    /**
-     * Update category attribute by provided name and value
-     *
-     * @param categoryId Attribute CategoryId
-     * @param fieldName Attribute Name
-     * @param isAttribute is related to offering attribute
-     * @param value updated value
-     * @param localeId locale id
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.category.specification.CategoryAccessorySpecificationRepositoryCustom#updateCategoryAttribute(java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String)
      */
     @Override
-    public void updateCategoryAttribute(final String categoryId, final String fieldName,
-            final boolean isAttribute, final String value, final String localeId) {
+    public void updateCategoryAttribute(final String categoryId, final String localeId,
+            final boolean isAttribute, final String fieldName, final String value) {
         table.updateItem(getUpdateItemSpecForUpadateAttributeData(categoryId, fieldName,
                 isAttribute, value, localeId));
     }

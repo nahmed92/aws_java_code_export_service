@@ -70,7 +70,8 @@ public class ProductAccessorySpecificationPojoTest {
                 .with(new SerializableMustHaveSerialVersionUIDRule()) //
                 .with(new GetterTester()) //
                 .build();
-        validator.validate(PojoClassFactory.getPojoClass(ProductAccessorySpecification.class));
+        validator.validate(
+                PojoClassFactory.getPojoClass(ProductAccessorySpecification.class));
     }
 
     @Test
