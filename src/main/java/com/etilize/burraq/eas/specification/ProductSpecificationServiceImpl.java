@@ -80,6 +80,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
 
     private final ProductAccessorySpecificationRepository accessorySpecificationRepository;
 
+    private final ProductMetaDataRepository productMetaDataRepository;
+
     /**
      * Constructs with dependencies
      *
@@ -89,6 +91,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
      * @param taxonomyService taxonomyService
      * @param categoryStructureService categoryStructureService
      * @param specsStatusRepository {@link ProductSpecificationStatusRepository}
+     * @param productMetaDataRepository {@link ProductMetaDataRepository}
      */
     @Autowired
     public ProductSpecificationServiceImpl(
@@ -98,7 +101,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             final TaxonomyService taxonomyService,
             final CategorySpecificationService categoryStructureService,
             final ProductSpecificationStatusRepository specsStatusRepository,
-            final ProductAccessorySpecificationRepository accessorySpecificationRepository) {
+            final ProductAccessorySpecificationRepository accessorySpecificationRepository,
+            final ProductMetaDataRepository productMetaDataRepository) {
         Assert.notNull(basicSpecificationRepository,
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
@@ -109,6 +113,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 "categoryStructureService should not be null.");
         Assert.notNull(specsStatusRepository,
                 "specsStatusRepository should not be null.");
+        Assert.notNull(productMetaDataRepository,
+                "productMetaDataRepository should not be null.");
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
         this.translationService = translationService;
@@ -116,6 +122,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         this.categoryStructureService = categoryStructureService;
         this.specsStatusRepository = specsStatusRepository;
         this.accessorySpecificationRepository = accessorySpecificationRepository;
+        this.productMetaDataRepository = productMetaDataRepository;
     }
 
     @Override
@@ -135,7 +142,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             detialedSpecs.setLastUpdateDate(new Date());
             detailedSpecificationRepository.save(detialedSpecs);
             basicSpecificationRepository.save(getBasicSpecification(detialedSpecs));
-            accessorySpecificationRepository.save(getAccessorySpecification(detialedSpecs));
+            accessorySpecificationRepository.save(
+                    getAccessorySpecification(detialedSpecs));
+            //Adding entry on productMetata table
+            productMetaDataRepository.save(getProductMetaData(detialedSpecs));
         }
     }
 
@@ -189,8 +199,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 accessorySpecs.setLastUpdateDate(new Date());
                 accessorySpecificationRepository.save(accessorySpecs);
                 final Map<String, Object> translateAttributes = translateAttributes(
-                		accessorySpecs.getIndustryId(), localeId,
-                		accessorySpecsForEN.get().getAttributes());
+                        accessorySpecs.getIndustryId(), localeId,
+                        accessorySpecsForEN.get().getAttributes());
                 accessorySpecificationRepository.saveAttributes(id, translateAttributes);
             }
         }
@@ -207,7 +217,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 product.getCategoryId(), request);
         if (request.getLocaleId().startsWith(LANGUAGE_EN)) {
             updateDataAcrossLocales(product.getIndustryId(), basicSpecsRequest,
-                    detailedSpecsRequest, accessorySpecsRequest, getAttributesUsedInRequest(request));
+                    detailedSpecsRequest, accessorySpecsRequest,
+                    getAttributesUsedInRequest(request));
         } else {
             basicSpecificationRepository.saveAttributes(basicSpecsRequest);
             detailedSpecificationRepository.saveAttributes(detailedSpecsRequest);
@@ -246,7 +257,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                         accessorySpecsRequest, attributesById);
                 basicSpecificationRepository.saveAttributes(localizedBasicRequest);
                 detailedSpecificationRepository.saveAttributes(localizedDetailedRequest);
-                accessorySpecificationRepository.saveAttributes(localizedAccessoryRequest);
+                accessorySpecificationRepository.saveAttributes(
+                        localizedAccessoryRequest);
             }
         });
     }
@@ -519,12 +531,13 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return basicSpecificationRepository.findOne(generateId(productId, localeId));
     }
 
-    private Optional<ProductSpecification> getAccessorySpecification(final String productId,
-            final String localeId) {
+    private Optional<ProductSpecification> getAccessorySpecification(
+            final String productId, final String localeId) {
         return accessorySpecificationRepository.findOne(generateId(productId, localeId));
     }
 
-    private ProductBasicSpecification getBasicSpecification(final ProductSpecification specs) {
+    private ProductBasicSpecification getBasicSpecification(
+            final ProductSpecification specs) {
         final ProductBasicSpecification basicSpecs = new ProductBasicSpecification();
         basicSpecs.setId(specs.getId());
         basicSpecs.setAttributes(specs.getAttributes());
@@ -536,7 +549,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return basicSpecs;
     }
 
-    private ProductAccessorySpecification getAccessorySpecification(final ProductSpecification specs) {
+    private ProductAccessorySpecification getAccessorySpecification(
+            final ProductSpecification specs) {
         final ProductAccessorySpecification accessorySpecs = new ProductAccessorySpecification();
         accessorySpecs.setId(specs.getId());
         accessorySpecs.setAttributes(specs.getAttributes());
@@ -546,5 +560,16 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         accessorySpecs.setProductId(specs.getProductId());
         accessorySpecs.setLastUpdateDate(specs.getLastUpdateDate());
         return accessorySpecs;
+    }
+
+    private ProductMetaData getProductMetaData(final ProductSpecification specs) {
+        final ProductMetaData productMetaData = new ProductMetaData();
+        productMetaData.setId(specs.getId());
+        productMetaData.setCategoryId(specs.getCategoryId());
+        productMetaData.setIndustryId(specs.getIndustryId());
+        productMetaData.setLocaleId(specs.getLocaleId());
+        productMetaData.setProductId(specs.getProductId());
+        productMetaData.setLastUpdateDate(specs.getLastUpdateDate());
+        return productMetaData;
     }
 }
