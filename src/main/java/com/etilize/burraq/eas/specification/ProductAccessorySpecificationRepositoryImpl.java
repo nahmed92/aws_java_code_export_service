@@ -66,7 +66,8 @@ public class ProductAccessorySpecificationRepositoryImpl
      * @param amazonDynamoDB amazonDynamoDB
      */
     @Autowired
-    public ProductAccessorySpecificationRepositoryImpl(final AmazonDynamoDB amazonDynamoDB) {
+    public ProductAccessorySpecificationRepositoryImpl(
+            final AmazonDynamoDB amazonDynamoDB) {
         Assert.notNull(amazonDynamoDB, "amazonDynamoDB is required.");
         final DynamoDB db = new DynamoDB(amazonDynamoDB);
         table = db.getTable(ProductAccessorySpecification.TABLE_NAME);

@@ -42,6 +42,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.etilize.burraq.eas.base.AbstractDynamoEntity;
 
+/**
+ * Class holds ProductMetaData information
+ *
+ * @author Nasir Ahmed
+ *
+ */
 @DynamoDBTable(tableName = TABLE_NAME)
 public class ProductMetaData extends AbstractDynamoEntity {
 
@@ -55,14 +61,11 @@ public class ProductMetaData extends AbstractDynamoEntity {
 
     private String industryId;
 
-    public ProductMetaData() {
-
-    }
-
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Date lastUpdateDate;
 
     /**
+     * Set ProductId
      * @return the productId
      */
     public String getProductId() {
@@ -70,6 +73,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set ProductId
+     *
      * @param productId the productId to set
      */
     public void setProductId(final String productId) {
@@ -77,6 +82,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Get Locale Id
+     *
      * @return the localeId
      */
     public String getLocaleId() {
@@ -84,6 +91,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set Locale Id
+     *
      * @param localeId the localeId to set
      */
     public void setLocaleId(final String localeId) {
@@ -91,6 +100,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Get CategoryId
+     *
      * @return the categoryId
      */
     public String getCategoryId() {
@@ -98,6 +109,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set CategoryId
+     *
      * @param categoryId the categoryId to set
      */
     public void setCategoryId(final String categoryId) {
@@ -105,6 +118,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Get IndustryId
+     *
      * @return the industryId
      */
     public String getIndustryId() {
@@ -112,6 +127,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set IndustryId
+     *
      * @param industryId the industryId to set
      */
     public void setIndustryId(final String industryId) {
@@ -119,6 +136,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set Last Updated Date
+     *
      * @return the lastUpdateDate
      */
     @DynamoDBTypeConverted(converter = com.etilize.burraq.eas.converter.DateConverter.class)
@@ -127,6 +146,8 @@ public class ProductMetaData extends AbstractDynamoEntity {
     }
 
     /**
+     * Set LastUpdated Date
+     *
      * @param lastUpdateDate the lastUpdateDate to set
      */
     public void setLastUpdateDate(final Date lastUpdateDate) {

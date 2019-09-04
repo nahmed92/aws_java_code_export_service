@@ -279,6 +279,13 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     }
 
     @Test
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_productmetadata_after_add_locale.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldAddLocaleAndProductMetaDataAndCopySpecificationWhenNonInternationLocaleIsAdded() {
+        service.addLocale("product123", "en_US");
+    }
+
+    @Test
     @ShouldMatchDataSet(location = "/datasets/specifications/specifications.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldDoNotingWhenInternationLocaleIsAdded() {

@@ -29,7 +29,6 @@
 package com.etilize.burraq.eas.specification;
 
 import static com.etilize.burraq.eas.ExportAggregationConstants.*;
-
 import static com.etilize.burraq.eas.utils.Utils.*;
 
 import java.util.Date;
@@ -202,6 +201,20 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                         accessorySpecs.getIndustryId(), localeId,
                         accessorySpecsForEN.get().getAttributes());
                 accessorySpecificationRepository.saveAttributes(id, translateAttributes);
+            }
+
+            //Adding entry on productMetata table
+            final Optional<ProductMetaData> metadataForEN = getProductMetaData(productId,
+                    LOCALE_EN);
+            if (metadataForEN.isPresent()) {
+                final ProductMetaData productMetaData = new ProductMetaData();
+                productMetaData.setId(id);
+                productMetaData.setCategoryId(metadataForEN.get().getCategoryId());
+                productMetaData.setProductId(productId);
+                productMetaData.setIndustryId(metadataForEN.get().getIndustryId());
+                productMetaData.setLocaleId(localeId);
+                productMetaData.setLastUpdateDate(new Date());
+                productMetaDataRepository.save(productMetaData);
             }
         }
     }
@@ -571,5 +584,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         productMetaData.setProductId(specs.getProductId());
         productMetaData.setLastUpdateDate(specs.getLastUpdateDate());
         return productMetaData;
+    }
+
+    private Optional<ProductMetaData> getProductMetaData(final String productId,
+            final String localeId) {
+        return productMetaDataRepository.findById(generateId(productId, localeId));
     }
 }
