@@ -26,35 +26,19 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
+package com.etilize.burraq.eas.category.specification;
 
-import java.util.List;
-
-/**
- * It contains locale specific services.
- *
- * @author Umar Zubair
- * @since 1.0
- */
-public interface LocaleService {
+public interface CategoryAttributeUpdateService {
 
     /**
-     * Returns locale ids for market
-     * @param market market
-     * @return locale ids
+     * Declare CategoryAttributeUpdateService Methods
+     *
+     * update translation of given attribute value
+     * @param industryId attribute associated industry
+     * @param sourceValue {@link String old value}
+     * @param translatedValue {@link String translated value}
+     * @param languageId {@link String languageId}
      */
-    List<String> findLocaleIdsForMarket(String market);
-
-    /**
-     * Returns locale ids for langage
-     * @param market language
-     * @return locale ids
-     */
-    List<String> findLocaleIdsForLanguage(final String language);
-
-    /**
-     * Returns all locale ids
-     * @return locale ids
-     */
-    List<String> findAllLocaleIds();
+    void updateAttributeTranslation(String industryId, String sourceValue,
+            String translatedValue, String languageId);
 }

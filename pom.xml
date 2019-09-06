@@ -28,13 +28,14 @@
         <docker.image.prefix>etilize</docker.image.prefix>
         <log4j.version>2.9.1</log4j.version>
         <avro.version>1.8.2</avro.version>
-
+        <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
         <spring-cloud.version>Finchley.RC2</spring-cloud.version>
         <jackson.version>2.9.3</jackson.version>
         <avro-utils-version>1.0.0-SNAPSHOT</avro-utils-version>
         <spring-cloud-stream-dependency.version>Elmhurst.RELEASE</spring-cloud-stream-dependency.version>
         <kafka-avro-serializer.version>2.0.1</kafka-avro-serializer.version>
         <dynamodb.spring.boot.version>1.0.2-SNAPSHOT</dynamodb.spring.boot.version>
+        <elasticsearch.version>6.5.0</elasticsearch.version>
     </properties>
 
     <inceptionYear>2018</inceptionYear>
@@ -155,12 +156,17 @@
             <artifactId>querydsl-dynamodb</artifactId>
             <version>4.0.8</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+         <dependency>
+            <groupId>pl.allegro.tech</groupId>
+            <artifactId>embedded-elasticsearch</artifactId>
+            <version>${embedded-elasticsearch.version}</version>
+            <scope>test</scope>
+        </dependency> 
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
@@ -198,6 +204,28 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-avro</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+          <!-- Elasticsearch dependencies -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+            <version>3.2.0.M3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.elasticsearch.client</groupId>
+                    <artifactId>transport</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elasticsearch.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>

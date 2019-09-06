@@ -49,8 +49,12 @@ public class UpdateTextTranslationEvent extends Message {
      * Locale
      */
     @JsonProperty(required = true)
-    @JsonPropertyDescription("Locale Id.")
-    private String localeId;
+    @JsonPropertyDescription("source language Id.")
+    private String sourceLanguageId;
+
+    @JsonProperty(required = true)
+    @JsonPropertyDescription("targetLanguageId language Id.")
+    private String targetLanguageId;
 
     /**
      * Industry Id
@@ -84,21 +88,38 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Returns localeId
-     *
-     * @return {@link String} localeId
+     * get Source Language Id
+     * @return the sourceLanguageId
      */
-    public String getLocaleId() {
-        return localeId;
+    public String getSourceLanguageId() {
+        return sourceLanguageId;
     }
 
     /**
-     * Sets localeId
+     * Sets Source Language Id
      *
-     * @param localeId {@link String}
+     * @param sourceLanguageId the sourceLanguageId to set
      */
-    public void setLocaleId(final String localeId) {
-        this.localeId = localeId;
+    public void setSourceLanguageId(final String sourceLanguageId) {
+        this.sourceLanguageId = sourceLanguageId;
+    }
+
+    /**
+     * Source target language Id
+     *
+     * @return the targetLanguageId
+     */
+    public String getTargetLanguageId() {
+        return targetLanguageId;
+    }
+
+    /**
+     * Sets target Language Id
+     *
+     * @param targetLanguageId the targetLanguageId to set
+     */
+    public void setTargetLanguageId(final String targetLanguageId) {
+        this.targetLanguageId = targetLanguageId;
     }
 
     /**
@@ -111,7 +132,7 @@ public class UpdateTextTranslationEvent extends Message {
     }
 
     /**
-     * Sets product localeId value
+     * Sets product IndustryId value
      *
      * @param value {@link String} product localeId
      */
@@ -172,7 +193,8 @@ public class UpdateTextTranslationEvent extends Message {
         final UpdateTextTranslationEvent event = (UpdateTextTranslationEvent) obj;
         return new EqualsBuilder() //
                 .append(getSource(), event.getSource()) //
-                .append(getLocaleId(), event.getLocaleId()) //
+                .append(getSourceLanguageId(), event.getSourceLanguageId()) //
+                .append(getTargetLanguageId(), event.getTargetLanguageId()) //
                 .append(getIndustryId(), event.getIndustryId()) //
                 .append(getValue(), event.getValue()) //
                 .append(getTranslation(), event.getTranslation()) //
@@ -188,7 +210,8 @@ public class UpdateTextTranslationEvent extends Message {
     public final int hashCode() {
         return new HashCodeBuilder() //
                 .append(getSource()) //
-                .append(getLocaleId()) //
+                .append(getSourceLanguageId()) //
+                .append(getTargetLanguageId()) //
                 .append(getIndustryId()) //
                 .append(getValue()) //
                 .append(getTranslation()) //
@@ -204,7 +227,8 @@ public class UpdateTextTranslationEvent extends Message {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("Source", getSource()) //
-                .append("LocaleId", getLocaleId()) //
+                .append("SourceLanguageId", getSourceLanguageId()) //
+                .append("targetLanguageId", getTargetLanguageId()) //
                 .append("IndustryId", getIndustryId()) //
                 .append("Value", getValue()) //
                 .append("Translation", getTranslation()) //

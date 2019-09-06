@@ -73,6 +73,17 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
+    public List<String> findLocaleIdsForLanguage(final String langugage) {
+        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(null,
+                langugage, 0, 1000, null).getContent();
+        final List<String> localeStrs = locales.stream().map(
+                locale -> StringUtils.substringAfterLast(
+                        locale.getLink(Link.REL_SELF).getHref(), "/")).collect(
+                                Collectors.toList());
+        return localeStrs;
+    }
+
+    @Override
     public List<String> findAllLocaleIds() {
         final Collection<Resource<Locale>> locales = localeServiceClient.findBy(null,
                 null, 0, 1000, null).getContent();

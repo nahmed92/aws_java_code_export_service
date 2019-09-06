@@ -2,7 +2,7 @@
  * #region
  * export-aggregation-service
  * %%
- * Copyright (C) 2018 - 2019 Etilize
+ * Copyright (C) 2018 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -26,35 +26,34 @@
  * #endregion
  */
 
-package com.etilize.burraq.eas.locale;
+package com.etilize.burraq.eas.annotation;
 
-import java.util.List;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 /**
- * It contains locale specific services.
+ * <code>ESTestExecutionListener</code> which provides support for elasticsearch data
+ * loading for testing, with support {@link LoadElasticBulkData} annotations.
+ * <p>
+ * Elasticsearch datasets are loaded from json formatted file see LoadElasticBulkData
  *
- * @author Umar Zubair
- * @since 1.0
+ * If you are using auto wiring in test classes then use with
+ * {@link DependencyInjectionTestExecutionListener}
+ *
+ * @author Kamal A. Siddiqui
  */
-public interface LocaleService {
+public class ESTestExecutionListener extends AbstractTestExecutionListener {
 
-    /**
-     * Returns locale ids for market
-     * @param market market
-     * @return locale ids
-     */
-    List<String> findLocaleIdsForMarket(String market);
+    private static ESUnitRunner runner = new ESUnitRunner();
 
-    /**
-     * Returns locale ids for langage
-     * @param market language
-     * @return locale ids
-     */
-    List<String> findLocaleIdsForLanguage(final String language);
+    @Override
+    public void beforeTestClass(TestContext testContext) throws Exception {
+        runner.beforeTestClass(new ESTestContextAdapter(testContext));
+    }
 
-    /**
-     * Returns all locale ids
-     * @return locale ids
-     */
-    List<String> findAllLocaleIds();
+    @Override
+    public void beforeTestMethod(TestContext testContext) throws Exception {
+        runner.beforeTestMethod(new ESTestContextAdapter(testContext));
+    }
 }
