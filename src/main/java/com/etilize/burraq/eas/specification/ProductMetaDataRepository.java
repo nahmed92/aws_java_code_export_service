@@ -30,6 +30,12 @@ package com.etilize.burraq.eas.specification;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 
+/**
+ * Repository of {@link ProductMetaData}
+ *
+ * @author Nasir Ahmed
+ *
+ */
 public interface ProductMetaDataRepository
         extends DynamoDBCrudRepository<ProductMetaData, String> {
 
