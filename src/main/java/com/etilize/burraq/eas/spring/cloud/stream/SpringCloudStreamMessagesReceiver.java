@@ -92,7 +92,7 @@ public class SpringCloudStreamMessagesReceiver {
                     LANGUAGE_EN)) {
                 categoryAttributeUpdateService.updateAttributeTranslation(
                         updateTextTranslationEvent.getIndustryId(),
-                        updateTextTranslationEvent.getSource(),
+                        updateTextTranslationEvent.getValue(),
                         updateTextTranslationEvent.getTranslation(),
                         updateTextTranslationEvent.getTargetLanguageId());
             }
