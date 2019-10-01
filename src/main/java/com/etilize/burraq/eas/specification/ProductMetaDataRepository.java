@@ -29,6 +29,8 @@
 package com.etilize.burraq.eas.specification;
 
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
  * Repository of {@link ProductMetaData}
@@ -36,6 +38,8 @@ import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
  * @author Nasir Ahmed
  *
  */
+@EnableScan
+@RestResource(exported = false)
 public interface ProductMetaDataRepository
         extends DynamoDBCrudRepository<ProductMetaData, String> {
 

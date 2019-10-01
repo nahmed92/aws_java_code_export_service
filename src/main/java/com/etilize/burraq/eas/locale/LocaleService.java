@@ -50,7 +50,7 @@ public interface LocaleService {
      * @param market language
      * @return locale ids
      */
-    List<String> findLocaleIdsForLanguage(final String language);
+    List<String> findLocaleIdsForLanguage(String language);
 
     /**
      * Returns all locale ids
