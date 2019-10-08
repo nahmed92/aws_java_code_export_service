@@ -28,11 +28,14 @@
 
 package com.etilize.burraq.eas.category.specification;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 
 /**
  *
@@ -42,6 +45,8 @@ import com.amazonaws.services.dynamodbv2.document.Table;
  */
 public class CategoryBasicMediaSpecificationRepositoryImpl
         implements CategoryBasicMediaSpecificationCustomRepository {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final String TABLE_NAME = "category-basic-media-specifications";
 
@@ -64,9 +69,13 @@ public class CategoryBasicMediaSpecificationRepositoryImpl
     @Override
     public void updateCategoryAttribute(final String categoryId, final String localeId,
             final boolean isAttribute, final String fieldName, final String value) {
-        table.updateItem(getUpdateItemSpecForUpadateAttributeData(categoryId, fieldName,
-                isAttribute, value, localeId));
-
+        try {
+            table.updateItem(getUpdateItemSpecForUpadateAttributeData(categoryId,
+                    fieldName, isAttribute, value, localeId));
+        } catch (final AmazonDynamoDBException e) {
+            logger.info("Record not found for categoryId {} and locale {}", categoryId,
+                    localeId, e);
+        }
     }
 
 }

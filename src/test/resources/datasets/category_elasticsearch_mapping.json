@@ -55,6 +55,16 @@
                         }
                      }
                   },
+                  "shapeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
                   "mfgPartNoId":{
                      "type":"keyword",
                      "normalizer":"testcase_normalizer",
@@ -65,9 +75,21 @@
                         }
                      }
                   }
+               }
+            },
+            "categoryId":{
+               "type":"keyword",
+               "normalizer":"testcase_normalizer",
+               "fields":{
+                  "keyword":{
+                     "type":"keyword",
+                     "ignore_above":256
                   }
-                  },
-                  "categoryId":{
+               }
+            },
+            "basicMediaAttributes":{
+               "properties":{
+                  "mfgId":{
                      "type":"keyword",
                      "normalizer":"testcase_normalizer",
                      "fields":{
@@ -77,109 +99,7 @@
                         }
                      }
                   },
-                  "basicMediaAttributes":{
-                     "properties":{
-                        "mfgId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "sizeId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "mfgPartNoId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        }
-                     }
-                  },
-                  "richMediaAttributes":{
-                     "properties":{
-                        "mfgId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "sizeId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "mfgPartNoId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        }
-                     }
-                  },
-                  "accessorySpecificationAttributes":{
-                     "properties":{
-                        "mfgId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "sizeId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "mfgPartNoId":{
-                           "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        }
-                     }
-                  },
-                  "industryId":{
+                  "sizeId":{
                      "type":"keyword",
                      "normalizer":"testcase_normalizer",
                      "fields":{
@@ -189,41 +109,151 @@
                         }
                      }
                   },
-                  "detailedSpecificationAttributes":{
-                     "properties":{
-                        "mfgId":{
+                  "mfgPartNoId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
                            "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "sizeId":{
+                           "ignore_above":256
+                        }
+                     }
+                  }
+               }
+            },
+            "richMediaAttributes":{
+               "properties":{
+                  "mfgId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
                            "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
-                        },
-                        "mfgPartNoId":{
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "sizeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
                            "type":"keyword",
-                           "normalizer":"testcase_normalizer",
-                           "fields":{
-                              "keyword":{
-                                 "type":"keyword",
-                                 "ignore_above":256
-                              }
-                           }
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "mediaShapeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "mfgPartNoId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  }
+               }
+            },
+            "accessorySpecificationAttributes":{
+               "properties":{
+                  "mfgId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "sizeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "shapeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "mfgPartNoId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  }
+               }
+            },
+            "industryId":{
+               "type":"keyword",
+               "normalizer":"testcase_normalizer",
+               "fields":{
+                  "keyword":{
+                     "type":"keyword",
+                     "ignore_above":256
+                  }
+               }
+            },
+            "detailedSpecificationAttributes":{
+               "properties":{
+                  "mfgId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "sizeId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
+                        }
+                     }
+                  },
+                  "mfgPartNoId":{
+                     "type":"keyword",
+                     "normalizer":"testcase_normalizer",
+                     "fields":{
+                        "keyword":{
+                           "type":"keyword",
+                           "ignore_above":256
                         }
                      }
                   }
                }
             }
          }
+      }
+   }
 }

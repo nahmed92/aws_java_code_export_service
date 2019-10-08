@@ -98,6 +98,39 @@
          "lastUpdateDate":{  
             "N":1546528059097
          }
+      },
+       {  
+         "categoryId":{  
+            "S":"categoryId124"
+         },
+         "localeId":{  
+            "S":"en_CA"
+         },
+         "industryId":{  
+            "S":"industryId123"
+         },
+         "parentCategoryId":{  
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{  
+            "S":"LED"
+         },
+         "industryName":{  
+            "S":"TECH"
+         },
+         "attributes":{  
+            "M":{  
+               "sizeId":{  
+                  "S":"Size"
+               },
+               "mfgPartNoId":{  
+                  "S":"Mfg Part Number"
+               }
+            }
+         },
+         "lastUpdateDate":{  
+            "N":1546528059097
+         }
       }
    ]
 }
