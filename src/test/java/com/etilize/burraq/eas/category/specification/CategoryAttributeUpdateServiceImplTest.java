@@ -76,6 +76,9 @@ public class CategoryAttributeUpdateServiceImplTest extends AbstractIntegrationT
     private CategoryDetailedSpecificationRepository categoryDetailedSpecificationRepository;
 
     @Autowired
+    private CategoryBasicMediaSpecificationRepository categoryBasicMediaSpecificationRepository;
+
+    @Autowired
     private CategoryRichMediaSpecificationRepository categoryRichMediaSpecificationRepository;
 
     private CategoryAttributeUpdateService categoryAttributeUpdateService;
@@ -86,41 +89,52 @@ public class CategoryAttributeUpdateServiceImplTest extends AbstractIntegrationT
                 categoryAccessorySpecificationRepository,
                 categoryBasicSpecificationRepository,
                 categoryDetailedSpecificationRepository,
+                categoryBasicMediaSpecificationRepository,
                 categoryRichMediaSpecificationRepository, operations, localeService);
-        when(localeService.findLocaleIdsForLanguage("enCA")).thenReturn(
+        when(localeService.findLocaleIdsForLanguage("ENCA")).thenReturn(
                 Lists.newArrayList("en_US", "en_CA"));
-        when(localeService.findLocaleIdsForLanguage("enUS")).thenReturn(
+        when(localeService.findLocaleIdsForLanguage("ENUS")).thenReturn(
                 Lists.newArrayList("en_US", "en_CA"));
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_accessory_attribute_after_translation_update.json")
-    @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @IgnorePropertyValue(properties = { "lastUpdateDate", "_id" })
+    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
     public void ShouldUpdateAttributeTranslation() throws IOException {
         categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
-                "Mfg Part No", "Updated Part Number", "enCA");
+                "Mfg Part No", "Updated Part Number", "ENCA");
     }
 
     @Test
     @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/accessory_categoryName_after_translation_update.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
     public void ShouldUpdatePropertyTranslation() throws IOException {
         categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
-                "NoteBook", "Notebook Updated name", "enUS");
+                "NoteBook", "Notebook Updated name", "ENUS");
     }
 
     @Test
-    @ShouldMatchDataSet(location = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.bson")
+    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/accessory_basic_detail_category_structures_for_translation_updated.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
-    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_basic_detail_category_structures_for_translation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
+    public void ShouldUpdateCategoryNameTranslation() throws IOException {
+        categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
+                "NoteBook", "Notebook Updated name", "ENUS");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_category_structures_for_translation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
     public void ShouldNotTranslationWhenIndustryIIdNotMatch() throws IOException {
         categoryAttributeUpdateService.updateAttributeTranslation("industryId128",
-                "NoteBook", "Notebook Updated name", "enUS");
+                "NoteBook", "Notebook Updated name", "ENUS");
     }
 
     @Test
@@ -130,7 +144,7 @@ public class CategoryAttributeUpdateServiceImplTest extends AbstractIntegrationT
     @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
     public void ShouldUpdateBasicAttributeTranslation() throws IOException {
         categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
-                "Mfg Part Number", "Updated Part Number", "enCA");
+                "Mfg Part Number", "Updated Part Number", "ENCA");
     }
 
     @Test
@@ -140,7 +154,29 @@ public class CategoryAttributeUpdateServiceImplTest extends AbstractIntegrationT
     @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
     public void ShouldUpdateBasicSpecsPropertyTranslation() throws IOException {
         categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
-                "Baisc NoteBook", "LED TV", "enUS");
+                "Baisc NoteBook", "LED TV", "ENUS");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/accessory_basic_category_structures_updated_after_translation.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    @UsingDataSet(locations = "/datasets/accessory_category_structures/accessory_basic_detail_category_structures_for_translation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
+    public void ShouldUpdateAccessoryWithBasicAndDetailedAttributeTranslation()
+            throws IOException {
+        categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
+                "shapeId", "shapeId Update", "ENCA");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/category_specification_attribute_update/category_with_rich_media_attribute_after_tanslation.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    @UsingDataSet(locations = "/datasets/category_specification_attribute_update/category_with_rich_media_attribute_for_tanslation.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @LoadElasticBulkData(jsonDataFile = "datasets/category_elasticsearch_index.json", jsonMappingFile = "datasets/category_elasticsearch_mapping.json")
+    public void ShouldUpdateBasicAndRichAttributeTranslationWhenValueIsSameIdIsDifferernt()
+            throws IOException {
+        categoryAttributeUpdateService.updateAttributeTranslation("industryId123",
+                "MediaShapeId", "shapeId Update", "ENCA");
     }
 
     private Attribute getAttribute(final String name, final String industryId,

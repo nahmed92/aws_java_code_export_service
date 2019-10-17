@@ -1,71 +1,71 @@
-{
-    "category-basic-specifications": [
-        {
-            "industryName": {
-                "S": "IT"
-            },
-            "industryId": {
-                "S": "industryId123"
-            },
-            "lastUpdateDate": {
-                "N": "1546528059097"
-            },
-            "attributes": {
-                "M": {
-                    "sizeId": {
-                        "S": "Size"
-                    },
-                    "mfgPartNoId": {
-                        "S": "Mfg Part No"
-                    }
-                }
-            },
-            "parentCategoryId": {
-                "S": "parentCategoryId123"
-            },
-            "categoryName": {
-                "S": "Notebook"
-            },
-            "categoryId": {
-                "S": "categoryId123"
-            },
-            "localeId": {
-                "S": "en_CA"
+{  
+   "category-basic-specifications":[  
+      {  
+         "categoryId":{  
+            "S":"categoryId123"
+         },
+         "localeId":{  
+            "S":"en_CA"
+         },
+         "industryId":{  
+            "S":"industryId123"
+         },
+         "parentCategoryId":{  
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{  
+            "S":"Notebook"
+         },
+         "industryName":{  
+            "S":"IT"
+         },
+         "attributes":{  
+            "M":{  
+               "sizeId":{  
+                  "S":"Size"
+               },
+               "mfgPartNoId":{  
+                  "S":"Updated Part Number"
+               }
             }
-        },
-        {
-            "industryName": {
-                "S": "IT"
-            },
-            "industryId": {
-                "S": "industryId123"
-            },
-            "lastUpdateDate": {
-                "N": "1546528059097"
-            },
-            "parentCategoryId": {
-                "S": "parentCategoryId123"
-            },
-            "attributes": {
-                "M": {
-                    "sizeId": {
-                        "S": "Size"
-                    },
-                    "mfgPartNoId": {
-                        "S": "Mfg Part No"
-                    }
-                }
-            },
-            "categoryName": {
-                "S": "Notebook"
-            },
-            "categoryId": {
-                "S": "categoryId123"
-            },
-            "localeId": {
-                "S": "en_US"
+         },
+         "lastUpdateDate":{  
+            "N":1546528059097
+         }
+      },
+      {  
+         "categoryId":{  
+            "S":"categoryId123"
+         },
+         "localeId":{  
+            "S":"en_US"
+         },
+         "industryId":{  
+            "S":"industryId123"
+         },
+         "parentCategoryId":{  
+            "S":"parentCategoryId123"
+         },
+         "categoryName":{  
+            "S":"Notebook"
+         },
+         "industryName":{  
+            "S":"IT"
+         },
+         "attributes":{  
+            "M":{  
+               "sizeId":{  
+                  "S":"Size"
+               },
+               "mfgPartNoId":{  
+                  "S":"Updated Part Number"
+               }
             }
-        },
+         },
+         "lastUpdateDate":{  
+            "N":1546528059097
+         }
+      },
       {  
          "categoryId":{  
             "S":"categoryId124"
@@ -80,7 +80,7 @@
             "S":"parentCategoryId123"
          },
          "categoryName":{  
-            "S":"LED"
+            "S":"LED TV"
          },
          "industryName":{  
             "S":"TECH"
@@ -113,7 +113,7 @@
             "S":"parentCategoryId123"
          },
          "categoryName":{  
-            "S":"LED"
+            "S":"LED TV"
          },
          "industryName":{  
             "S":"TECH"
@@ -132,5 +132,5 @@
             "N":1546528059097
          }
       }
-    ]
+   ]
 }

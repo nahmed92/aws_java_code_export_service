@@ -79,6 +79,8 @@ public class CategoryAttributeUpdateServiceImpl
 
     private static final String RICH_MEDIA_SPEFICIATION_OFFERING = "richMediaAttributes";
 
+    private static final String ALL_OFFERING = "all_offering";
+
     private static final String ELASTIC_INDEX = "category-index";
 
     private final CategoryAccessorySpecificationRepository categoryAccessorySpecificationRepository;
@@ -86,6 +88,8 @@ public class CategoryAttributeUpdateServiceImpl
     private final CategoryBasicSpecificationRepository categoryBasicSpecificationRepository;
 
     private final CategoryDetailedSpecificationRepository categoryDetailedSpecificationRepository;
+
+    private final CategoryBasicMediaSpecificationRepository categoryBasicMediaSpecificationRepository;
 
     private final CategoryRichMediaSpecificationRepository categoryRichMediaSpecificationRepository;
 
@@ -96,10 +100,16 @@ public class CategoryAttributeUpdateServiceImpl
     /**
      * Constructor {@link CategoryAttributeUpdateServiceImpl}
      *
-     * @param categoryAccessorySpecificationRepository {@link CategoryAccessorySpecificationRepository}
-     * @param categoryBasicSpecificationRepository {@link CategoryBasicSpecificationRepository}
-     * @param categoryDetailedSpecificationRepository {@link CategoryDetailedSpecificationRepositoryv}
-     * @param categoryRichMediaSpecificationRepository {@link CategoryRichMediaSpecificationRepository}
+     * @param categoryAccessorySpecificationRepository
+     *        {@link CategoryAccessorySpecificationRepository}
+     * @param categoryBasicSpecificationRepository
+     *        {@link CategoryBasicSpecificationRepository}
+     * @param categoryDetailedSpecificationRepository
+     *        {@link CategoryDetailedSpecificationRepositoryv}
+     * @param categoryBasicMediaSpecificationRepository
+     *        {@link CategoryBasicMediaSpecificationRepository}
+     * @param categoryRichMediaSpecificationRepository
+     *        {@link CategoryRichMediaSpecificationRepository}
      * @param operations {@link ElasticsearchRestTemplate}
      * @param localeService {@link LocaleService}
      */
@@ -108,6 +118,7 @@ public class CategoryAttributeUpdateServiceImpl
             final CategoryAccessorySpecificationRepository categoryAccessorySpecificationRepository,
             final CategoryBasicSpecificationRepository categoryBasicSpecificationRepository,
             final CategoryDetailedSpecificationRepository categoryDetailedSpecificationRepository,
+            final CategoryBasicMediaSpecificationRepository categoryBasicMediaSpecificationRepository,
             final CategoryRichMediaSpecificationRepository categoryRichMediaSpecificationRepository,
             final ElasticsearchRestTemplate operations,
             final LocaleService localeService) {
@@ -117,6 +128,8 @@ public class CategoryAttributeUpdateServiceImpl
                 "CategoryBasicSpecificationRepository is required.");
         Assert.notNull(categoryDetailedSpecificationRepository,
                 "CategoryDetailedSpecificationRepository is required.");
+        Assert.notNull(categoryBasicMediaSpecificationRepository,
+                "categoryBasicMediaSpecificationRepository is required.");
         Assert.notNull(categoryRichMediaSpecificationRepository,
                 "CategoryRichMediaSpecificationRepository is required.");
         Assert.notNull(operations, "ElasticsearchRestTemplate is required.");
@@ -124,6 +137,7 @@ public class CategoryAttributeUpdateServiceImpl
         this.categoryAccessorySpecificationRepository = categoryAccessorySpecificationRepository;
         this.categoryBasicSpecificationRepository = categoryBasicSpecificationRepository;
         this.categoryDetailedSpecificationRepository = categoryDetailedSpecificationRepository;
+        this.categoryBasicMediaSpecificationRepository = categoryBasicMediaSpecificationRepository;
         this.categoryRichMediaSpecificationRepository = categoryRichMediaSpecificationRepository;
         this.operations = operations;
         this.localeService = localeService;
@@ -149,32 +163,46 @@ public class CategoryAttributeUpdateServiceImpl
             // get all Locale by languageId
             final List<String> locales = localeService.findLocaleIdsForLanguage(
                     languageId);
+
+            if (locales.isEmpty()) {
+                logger.info("No locales found against languageId {}", languageId);
+            }
+
             // create attribute to update
-            if (ACCESSORY_SPEFICIATION_OFFERING.equals(category.getOffering())) {
+            if (category.getOffering().equals(ACCESSORY_SPEFICIATION_OFFERING)
+                    || category.getOffering().equals(ALL_OFFERING)) {
                 locales.stream().forEach(localeId -> {
                     categoryAccessorySpecificationRepository.updateCategoryAttribute(
                             category.getCategoryId(), localeId, category.isAttribute(),
                             category.getFieldName(), translatedValue);
                 });
-            } else if (BASIC_SPEFICIATION_OFFERING.equals(category.getOffering())) {
+            }
+            if (category.getOffering().equals(BASIC_SPEFICIATION_OFFERING)
+                    || category.getOffering().equals(ALL_OFFERING)) {
                 locales.stream().forEach(localeId -> {
                     categoryBasicSpecificationRepository.updateCategoryAttribute(
                             category.getCategoryId(), localeId, category.isAttribute(),
                             category.getFieldName(), translatedValue);
                 });
-            } else if (DETAILED_SPEFICIATION_OFFERING.equals(category.getOffering())) {
+            }
+            if (category.getOffering().equals(DETAILED_SPEFICIATION_OFFERING)
+                    || category.getOffering().equals(ALL_OFFERING)) {
                 locales.stream().forEach(localeId -> {
                     categoryDetailedSpecificationRepository.updateCategoryAttribute(
                             category.getCategoryId(), localeId, category.isAttribute(),
                             category.getFieldName(), translatedValue);
                 });
-            } else if (BASIC_MEDIA_SPEFICIATION_OFFERING.equals(category.getOffering())) {
+            }
+            if (category.getOffering().equals(BASIC_MEDIA_SPEFICIATION_OFFERING)
+                    || category.getOffering().equals(ALL_OFFERING)) {
                 locales.stream().forEach(localeId -> {
-                    categoryBasicSpecificationRepository.updateCategoryAttribute(
+                    categoryBasicMediaSpecificationRepository.updateCategoryAttribute(
                             category.getCategoryId(), localeId, category.isAttribute(),
                             category.getFieldName(), translatedValue);
                 });
-            } else if (RICH_MEDIA_SPEFICIATION_OFFERING.equals(category.getOffering())) {
+            }
+            if (category.getOffering().equals(RICH_MEDIA_SPEFICIATION_OFFERING)
+                    || category.getOffering().equals(ALL_OFFERING)) {
                 locales.stream().forEach(localeId -> {
                     categoryRichMediaSpecificationRepository.updateCategoryAttribute(
                             category.getCategoryId(), localeId, category.isAttribute(),
@@ -187,6 +215,7 @@ public class CategoryAttributeUpdateServiceImpl
 
     /**
      * find categories of given source value in Elastic category Index
+     *
      * @param industryId {@link String industry Id}
      * @param sourceValue {@link String source value}
      * @return {@link list of categories}
@@ -213,34 +242,38 @@ public class CategoryAttributeUpdateServiceImpl
         }
 
         final List<CategoryTranslationAttribute> categoryTranslationAttributes = Lists.newArrayList();
+        CategoryTranslationAttribute categoryTranslationAttribute;
         for (final SearchHit hit : searchResponse.getHits().getHits()) {
-            final CategoryTranslationAttribute categoryTranslationAttribute = new CategoryTranslationAttribute();
+            final String categoryId = (String) hit.getSourceAsMap().get(FIELD_CATEGORY_ID);
             for (final Map.Entry<String, Object> entry : hit.getSourceAsMap().entrySet()) {
                 // check in Attribute Offering map
                 if (entry.getValue() instanceof Map) {
-                    categoryTranslationAttribute.setOffering(entry.getKey());
                     final Map<String, String> attributeMap = (Map<String, String>) entry.getValue();
                     for (final Map.Entry<String, String> attributeEntry : attributeMap.entrySet()) {
                         if (attributeEntry.getValue().equals(sourceValue)) {
+                            categoryTranslationAttribute = new CategoryTranslationAttribute();
                             categoryTranslationAttribute.setFieldName(
                                     attributeEntry.getKey());
                             categoryTranslationAttribute.setAttribute(true);
+                            // set Attribute Offering
+                            categoryTranslationAttribute.setOffering(entry.getKey());
+                            categoryTranslationAttribute.setCategoryId(categoryId);
+                            categoryTranslationAttributes.add(
+                                    categoryTranslationAttribute);
                         }
                     }
-                    // check categoryName and industryName for source value
                 } else if (entry.getValue().equals(sourceValue)) {
+                    categoryTranslationAttribute = new CategoryTranslationAttribute();
+                    categoryTranslationAttribute.setOffering(ALL_OFFERING);
                     categoryTranslationAttribute.setFieldName(entry.getKey());
+                    categoryTranslationAttribute.setCategoryId(categoryId);
+                    categoryTranslationAttributes.add(categoryTranslationAttribute);
                 }
-                if (entry.getKey().equals(FIELD_CATEGORY_ID)) {
-                    categoryTranslationAttribute.setCategoryId(
-                            String.valueOf(entry.getValue()));
-                }
+
             }
-            // query fetch analyzed data, if source value not get match ignore
-            if (categoryTranslationAttribute.getFieldName() != null) {
-                logger.info("category is {}", categoryTranslationAttribute);
-                categoryTranslationAttributes.add(categoryTranslationAttribute);
-            }
+        }
+        if (categoryTranslationAttributes.isEmpty()) {
+            logger.info("No category found against source value {}", sourceValue);
         }
         return categoryTranslationAttributes;
     }

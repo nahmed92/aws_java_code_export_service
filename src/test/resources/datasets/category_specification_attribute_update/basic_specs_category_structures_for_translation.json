@@ -80,7 +80,7 @@
             "S":"parentCategoryId123"
          },
          "categoryName":{  
-            "S":"LED"
+            "S":"LED TV"
          },
          "industryName":{  
             "S":"TECH"
@@ -113,7 +113,7 @@
             "S":"parentCategoryId123"
          },
          "categoryName":{  
-            "S":"LED"
+            "S":"LED TV"
          },
          "industryName":{  
             "S":"TECH"

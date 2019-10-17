@@ -1,36 +1,64 @@
 {
-	"alias": "category-index-v1",
-	"index": "category-index",
-	"sources": [
-		{
-			"id": "categoryId123",
-			"_source": {
-				"accessorySpecificationAttributes": {
-					"mfgId": "Manufacturere is",
-					"sizeId": "sizeId",
-					"mfgPartNoId": "Mfg Part No"
-				},
-				"industryId": "industryId123",
-				"industryName": "IT",
-				"categoryId": "categoryId123",
-				"categoryName": "NoteBook",
-				"localeId": "en"
-			}
-		},
-		{
-            "id": "categoryId124",
-            "_source": {
-                "basicSpecificationAttributes": {
-                    "mfgId": "Manufacturere is",
-                    "sizeId": "sizeId",
-                    "mfgPartNoId": "Mfg Part Number"
-                },
-                "industryId": "industryId123",
-                "industryName": "IT",
-                "categoryId": "categoryId124",
-                "categoryName": "Baisc NoteBook",
-                "localeId": "en"
+   "alias":"category-index-v1",
+   "index":"category-index",
+   "sources":[
+      {
+         "id":"categoryId123",
+         "_source":{
+            "industryId":"industryId123",
+            "industryName":"IT",
+            "categoryId":"categoryId123",
+            "categoryName":"NoteBook",
+            "localeId":"en",
+            "accessorySpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "shapeId":"shapeId",
+               "mfgPartNoId":"Mfg Part No"
+            },
+            "basicSpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "shapeId":"shapeId",
+               "mfgPartNoId":"Mfg Part Number"
+            },
+            "detailedSpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "mfgPartNoId":"Mfg Part original"
             }
-        }
-	]
+         }
+      },
+      {
+         "id":"categoryId124",
+         "_source":{
+            "industryId":"industryId123",
+            "industryName":"IT",
+            "categoryId":"categoryId124",
+            "categoryName":"Baisc NoteBook",
+            "localeId":"en",
+            "accessorySpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "mfgPartNoId":"Mfg Part No"
+            },
+            "basicSpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "shapeId":"MediaShapeId",
+               "mfgPartNoId":"Mfg Part Number"
+            },
+            "detailedSpecificationAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "mfgPartNoId":"Mfg Part original"
+            },
+            "richMediaAttributes":{
+               "mfgId":"Manufacturere is",
+               "sizeId":"sizeId",
+               "mediaShapeId":"MediaShapeId",
+               "mfgPartNoId":"Mfg Part original"
+            }
+         }
+      }
+   ]
 }

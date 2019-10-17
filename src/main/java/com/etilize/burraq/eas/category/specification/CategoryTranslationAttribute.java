@@ -57,7 +57,7 @@ public class CategoryTranslationAttribute {
     /**
      * @param categoryId the categoryId to set
      */
-    public void setCategoryId(String categoryId) {
+    public void setCategoryId(final String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -71,7 +71,7 @@ public class CategoryTranslationAttribute {
     /**
      * @param attributeName the fieldName to set
      */
-    public void setFieldName(String fieldName) {
+    public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -85,7 +85,7 @@ public class CategoryTranslationAttribute {
     /**
      * @param offering the offering to set
      */
-    public void setOffering(String offering) {
+    public void setOffering(final String offering) {
         this.offering = offering;
     }
 
@@ -99,7 +99,7 @@ public class CategoryTranslationAttribute {
     /**
      * @param isAttribute the isAttribute to set
      */
-    public void setAttribute(boolean isAttribute) {
+    public void setAttribute(final boolean isAttribute) {
         this.isAttribute = isAttribute;
     }
 
