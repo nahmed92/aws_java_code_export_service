@@ -40,6 +40,7 @@ import com.etilize.burraq.eas.attribute.Attribute;
 import com.etilize.burraq.eas.attribute.Scope;
 import com.etilize.burraq.eas.attribute.Type;
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
+import com.etilize.burraq.eas.locale.LocaleService;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
 import com.etilize.burraq.eas.specification.value.Value;
@@ -80,6 +81,9 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @Mock
     private ProductSpecificationStatusRepository specificationStatusRepository;
 
+    @Mock
+    private LocaleService localeService;
+
     @Autowired
     private ProductBasicSpecificationRepository basicSpecificationRepository;
 
@@ -97,13 +101,17 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
         service = new ProductSpecificationServiceImpl(basicSpecificationRepository,
                 detailedSpecificationRepository, translationService, taxonomyService,
                 categoryStructureService, specificationStatusRepository,
-                accessorySpecificationRepository, productMetaDataRepository);
+                accessorySpecificationRepository, productMetaDataRepository,
+                localeService);
         when(taxonomyService.findAttributeById("mfgPartNoId")) //
                 .thenReturn(getAttribute("Mfg Part No", "industryId123", Type.TEXT, false,
                         false, Scope.INTERNATIONAL));
         when(taxonomyService.findAttributeById("sizeId")) //
                 .thenReturn(getAttribute("Size", "industryId123", Type.NUMBER, false,
                         false, Scope.INTERNATIONAL));
+        when(taxonomyService.findAttributeById("lenghtId")) //
+                .thenReturn(getAttribute("lenght", "industryId123", Type.NUMBER, true,
+                        false, Scope.REGIONAL));
         when(taxonomyService.findAttributeById("mfgId")) //
                 .thenReturn(getAttribute("Mfg", "industryId123", Type.CODED, true, false,
                         Scope.INTERNATIONAL));
@@ -151,6 +159,7 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
                 .thenReturn("ghi.");
         when(translationService.translateText("industryId123", "fr_US", "abc")) //
                 .thenReturn("abc.");
+        when(localeService.getEnglishLocaleIdForMarket("US")).thenReturn("en_US");
         final ProductSpecificationStatus specsStatus1 = new ProductSpecificationStatus();
         specsStatus1.setId("product123-en_US");
         specsStatus1.setStatusId("NEW");
@@ -283,6 +292,20 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldAddLocaleAndProductMetaDataAndCopySpecificationWhenNonInternationLocaleIsAdded() {
         service.addLocale("product123", "en_US");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_after_add_non_en_locale.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldAddNonEnLocale() {
+        service.addLocale("product123", "es_US");
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_after_add_locale_start_with_en.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldAddLocaleStartWithEN() {
+        service.addLocale("product126", "en_US");
     }
 
     @Test

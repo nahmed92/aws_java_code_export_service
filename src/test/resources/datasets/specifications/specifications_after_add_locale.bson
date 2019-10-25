@@ -89,9 +89,6 @@
             	},
             	"mfgPartNoId" : {
             	  "S":"XYZ"
-            	},
-            	"mfgId" : {
-            	  "S":"Sony."
             	}
             }
          },
@@ -263,44 +260,8 @@
             	"mfgPartNoId" : {
             	  "S":"XYZ"
             	},
-            	"processId":{
-            		"M":{
-	            	"EXTRACTED" : {
-	            	   "M":{
-		            	"value" : {
-		            	  "N":2.2
-		            	},
-		            	"unit" : {
-		            	  "S":"g."
-		            	}
-		              }
-	            	}
-	              }
-	            },
-            	"mfgId" : {
-            	  "S":"Sony."
-            	},
-            	"stringRepId" : {
-            	  "SS" : ["abc."]
-            	},
             	"numberRepId" : {
             	  "NS" : [0,1]
-            	},
-            	"unitRepId" : {
-            	  "L" : [{
-            		"M":{
-	            	"EXTRACTED" : {
-	            	   "M":{
-		            	"value" : {
-		            	  "N":1
-		            	},
-		            	"unit" : {
-		            	  "S":"b."
-		            	}
-		              }
-		              }
-	            	}
-            	  }]
             	}
             }
          },
