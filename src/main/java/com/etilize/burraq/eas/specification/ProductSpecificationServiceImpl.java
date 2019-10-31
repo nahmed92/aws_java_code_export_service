@@ -51,9 +51,6 @@ import com.etilize.burraq.eas.locale.LocaleService;
 import com.etilize.burraq.eas.locale.Utils;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
-import com.etilize.burraq.eas.specification.value.UnitAttribute;
-import com.etilize.burraq.eas.specification.value.UnitValue;
-import com.etilize.burraq.eas.specification.value.Value;
 import com.etilize.burraq.eas.taxonomy.TaxonomyService;
 import com.etilize.burraq.eas.translation.TranslationService;
 import com.google.common.collect.Maps;
@@ -175,8 +172,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 final Map<String, Object> inheretedAttributes = getInheretedAttributes(
                         productId, localeId, detailedSpecificationRepository,
                         detailedSpecsForEN.get().getAttributes());
-                detailedSpecificationRepository.saveAttributes(id,
-                        inheretedAttributes);
+                detailedSpecificationRepository.saveAttributes(id, inheretedAttributes);
             }
 
             final Optional<ProductSpecification> basicSpecsForEN = getBasicSpecification(
@@ -210,8 +206,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 final Map<String, Object> inheretedAttributes = getInheretedAttributes(
                         productId, localeId, accessorySpecificationRepository,
                         accessorySpecsForEN.get().getAttributes());
-                accessorySpecificationRepository.saveAttributes(id,
-                        inheretedAttributes);
+                accessorySpecificationRepository.saveAttributes(id, inheretedAttributes);
             }
 
             //Adding entry on productMetata table
@@ -239,7 +234,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 product.getCategoryId(), request);
         final UpdateProductSpecificationRequest accessorySpecsRequest = filterRequestForAccessoryOffering(
                 product.getCategoryId(), request);
-        if (request.getLocaleId().startsWith(LANGUAGE_EN)) {
+        if (request.getLocaleId().startsWith(LOCALE_STARTS_WITH_EN)) {
             updateDataAcrossLocales(product.getIndustryId(), basicSpecsRequest,
                     detailedSpecsRequest, accessorySpecsRequest,
                     getAttributesUsedInRequest(request));
@@ -276,7 +271,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 inheretAttributes.put(entry.getKey(), entry.getValue());
             }
         });
-        if (!localeId.startsWith(LOCALE_EN)) {
+        if (!localeId.startsWith(LOCALE_STARTS_WITH_EN)) {
             // if localeId does not startWith "en" then // Native locale is added
             // copy attributes of type Number from respective english locale // copy from enuk_FR to fr_FR
             final String respectiveEnLocale = localeService.getEnglishLocaleIdForMarket(
@@ -312,8 +307,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                 basicSpecsRequest.getProductId());
         final String originatedLocaleId = basicSpecsRequest.getLocaleId();
-        final String originatedMarketId = StringUtils.substringAfterLast(
-                originatedLocaleId, "_");
+        final String originatedMarketId = "_"
+                + StringUtils.substringAfterLast(originatedLocaleId, "_");
         specsStatuses.forEach(specsStatus -> {
             if (originatedLocaleId.equals(LOCALE_EN)
                     || (StringUtils.isNotBlank(originatedMarketId)
@@ -393,14 +388,17 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return filteredRequest;
     }
 
-    private boolean isTranslationRequiredForLocale(final String localeId) {
-        return !localeId.equals(LOCALE_EN) && !localeId.equals(LOCALE_EN_US);
-    }
-
     private boolean isUpdateRequiredForLocale(final Attribute attribute,
             final String originatedLocaleId, final String localeId) {
-        return attribute.getIsTranslatable() || originatedLocaleId.equals(LOCALE_EN)
-                || originatedLocaleId.equals(localeId);
+        return originatedLocaleId.equals(localeId) || // save data in its own locale, en enuk_UK or en_US
+                (originatedLocaleId.equals(LOCALE_EN) && !attribute.getIsTranslatable()
+                        && attribute.getScope() == Scope.INTERNATIONAL)
+                || // copy international, non translatable data to all locales
+                (!originatedLocaleId.equals(LOCALE_EN)
+                        && originatedLocaleId.startsWith(LOCALE_STARTS_WITH_EN)
+                        && !localeId.startsWith(LOCALE_STARTS_WITH_EN)
+                        && attribute.getType() == Type.NUMBER
+                        && attribute.getScope() != Scope.INTERNATIONAL); // save data in native language for number type for non international attrbibute
     }
 
     private UpdateProductSpecificationRequest translateRequest(
@@ -420,11 +418,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             if (isUpdateRequiredForLocale(attribute, originatedLocaleId, localeId)) {
                 translatedRequest.addAddedToSetAttributes(entry.getKey(),
                         entry.getValue());
-                if (attribute.getIsTranslatable()
-                        && isTranslationRequiredForLocale(localeId)) {
-                    translatedRequest.addAddedToSetAttributes(entry.getKey(),
-                            translate(industryId, localeId, entry.getValue()));
-                }
             }
         });
 
@@ -433,11 +426,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             if (isUpdateRequiredForLocale(attribute, originatedLocaleId, localeId)) {
                 translatedRequest.addRemovedFromSetAttributes(entry.getKey(),
                         entry.getValue());
-                if (attribute.getIsTranslatable()
-                        && isTranslationRequiredForLocale(localeId)) {
-                    translatedRequest.addRemovedFromSetAttributes(entry.getKey(),
-                            translate(industryId, localeId, entry.getValue()));
-                }
             }
         });
 
@@ -445,71 +433,9 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             final Attribute attribute = attributesById.get(entry.getKey());
             if (isUpdateRequiredForLocale(attribute, originatedLocaleId, localeId)) {
                 translatedRequest.addUpdatedAttributes(entry.getKey(), entry.getValue());
-                if (attribute.getIsTranslatable()
-                        && isTranslationRequiredForLocale(localeId)) {
-                    if (Type.UNIT != attribute.getType()) {
-                        translatedRequest.addUpdatedAttributes(entry.getKey(),
-                                translate(industryId, localeId, entry.getValue()));
-                    } else {
-                        translatedRequest.addUpdatedAttributes(entry.getKey(),
-                                translateUnit(localeId, entry.getValue()));
-                    }
-                }
             }
         });
         return translatedRequest;
-    }
-
-    private Object translate(final String industryId, final String localeId,
-            final Object inputValue) {
-        final Object value = convertOperationToValue(inputValue);
-        if (value instanceof String) {
-            return new Value(translationService.translateText(industryId, localeId,
-                    (String) value));
-        } else if (value instanceof Set) {
-            return ((Set<String>) value).stream().filter(v -> v instanceof String).map(
-                    v -> new Value(translationService.translateText(industryId, localeId,
-                            (String) v))).collect(Collectors.toSet());
-        } else if (value instanceof List) {
-            return ((List<String>) value).stream().filter(v -> v instanceof String).map(
-                    v -> new Value(translationService.translateText(industryId, localeId,
-                            (String) v))).collect(Collectors.toSet());
-        }
-        return inputValue;
-    }
-
-    private Object translateUnit(final String localeId, final Object inputValue) {
-        if (inputValue instanceof UnitValue) {
-            return translateUnitData(localeId, (UnitValue) inputValue);
-        } else if (inputValue instanceof Set) {
-            return ((Set) inputValue).stream().filter(v -> v instanceof UnitValue).map(
-                    v -> translateUnitData(localeId, (UnitValue) v)).collect(
-                            Collectors.toSet());
-        } else if (inputValue instanceof List) {
-            return ((List) inputValue).stream().filter(v -> v instanceof UnitValue).map(
-                    v -> translateUnitData(localeId, (UnitValue) v)).collect(
-                            Collectors.toSet());
-        }
-        return inputValue;
-    }
-
-    /**
-     * It translate units. UnitAttribute and UnitValue are used in it.
-     *
-     * @param localeId locale id
-     * @param unitValue UnitValue
-     * @return unitValue
-     */
-    private UnitValue translateUnitData(final String localeId,
-            final UnitValue unitValue) {
-        final Map<String, UnitAttribute> translatedValue = Maps.newHashMap();
-        unitValue.getValue().entrySet().forEach(entry -> {
-            final String translation = translationService.translateUnit(localeId,
-                    entry.getValue().getUnit());
-            translatedValue.put(entry.getKey(),
-                    new UnitAttribute(entry.getValue().getValue(), translation));
-        });
-        return new UnitValue(translatedValue);
     }
 
     private Map<String, Attribute> getAttributesUsedInRequest(
@@ -526,25 +452,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                     return attr;
                 }).collect(Collectors.toMap(Attribute::getId, attr -> attr));
         return attributesById;
-    }
-
-    /**
-     * It translate raw data for units. UnitAttribute and UnitValue are not involved in it.
-     *
-     * @param localeId locale id
-     * @param value value
-     * @return Map<String, Map<String, Object>>
-     */
-    private Map<String, Map<String, Object>> translateUnitData(final String localeId,
-            final Map<String, Map<String, Object>> value) {
-        final Map<String, Map<String, Object>> translatedValue = Maps.newHashMap();
-        value.entrySet().forEach(entry -> {
-            final Map<String, Object> detail = Maps.newHashMap(entry.getValue());
-            translatedValue.put(entry.getKey(), detail);
-            detail.put("unit", translationService.translateUnit(localeId,
-                    (String) detail.get("unit")));
-        });
-        return translatedValue;
     }
 
     private Optional<ProductSpecification> getDetailedSpecification(

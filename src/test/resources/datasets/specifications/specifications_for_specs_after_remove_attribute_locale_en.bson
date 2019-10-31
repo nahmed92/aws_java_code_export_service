@@ -1,253 +1,298 @@
-{
-   "product-basic-specifications":[
-      {
-         "id":{
+{ 
+   "product-basic-specifications":[ 
+      { 
+         "id":{ 
             "S":"product123-en"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"en"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"mfgId" : {
-            	  "S":"Sony"
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       },
-      {
-         "id":{
+      { 
+         "id":{ 
             "S":"product123-en_US"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"en_US"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"mfgId" : {
-            	  "S":"Sony"
-            	},
-            	"marketingId" : {
-            	  "S":"Marketing info en_US"
-            	},
-            	"stringTranslatableId" : {
-            	  "S":"abc"
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               },
+               "marketingId":{ 
+                  "S":"Marketing info en_US"
+               },
+               "stringTranslatableId":{ 
+                  "S":"abc"
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       },
-      {
-         "id":{
+      { 
+         "id":{ 
             "S":"product123-fr_US"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"fr_US"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"mfgId" : {
-            	  "S":"Sony"
-            	},
-            	"marketingId" : {
-            	  "S":"Marketing info fr_US"
-            	},
-            	"stringTranslatableId" : {
-            	  "S":"abc."
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               },
+               "marketingId":{ 
+                  "S":"Marketing info fr_US"
+               },
+               "stringTranslatableId":{ 
+                  "S":"abc."
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       }
-  ],
-  "product-detailed-specifications":[
-      {
-         "id":{
+   ],
+   "product-detailed-specifications":[ 
+      { 
+         "id":{ 
             "S":"product123-en"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"en"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"processId":{
-            		"M":{
-	            	"EXTRACTED" : {
-	            	   "M":{
-		            	"value" : {
-		            	  "N":2.2
-		            	},
-		            	"unit" : {
-		            	  "S":"g"
-		            	}
-		              }
-	            	}
-	              }
-	            },
-            	"mfgId" : {
-            	  "S":"Sony"
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "processId":{ 
+                  "M":{ 
+                     "EXTRACTED":{ 
+                        "M":{ 
+                           "value":{ 
+                              "N":2.2
+                           },
+                           "unit":{ 
+                              "S":"g"
+                           }
+                        }
+                     }
+                  }
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       },
-      {
-         "id":{
+      { 
+         "id":{ 
             "S":"product123-en_US"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"en_US"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"processId":{
-            		"M":{
-	            	"EXTRACTED" : {
-	            	   "M":{
-		            	"value" : {
-		            	  "N":2.2
-		            	},
-		            	"unit" : {
-		            	  "S":"g"
-		            	}
-		              }
-	            	}
-	              }
-	            },
-            	"mfgId" : {
-            	  "S":"Sony"
-            	},
-            	"marketingId" : {
-            	  "S":"Marketing info en_US"
-            	},
-            	"stringTranslatableId" : {
-            	  "S":"abc"
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "stringRepId":{ 
+                  "SS":[ 
+                     "abc"
+                  ]
+               },
+               "processId":{ 
+                  "M":{ 
+                     "EXTRACTED":{ 
+                        "M":{ 
+                           "value":{ 
+                              "N":2.2
+                           },
+                           "unit":{ 
+                              "S":"g"
+                           }
+                        }
+                     }
+                  }
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               },
+               "marketingId":{ 
+                  "S":"Marketing info en_US"
+               },
+               "stringTranslatableId":{ 
+                  "S":"abc"
+               },
+               "unitRepId":{ 
+                  "L":[ 
+                     { 
+                        "M":{ 
+                           "EXTRACTED":{ 
+                              "M":{ 
+                                 "value":{ 
+                                    "N":1
+                                 },
+                                 "unit":{ 
+                                    "S":"b"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  ]
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       },
-      {
-         "id":{
+      { 
+         "id":{ 
             "S":"product123-fr_US"
          },
-         "productId":{
+         "productId":{ 
             "S":"product123"
          },
-         "localeId":{
+         "localeId":{ 
             "S":"fr_US"
          },
-         "industryId":{
+         "industryId":{ 
             "S":"industryId123"
          },
-         "categoryId":{
+         "categoryId":{ 
             "S":"categoryId123"
          },
-         "attributes":{
-            "M":{
-            	"mfgPartNoId" : {
-            	  "S":"XYZ"
-            	},
-            	"processId":{
-            		"M":{
-	            	"EXTRACTED" : {
-	            	   "M":{
-		            	"value" : {
-		            	  "N":2.2
-		            	},
-		            	"unit" : {
-		            	  "S":"g"
-		            	}
-		              }
-	            	}
-	              }
-	            },
-            	"mfgId" : {
-            	  "S":"Sony"
-            	},
-            	"marketingId" : {
-            	  "S":"Marketing info fr_US"
-            	},
-            	"stringTranslatableId" : {
-            	  "S":"abc."
-            	}
+         "attributes":{ 
+            "M":{ 
+               "mfgPartNoId":{ 
+                  "S":"XYZ"
+               },
+               "stringRepId":{ 
+                  "SS":[ 
+                     "abc."
+                  ]
+               },
+               "processId":{ 
+                  "M":{ 
+                     "EXTRACTED":{ 
+                        "M":{ 
+                           "value":{ 
+                              "N":2.2
+                           },
+                           "unit":{ 
+                              "S":"g"
+                           }
+                        }
+                     }
+                  }
+               },
+               "mfgId":{ 
+                  "S":"Sony"
+               },
+               "marketingId":{ 
+                  "S":"Marketing info fr_US"
+               },
+               "stringTranslatableId":{ 
+                  "S":"abc."
+               },
+               "unitRepId":{ 
+                  "L":[ 
+                     { 
+                        "M":{ 
+                           "EXTRACTED":{ 
+                              "M":{ 
+                                 "value":{ 
+                                    "N":1
+                                 },
+                                 "unit":{ 
+                                    "S":"b"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  ]
+               }
             }
          },
-         "lastUpdateDate":{
+         "lastUpdateDate":{ 
             "N":1546528059097
          }
       }
-
-  ]
+   ]
 }

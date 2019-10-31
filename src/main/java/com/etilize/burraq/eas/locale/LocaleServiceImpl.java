@@ -93,7 +93,7 @@ public class LocaleServiceImpl implements LocaleService {
                                 Collectors.toList());
         return localeStrs;
     }
-    
+
     /* (non-Javadoc)
      * @see com.etilize.burraq.eas.locale.LocaleService#getEnglishLocaleIdForMarket(java.lang.String)
      */
@@ -103,11 +103,11 @@ public class LocaleServiceImpl implements LocaleService {
                 null, 0, 20, null).getContent();
         final String enLocale = locales.stream() //
                 .filter(locale -> locale.getContent().getLanguage().toLowerCase().startsWith(
-                        LOCALE_EN)) //
+                        LOCALE_STARTS_WITH_EN)) //
                 .map(locale -> Utils.getIdFromSelfLink(locale.getLink(Link.REL_SELF))) //
                 .findFirst() //
                 .get();
         return enLocale;
     }
-    
+
 }

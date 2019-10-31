@@ -77,6 +77,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
 
     private final LocaleService localeService;
 
+    private static final String LOCALE_EN_US = "en_US";
+
     /**
      * Constructs with dependencies
      *
