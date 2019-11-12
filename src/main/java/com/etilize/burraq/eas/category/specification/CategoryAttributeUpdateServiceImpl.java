@@ -244,7 +244,8 @@ public class CategoryAttributeUpdateServiceImpl
         final List<CategoryTranslationAttribute> categoryTranslationAttributes = Lists.newArrayList();
         CategoryTranslationAttribute categoryTranslationAttribute;
         for (final SearchHit hit : searchResponse.getHits().getHits()) {
-            final String categoryId = (String) hit.getSourceAsMap().get(FIELD_CATEGORY_ID);
+            final String categoryId = (String) hit.getSourceAsMap().get(
+                    FIELD_CATEGORY_ID);
             for (final Map.Entry<String, Object> entry : hit.getSourceAsMap().entrySet()) {
                 // check in Attribute Offering map
                 if (entry.getValue() instanceof Map) {
