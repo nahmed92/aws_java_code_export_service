@@ -31,7 +31,7 @@ package com.etilize.burraq.eas.locale;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import static com.etilize.burraq.eas.ExportAggregationConstants.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -93,5 +93,21 @@ public class LocaleServiceImpl implements LocaleService {
                                 Collectors.toList());
         return localeStrs;
     }
-
+    
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.locale.LocaleService#getEnglishLocaleIdForMarket(java.lang.String)
+     */
+    @Override
+    public String getEnglishLocaleIdForMarket(String market) {
+        final Collection<Resource<Locale>> locales = localeServiceClient.findBy(market,
+                null, 0, 20, null).getContent();
+        final String enLocale = locales.stream() //
+                .filter(locale -> locale.getContent().getLanguage().toLowerCase().startsWith(
+                        LOCALE_EN)) //
+                .map(locale -> Utils.getIdFromSelfLink(locale.getLink(Link.REL_SELF))) //
+                .findFirst() //
+                .get();
+        return enLocale;
+    }
+    
 }

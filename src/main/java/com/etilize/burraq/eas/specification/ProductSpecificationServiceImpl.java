@@ -44,8 +44,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.etilize.burraq.eas.attribute.Attribute;
+import com.etilize.burraq.eas.attribute.Scope;
 import com.etilize.burraq.eas.attribute.Type;
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
+import com.etilize.burraq.eas.locale.LocaleService;
+import com.etilize.burraq.eas.locale.Utils;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
 import com.etilize.burraq.eas.specification.value.UnitAttribute;
@@ -81,6 +84,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
 
     private final ProductMetaDataRepository productMetaDataRepository;
 
+    private final LocaleService localeService;
+
     /**
      * Constructs with dependencies
      *
@@ -91,6 +96,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
      * @param categoryStructureService categoryStructureService
      * @param specsStatusRepository {@link ProductSpecificationStatusRepository}
      * @param productMetaDataRepository {@link ProductMetaDataRepository}
+     * @param localeService {@link LocaleService}
      */
     @Autowired
     public ProductSpecificationServiceImpl(
@@ -101,7 +107,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             final CategorySpecificationService categoryStructureService,
             final ProductSpecificationStatusRepository specsStatusRepository,
             final ProductAccessorySpecificationRepository accessorySpecificationRepository,
-            final ProductMetaDataRepository productMetaDataRepository) {
+            final ProductMetaDataRepository productMetaDataRepository,
+            final LocaleService localeService) {
         Assert.notNull(basicSpecificationRepository,
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
@@ -114,6 +121,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 "specsStatusRepository should not be null.");
         Assert.notNull(productMetaDataRepository,
                 "productMetaDataRepository should not be null.");
+        Assert.notNull(localeService, "localeService should not be null.");
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
         this.translationService = translationService;
@@ -122,6 +130,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         this.specsStatusRepository = specsStatusRepository;
         this.accessorySpecificationRepository = accessorySpecificationRepository;
         this.productMetaDataRepository = productMetaDataRepository;
+        this.localeService = localeService;
     }
 
     @Override
@@ -163,10 +172,11 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 detialedSpecs.setProductId(productId);
                 detialedSpecs.setLastUpdateDate(new Date());
                 detailedSpecificationRepository.save(detialedSpecs);
-                final Map<String, Object> translateAttributes = translateAttributes(
-                        detialedSpecs.getIndustryId(), localeId,
+                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                        productId, localeId, detailedSpecificationRepository,
                         detailedSpecsForEN.get().getAttributes());
-                detailedSpecificationRepository.saveAttributes(id, translateAttributes);
+                detailedSpecificationRepository.saveAttributes(id,
+                        inheretedAttributes);
             }
 
             final Optional<ProductSpecification> basicSpecsForEN = getBasicSpecification(
@@ -180,10 +190,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 basicSpecs.setProductId(productId);
                 basicSpecs.setLastUpdateDate(new Date());
                 basicSpecificationRepository.save(basicSpecs);
-                final Map<String, Object> translateAttributes = translateAttributes(
-                        basicSpecs.getIndustryId(), localeId,
+                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                        productId, localeId, basicSpecificationRepository,
                         basicSpecsForEN.get().getAttributes());
-                basicSpecificationRepository.saveAttributes(id, translateAttributes);
+                basicSpecificationRepository.saveAttributes(id, inheretedAttributes);
             }
 
             final Optional<ProductSpecification> accessorySpecsForEN = getAccessorySpecification(
@@ -197,10 +207,11 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 accessorySpecs.setProductId(productId);
                 accessorySpecs.setLastUpdateDate(new Date());
                 accessorySpecificationRepository.save(accessorySpecs);
-                final Map<String, Object> translateAttributes = translateAttributes(
-                        accessorySpecs.getIndustryId(), localeId,
+                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                        productId, localeId, accessorySpecificationRepository,
                         accessorySpecsForEN.get().getAttributes());
-                accessorySpecificationRepository.saveAttributes(id, translateAttributes);
+                accessorySpecificationRepository.saveAttributes(id,
+                        inheretedAttributes);
             }
 
             //Adding entry on productMetata table
@@ -243,6 +254,54 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public Optional<Product> findProductByProductId(final String productId) {
         return basicSpecificationRepository.findProductById(
                 generateId(productId, LOCALE_EN));
+    }
+
+    /**
+     * This method return Map of InheretedAttributes
+     * @param productId productId
+     * @param localeId LocaleId
+     * @param repository {@link ProductSpecificationCustomRepository}
+     * @param attributes {@link Map<String,Object>}
+     * @return {@link Map<String,Object>}
+     */
+    private Map<String, Object> getInheretedAttributes(final String productId,
+            final String localeId, final ProductSpecificationCustomRepository repository,
+            final Map<String, Object> internationalSpecs) {
+
+        final Map<String, Object> inheretAttributes = Maps.newHashMap();
+        internationalSpecs.entrySet().forEach(entry -> {
+            final Attribute attribute = taxonomyService.findAttributeById(entry.getKey());
+            // copy data from "en" for non translatable attributes
+            if (!attribute.getIsTranslatable()) {
+                inheretAttributes.put(entry.getKey(), entry.getValue());
+            }
+        });
+        if (!localeId.startsWith(LOCALE_EN)) {
+            // if localeId does not startWith "en" then // Native locale is added
+            // copy attributes of type Number from respective english locale // copy from enuk_FR to fr_FR
+            final String respectiveEnLocale = localeService.getEnglishLocaleIdForMarket(
+                    Utils.getMarketFromLocaleId(localeId));
+            final String id = generateId(productId, respectiveEnLocale);
+            final Optional<ProductSpecification> respectiveEnLocaleData = repository.findOne(
+                    id);
+            if (respectiveEnLocaleData.isPresent()) {
+
+                respectiveEnLocaleData.get().getAttributes().entrySet().forEach(entry -> {
+                    final Attribute attribute = taxonomyService.findAttributeById(
+                            entry.getKey());
+                    if (Scope.INTERNATIONAL != attribute.getScope()
+                            && Type.NUMBER == attribute.getType()) {
+                        inheretAttributes.put(entry.getKey(),
+                                respectiveEnLocaleData.get().getAttributes().get(
+                                        entry.getKey()));
+                    }
+
+                });
+
+            }
+        }
+
+        return inheretAttributes;
     }
 
     private void updateDataAcrossLocales(final String industryId,
@@ -451,52 +510,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                     new UnitAttribute(entry.getValue().getValue(), translation));
         });
         return new UnitValue(translatedValue);
-    }
-
-    /**
-     * It translate raw data. SpecificationValue is not involved in these attribute value.
-     *
-     * @param industryId industry id
-     * @param localeId locale id
-     * @param attributes attributes
-     * @return Map<String, Object>
-     */
-    private Map<String, Object> translateAttributes(final String industryId,
-            final String localeId, final Map<String, Object> attributes) {
-        final Map<String, Object> translatedAttribute = Maps.newHashMap(attributes);
-        if (!localeId.equals(LOCALE_EN) && !localeId.equals(LOCALE_EN_US)) {
-            translatedAttribute.entrySet().forEach(entry -> {
-                final Attribute attribute = taxonomyService.findAttributeById(
-                        entry.getKey());
-                if (attribute.getIsTranslatable() && Type.NUMBER != attribute.getType()) {
-                    if (Type.UNIT != attribute.getType()) {
-                        if (entry.getValue() instanceof String) {
-                            entry.setValue(translationService.translateText(industryId,
-                                    localeId, (String) entry.getValue()));
-                        } else if (entry.getValue() instanceof Set) {
-                            final Set<String> translatedValues = ((Set<String>) entry.getValue()).stream().filter(
-                                    v -> v instanceof String).map(
-                                            v -> translationService.translateText(
-                                                    industryId, localeId,
-                                                    (String) v)).collect(
-                                                            Collectors.toSet());
-                            entry.setValue(translatedValues);
-                        }
-                    } else {
-                        if (entry.getValue() instanceof Map) {
-                            entry.setValue(translateUnitData(localeId,
-                                    (Map<String, Map<String, Object>>) entry.getValue()));
-                        } else if (entry.getValue() instanceof List) {
-                            final List<Map> values = ((List<Map<String, Map<String, Object>>>) entry.getValue()).stream().map(
-                                    val -> translateUnitData(localeId, val)).collect(
-                                            Collectors.toList());
-                            entry.setValue(values);
-                        }
-                    }
-                }
-            });
-        }
-        return translatedAttribute;
     }
 
     private Map<String, Attribute> getAttributesUsedInRequest(

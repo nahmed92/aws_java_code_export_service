@@ -1,8 +1,8 @@
 /*
  * #region
- * export-aggregation-service
+ * burraq-api-aggregator
  * %%
- * Copyright (C) 2018 - 2019 Etilize
+ * Copyright (C) 2018 Etilize
  * %%
  * NOTICE: All information contained herein is, and remains the property of ETILIZE.
  * The intellectual and technical concepts contained herein are proprietary to
@@ -28,41 +28,42 @@
 
 package com.etilize.burraq.eas.locale;
 
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.hateoas.Link;
 
 /**
- * It contains locale specific services.
+ * Utils class to holds generic methods
  *
- * @author Umar Zubair
+ * @author Nasir Ahmed
  * @since 1.0
  */
-public interface LocaleService {
+public final class Utils {
 
     /**
-     * Returns locale ids for market
-     * @param market market
-     * @return locale ids
+     * private constructor to restrict instantiation of this class
      */
-    List<String> findLocaleIdsForMarket(String market);
+    private Utils() {
+
+    }
 
     /**
-     * Returns locale ids for langage
-     * @param market language
-     * @return locale ids
+     * parse self link and returns id
+     *
+     * @param selfLink the self link of the resource
+     * @return id
      */
-    List<String> findLocaleIdsForLanguage(String language);
+    public static String getIdFromSelfLink(final Link selfLink) {
+        return StringUtils.substringAfterLast(selfLink.getHref(), "/");
+    }
 
     /**
-     * Returns all locale ids
-     * @return locale ids
+     * Return market
+     *
+     * @param localeId locale id
+     * @return market
      */
-    List<String> findAllLocaleIds();
-    
-    /**
-     * Returns english locale id for market
-     * @param market market
-     * @return english locale id
-     */
-    String getEnglishLocaleIdForMarket(String market);
+    public static String getMarketFromLocaleId(final String localeId) {
+        return StringUtils.substringAfterLast(localeId, "_");
+    }
 
 }
