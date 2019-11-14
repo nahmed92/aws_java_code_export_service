@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.specification;
 
 import static com.etilize.burraq.eas.ExportAggregationConstants.*;
+
 import static com.etilize.burraq.eas.utils.Utils.*;
 
 import java.util.Date;
@@ -48,11 +49,9 @@ import com.etilize.burraq.eas.attribute.Scope;
 import com.etilize.burraq.eas.attribute.Type;
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
 import com.etilize.burraq.eas.locale.LocaleService;
-import com.etilize.burraq.eas.locale.Utils;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
 import com.etilize.burraq.eas.taxonomy.TaxonomyService;
-import com.etilize.burraq.eas.translation.TranslationService;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -68,8 +67,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     private final ProductBasicSpecificationRepository basicSpecificationRepository;
 
     private final ProductDetailedSpecificationRepository detailedSpecificationRepository;
-
-    private final TranslationService translationService;
 
     private final TaxonomyService taxonomyService;
 
@@ -88,7 +85,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
      *
      * @param basicSpecificationRepository basicSpecificationRepository
      * @param detailedSpecificationRepository detailedSpecificationRepository
-     * @param translationService translationService
      * @param taxonomyService taxonomyService
      * @param categoryStructureService categoryStructureService
      * @param specsStatusRepository {@link ProductSpecificationStatusRepository}
@@ -99,7 +95,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public ProductSpecificationServiceImpl(
             final ProductBasicSpecificationRepository basicSpecificationRepository,
             final ProductDetailedSpecificationRepository detailedSpecificationRepository,
-            final TranslationService translationService,
             final TaxonomyService taxonomyService,
             final CategorySpecificationService categoryStructureService,
             final ProductSpecificationStatusRepository specsStatusRepository,
@@ -110,7 +105,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
                 "detailedSpecificationRepository should not be null.");
-        Assert.notNull(translationService, "translationService should not be null.");
         Assert.notNull(taxonomyService, "taxonomyService should not be null.");
         Assert.notNull(categoryStructureService,
                 "categoryStructureService should not be null.");
@@ -121,7 +115,6 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         Assert.notNull(localeService, "localeService should not be null.");
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
-        this.translationService = translationService;
         this.taxonomyService = taxonomyService;
         this.categoryStructureService = categoryStructureService;
         this.specsStatusRepository = specsStatusRepository;
@@ -275,7 +268,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             // if localeId does not startWith "en" then // Native locale is added
             // copy attributes of type Number from respective english locale // copy from enuk_FR to fr_FR
             final String respectiveEnLocale = localeService.getEnglishLocaleIdForMarket(
-                    Utils.getMarketFromLocaleId(localeId));
+                    getMarketFromLocaleId(localeId));
             final String id = generateId(productId, respectiveEnLocale);
             final Optional<ProductSpecification> respectiveEnLocaleData = repository.findOne(
                     id);

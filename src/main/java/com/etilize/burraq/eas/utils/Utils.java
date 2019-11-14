@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.hateoas.Link;
+
 import com.etilize.burraq.eas.specification.value.SpecificationValue;
 import com.etilize.burraq.eas.specification.value.UnitAttribute;
 import com.etilize.burraq.eas.specification.value.UnitValue;
@@ -54,6 +57,36 @@ public final class Utils {
      * It is required for sonar.
      */
     private Utils() {
+    }
+
+    /**
+     * parse self link and returns id
+     *
+     * @param selfLink the self link of the resource
+     * @return id
+     */
+    public static String getIdFromSelfLink(final Link selfLink) {
+        return StringUtils.substringAfterLast(selfLink.getHref(), "/");
+    }
+
+    /**
+     * Return market
+     *
+     * @param localeId locale id
+     * @return market
+     */
+    public static String getMarketFromLocaleId(final String localeId) {
+        return StringUtils.substringAfterLast(localeId, "_");
+    }
+
+    /**
+     * Return language
+     *
+     * @param localeId locale id
+     * @return language
+     */
+    public static String getLanguageFromLocaleId(final String localeId) {
+        return StringUtils.substringBefore(localeId, "_");
     }
 
     /**

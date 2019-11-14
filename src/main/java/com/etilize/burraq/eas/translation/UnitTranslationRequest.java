@@ -41,26 +41,44 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class UnitTranslationRequest {
 
-    private final String localeId;
+    /**
+     * Source Language Id
+     */
+    private final String sourceLanguageId;
+
+    /**
+     * Target Language Id
+     */
+    private final String targetLanguageId;
 
     private final String value;
 
     /**
-     * Initializes newly request
+     * Initializes new request
      *
-     * @param localeId locale id
+     * @param sourceLanguageId sourceLanguageId
+     * @param targetLanguageId targetLanguageId
      * @param value value to translate
      */
-    public UnitTranslationRequest(final String localeId, final String value) {
-        this.localeId = localeId;
+    public UnitTranslationRequest(final String sourceLanguageId,
+            final String targetLanguageId, final String value) {
+        this.sourceLanguageId = sourceLanguageId;
+        this.targetLanguageId = targetLanguageId;
         this.value = value;
     }
 
     /**
-     * @return the localeId
+     * @return the target language id
      */
-    public String getLocaleId() {
-        return localeId;
+    public String getTargetLanguageId() {
+        return targetLanguageId;
+    }
+
+    /**
+     * @return the source language id
+     */
+    public String getSourceLanguageId() {
+        return sourceLanguageId;
     }
 
     /**
@@ -83,7 +101,8 @@ public class UnitTranslationRequest {
         }
         final UnitTranslationRequest request = (UnitTranslationRequest) obj;
         return new EqualsBuilder() //
-                .append(getLocaleId(), request.getLocaleId()) //
+                .append(getSourceLanguageId(), request.getSourceLanguageId()) //
+                .append(getTargetLanguageId(), request.getTargetLanguageId()) //
                 .append(getValue(), request.getValue()) //
                 .isEquals();
     }
@@ -91,7 +110,8 @@ public class UnitTranslationRequest {
     @Override
     public final int hashCode() {
         return new HashCodeBuilder() //
-                .append(getLocaleId()) //
+                .append(getSourceLanguageId()) //
+                .append(getTargetLanguageId()) //
                 .append(getValue()) //
                 .hashCode();
     }
@@ -99,7 +119,8 @@ public class UnitTranslationRequest {
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-                .append("LocaleId", getLocaleId()) //
+                .append("sourceLanguageId", getSourceLanguageId()) //
+                .append("targetLanguageId", getTargetLanguageId()) //
                 .append("Value", getValue()) //
                 .toString();
     }

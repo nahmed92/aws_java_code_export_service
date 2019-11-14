@@ -28,6 +28,8 @@
 
 package com.etilize.burraq.eas.locale;
 
+import static com.etilize.burraq.eas.utils.Utils.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,7 +106,7 @@ public class LocaleServiceImpl implements LocaleService {
         final String enLocale = locales.stream() //
                 .filter(locale -> locale.getContent().getLanguage().toLowerCase().startsWith(
                         LOCALE_STARTS_WITH_EN)) //
-                .map(locale -> Utils.getIdFromSelfLink(locale.getLink(Link.REL_SELF))) //
+                .map(locale -> getIdFromSelfLink(locale.getLink(Link.REL_SELF))) //
                 .findFirst() //
                 .get();
         return enLocale;

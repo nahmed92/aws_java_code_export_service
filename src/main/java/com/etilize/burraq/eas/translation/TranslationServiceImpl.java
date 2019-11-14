@@ -28,6 +28,9 @@
 
 package com.etilize.burraq.eas.translation;
 
+import static com.etilize.burraq.eas.ExportAggregationConstants.*;
+import static com.etilize.burraq.eas.utils.Utils.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +68,14 @@ public class TranslationServiceImpl implements TranslationService {
             final String value) {
         String translation = "";
         if (StringUtils.isNotBlank(value)) {
-            translation = serviceClient.translateText(new TextTranslationRequest(
-                    industryId, localeId, value)).getTranslation();
+            final String targetLanguageId = getLanguageFromLocaleId(localeId);
+            if (targetLanguageId.equals(LANGUAGE_EN)) {
+                translation = value;
+            } else {
+                translation = serviceClient.translateText(
+                        new TextTranslationRequest(industryId, LANGUAGE_EN,
+                                targetLanguageId, value)).getTranslation();
+            }
         }
         logger.info("Translate Text - value: {} translate: {}", value, translation);
         return translation;
@@ -76,8 +85,13 @@ public class TranslationServiceImpl implements TranslationService {
     public String translateUnit(final String localeId, final String value) {
         String translation = "";
         if (StringUtils.isNotBlank(value)) {
-            translation = serviceClient.translateUnit(
-                    new UnitTranslationRequest(localeId, value)).getTranslation();
+            final String targetLanguageId = getLanguageFromLocaleId(localeId);
+            if (targetLanguageId.equals(LANGUAGE_EN)) {
+                translation = value;
+            } else {
+                translation = serviceClient.translateUnit(new UnitTranslationRequest(
+                        LANGUAGE_EN, targetLanguageId, value)).getTranslation();
+            }
         }
         logger.info("Translate Unit - value: {} translate: {}", value, translation);
         return translation;

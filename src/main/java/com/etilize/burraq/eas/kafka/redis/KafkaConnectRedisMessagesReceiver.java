@@ -92,9 +92,9 @@ public class KafkaConnectRedisMessagesReceiver {
                 .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
                         .get(KAFKA_RECEIVED_MESSAGE_KEY) //
                         .toString() : ""; //NOSONAR
-            if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
-                    || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
-                final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
+        if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
+                || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
+            final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
             requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
                     message.getPayload());
             if (requestPayload.isPresent()) {

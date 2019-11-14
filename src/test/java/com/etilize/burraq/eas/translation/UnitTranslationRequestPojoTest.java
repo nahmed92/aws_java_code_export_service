@@ -81,7 +81,7 @@ public class UnitTranslationRequestPojoTest {
     @Test
     public void shouldHaveToString() throws ParseException {
         final UnitTranslationRequest unitTranslationRequest = new UnitTranslationRequest(
-                "localeId", "color");
+                "en", "fr", "color");
         assertThat(ObjectUtils.identityToString(unitTranslationRequest),
                 not(unitTranslationRequest.toString()));
     }
