@@ -58,7 +58,7 @@
             	  "S":"ABC"
             	},
             	"mfgId" : {
-            	  "S":"Acer"
+            	  "S":"Sony"
             	},
             	"marketingId" : {
             	  "S":"Marketing info en_US"
@@ -97,7 +97,7 @@
             	  "S":"ABC"
             	},
             	"mfgId" : {
-            	  "S":"Acer."
+            	  "S":"Sony"
             	},
             	"marketingId" : {
             	  "S":"Marketing info fr_US"
@@ -211,20 +211,20 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":3.2
+		            	  "N":2.2
 		            	},
 		            	"unit" : {
-		            	  "S":"kg"
+		            	  "S":"g"
 		            	}
 		              }
 	            	}
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Acer"
+            	  "S":"Sony"
             	},
             	"stringRepId" : {
-            	  "SS" : ["def"]
+            	  "SS" : ["abc"]
             	},
             	"numberRepId" : {
             	  "NS" : [2]
@@ -235,10 +235,10 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":2
+		            	  "N":1
 		            	},
 		            	"unit" : {
-		            	  "S":"mb"
+		            	  "S":"b"
 		            	}
 		              }
 		              }
@@ -286,20 +286,20 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":3.2
+		            	  "N":2.2
 		            	},
 		            	"unit" : {
-		            	  "S":"kg."
+		            	  "S":"g"
 		            	}
 		              }
 	            	}
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Acer."
+            	  "S":"Sony"
             	},
             	"stringRepId" : {
-            	  "SS" : ["def."]
+            	  "SS" : ["abc."]
             	},
             	"numberRepId" : {
             	  "NS" : [2]
@@ -310,10 +310,10 @@
 	            	"EXTRACTED" : {
 	            	   "M":{
 		            	"value" : {
-		            	  "N":2
+		            	  "N":1
 		            	},
 		            	"unit" : {
-		            	  "S":"mb."
+		            	  "S":"b"
 		            	}
 		              }
 		              }

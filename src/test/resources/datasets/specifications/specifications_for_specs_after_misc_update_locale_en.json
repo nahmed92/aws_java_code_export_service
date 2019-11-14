@@ -52,7 +52,7 @@
             	  "S":"XYZ"
             	},
             	"mfgId" : {
-            	  "S":"Acer"
+            	  "S":"Sony"
             	},
             	"marketingId" : {
             	  "S":"Marketing info en_US"
@@ -88,7 +88,7 @@
             	  "S":"XYZ"
             	},
             	"mfgId" : {
-            	  "S":"Acer."
+            	  "S":"Sony"
             	},
             	"marketingId" : {
             	  "S":"Marketing info fr_US"
@@ -206,10 +206,10 @@
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Acer"
+            	  "S":"Sony"
             	},
             	"stringRepId" : {
-            	  "SS" : ["abc","def","ghi"]
+            	  "SS" : ["abc"]
             	},
             	"numberRepId" : {
             	  "NS" : [0]
@@ -278,10 +278,10 @@
 	              }
 	            },
             	"mfgId" : {
-            	  "S":"Acer."
+            	  "S":"Sony"
             	},
             	"stringRepId" : {
-            	  "SS" : ["abc.","def.","ghi."]
+            	  "SS" : ["abc."]
             	},
             	"numberRepId" : {
             	  "NS" : [0]

@@ -139,26 +139,6 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
                 .thenReturn(getAttribute("Not exists", "industryId123", Type.NUMBER,
                         false, false, Scope.INTERNATIONAL));
 
-        when(translationService.translateText("industryId123", "enuk_UK", "Sony")) //
-                .thenReturn("Sony.");
-        when(translationService.translateText("industryId123", "enuk_UK", "abc")) //
-                .thenReturn("abc.");
-        when(translationService.translateUnit("enuk_UK", "b")) //
-                .thenReturn("b.");
-        when(translationService.translateUnit("enuk_UK", "g")) //
-                .thenReturn("g.");
-        when(translationService.translateText("industryId123", "fr_US", "Acer")) //
-                .thenReturn("Acer.");
-        when(translationService.translateUnit("fr_US", "kg")) //
-                .thenReturn("kg.");
-        when(translationService.translateUnit("fr_US", "mb")) //
-                .thenReturn("mb.");
-        when(translationService.translateText("industryId123", "fr_US", "def")) //
-                .thenReturn("def.");
-        when(translationService.translateText("industryId123", "fr_US", "ghi")) //
-                .thenReturn("ghi.");
-        when(translationService.translateText("industryId123", "fr_US", "abc")) //
-                .thenReturn("abc.");
         when(localeService.getEnglishLocaleIdForMarket("US")).thenReturn("en_US");
         final ProductSpecificationStatus specsStatus1 = new ProductSpecificationStatus();
         specsStatus1.setId("product123-en_US");
@@ -224,8 +204,6 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @ShouldMatchDataSet(location = "/datasets/specifications/specifications_for_specs_after_remove_from_set_locale_en.bson")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeWhenValueIsRemovedFromSetForRepeatableAttributeForInternationLocale() {
-        when(translationService.translateText("industryId123", "fr_US", "abc")) //
-                .thenReturn("abc.");
         final UpdateProductSpecificationRequest request = UpdateProductSpecificationRequestFixture.createWithRemovedAttributeValue();
         service.updateSpecifications(request);
     }
@@ -241,7 +219,7 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
 
     @Test
     @UsingDataSet(locations = "/datasets/specifications/specifications_for_specs.bson", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_for_specs_after_misc_update_locale_en.bson")
+    @ShouldMatchDataSet(location = "/datasets/specifications/specifications_for_specs_after_misc_update_locale_en.json")
     @IgnorePropertyValue(properties = { "lastUpdateDate" })
     public void shouldUpdateAttributeForMiscActionForInternationLocale() {
         final UpdateProductSpecificationRequest request = UpdateProductSpecificationRequestFixture.createWithMiscUpdates();
