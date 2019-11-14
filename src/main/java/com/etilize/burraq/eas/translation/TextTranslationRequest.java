@@ -43,7 +43,9 @@ public class TextTranslationRequest {
 
     private final String industryId;
 
-    private final String localeId;
+    private final String sourceLanguageId;
+
+    private final String targetLanguageId;
 
     private final String value;
 
@@ -51,21 +53,30 @@ public class TextTranslationRequest {
      * Initializes newly request
      *
      * @param industryId industry id
-     * @param localeId locale id
+     * @param sourceLanguageId sourceLanguageId to which value is provided
+     * @param targetLanguageId targetLanguageId to which translation is provided
      * @param value value to translate
      */
-    public TextTranslationRequest(final String industryId, final String localeId,
-            final String value) {
+    public TextTranslationRequest(final String industryId, final String sourceLanguageId,
+            final String targetLanguageId, final String value) {
         this.industryId = industryId;
-        this.localeId = localeId;
+        this.sourceLanguageId = sourceLanguageId;
+        this.targetLanguageId = targetLanguageId;
         this.value = value;
     }
 
     /**
-     * @return the localeId
+     * @return the sourceLanguageId
      */
-    public String getLocaleId() {
-        return localeId;
+    public String getSourceLanguageId() {
+        return sourceLanguageId;
+    }
+
+    /**
+     * @return the targetLanguageId
+     */
+    public String getTargetLanguageId() {
+        return targetLanguageId;
     }
 
     /**
@@ -96,7 +107,8 @@ public class TextTranslationRequest {
         final TextTranslationRequest request = (TextTranslationRequest) obj;
         return new EqualsBuilder() //
                 .append(getIndustryId(), request.getIndustryId()) //
-                .append(getLocaleId(), request.getLocaleId()) //
+                .append(getSourceLanguageId(), request.getSourceLanguageId()) //
+                .append(getTargetLanguageId(), request.getTargetLanguageId()) //
                 .append(getValue(), request.getValue()) //
                 .isEquals();
     }
@@ -105,7 +117,8 @@ public class TextTranslationRequest {
     public final int hashCode() {
         return new HashCodeBuilder() //
                 .append(getIndustryId()) //
-                .append(getLocaleId()) //
+                .append(getSourceLanguageId()) //
+                .append(getTargetLanguageId()) //
                 .append(getValue()) //
                 .hashCode();
     }
@@ -114,7 +127,8 @@ public class TextTranslationRequest {
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("IndustryId", getIndustryId()) //
-                .append("LocaleId", getLocaleId()) //
+                .append("SourceLanguageId", getSourceLanguageId()) //
+                .append("TargetLanguageId", getTargetLanguageId()) //
                 .append("Value", getValue()) //
                 .toString();
     }

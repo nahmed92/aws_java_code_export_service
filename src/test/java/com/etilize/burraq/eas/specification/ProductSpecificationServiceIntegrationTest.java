@@ -70,9 +70,6 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     private ProductSpecificationService service;
 
     @Mock
-    private TranslationService translationService;
-
-    @Mock
     private TaxonomyService taxonomyService;
 
     @Mock
@@ -99,7 +96,7 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @Override
     public void before() {
         service = new ProductSpecificationServiceImpl(basicSpecificationRepository,
-                detailedSpecificationRepository, translationService, taxonomyService,
+                detailedSpecificationRepository, taxonomyService,
                 categoryStructureService, specificationStatusRepository,
                 accessorySpecificationRepository, productMetaDataRepository,
                 localeService);

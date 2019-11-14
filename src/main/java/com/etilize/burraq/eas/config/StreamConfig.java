@@ -81,7 +81,8 @@ public class StreamConfig {
     @Bean
     @StreamMessageConverter
     public AvroJsonSchemaRegistryClientMessageConverter avroMessageConverter(
-            final AvroMapper mapper, final SchemaRegistryClientExtension schemaRegistryClient,
+            final AvroMapper mapper,
+            final SchemaRegistryClientExtension schemaRegistryClient,
             final CacheManager cacheManager) {
         final AvroJsonSchemaRegistryClientMessageConverter avroJsonSchemaRegistryClientMessageConverter = new AvroJsonSchemaRegistryClientMessageConverter(
                 mapper, schemaRegistryClient, cacheManager);
@@ -120,7 +121,8 @@ public class StreamConfig {
         final RestTemplate restTemplate = (StringUtils.isEmpty(username)
                 ? restTemplateBuilder
                 : restTemplateBuilder.basicAuthorization(username, password)).build();
-        final ConfluentSchemaRegistryClientExtensionImpl client = new ConfluentSchemaRegistryClientExtensionImpl(restTemplate, endpoint);
+        final ConfluentSchemaRegistryClientExtensionImpl client = new ConfluentSchemaRegistryClientExtensionImpl(
+                restTemplate, endpoint);
         return client;
     }
 }
