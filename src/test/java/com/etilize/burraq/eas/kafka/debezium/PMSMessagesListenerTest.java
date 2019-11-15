@@ -32,12 +32,15 @@ import static com.etilize.burraq.eas.media.specification.Status.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.assertj.core.util.Sets;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
 import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
@@ -59,11 +62,15 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
     @Mock
     ProductSpecificationService specificationService;
 
+    @Mock
+    CategorySpecificationService categorySpecificationService;
+
     @Override
     public void before() {
         messageReceiver = new KafkaConnectDebeziumMessagesReceiver(
                 new DebeziumMessageParser(), mediaSpecificationService,
-                specificationService, new PSPECSMessageParser());
+                specificationService, new PSPECSMessageParser(),
+                categorySpecificationService);
     }
 
     @Test
@@ -101,5 +108,19 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
         messageReceiver.processProductMediaServiceMessages(addProductLocaleMessage, key);
         verify(mediaSpecificationService, times(1)).saveAttribute("mp5", "en_US", "1",
                 PENDING, new ProductMediaAttributeValue());
+    }
+
+    @Test
+    public void shouldProcessProductOfferingService() throws IOException {
+        final GenericData.Record posMessage = DebeziumMessageTestFixtures.getProductOfferingMessage();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPOSDebeziumMessagesKeyObject();
+        Set<String> attributeIds = Sets.newHashSet();
+        attributeIds.add("5ca5f2e9fcd96b4b22248767");
+        attributeIds.add("5ca5f2f1fcd96b4b222487a0");
+        doNothing().when(categorySpecificationService).save("5c19f6fefcd96b3cdb07fdd4",
+                "BASIC_SPECS", attributeIds); //
+        messageReceiver.processProductOfferingServiceMessages(posMessage, key);
+        verify(categorySpecificationService).save("5c19f6fefcd96b3cdb07fdd4",
+                "BASIC_SPECS", attributeIds);
     }
 }

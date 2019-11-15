@@ -32,7 +32,9 @@ import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.*;
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -44,10 +46,14 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
 import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Houses listeners for all incoming Apache Kafka Debezium messages
@@ -58,7 +64,7 @@ import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
 @Service
 public class KafkaConnectDebeziumMessagesReceiver {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DebeziumMessageParser debeziumMessageParser;
 
@@ -68,6 +74,8 @@ public class KafkaConnectDebeziumMessagesReceiver {
 
     private final ProductSpecificationService specificationService;
 
+    private final CategorySpecificationService categorySpecificationService;
+
     /**
      * Constructor to instantiate object instance.
      *
@@ -75,17 +83,20 @@ public class KafkaConnectDebeziumMessagesReceiver {
      * @param mediaSpecificationService {@link ProductMediaSpecificationService}
      * @param specificationService {@link ProductSpecificationService}
      * @param pspecsMessageParser {@link PSPECSMessageParser}
+     * @param categorySpecificationService {@link CategorySpecificationService}
      */
     @Autowired
     public KafkaConnectDebeziumMessagesReceiver(
             final DebeziumMessageParser debeziumMessageParser,
             final ProductMediaSpecificationService mediaSpecificationService,
             final ProductSpecificationService specificationService,
-            final PSPECSMessageParser pspecsMessageParser) {
+            final PSPECSMessageParser pspecsMessageParser,
+            final CategorySpecificationService categorySpecificationService) {
         this.debeziumMessageParser = debeziumMessageParser;
         this.mediaSpecificationService = mediaSpecificationService;
         this.specificationService = specificationService;
         this.pspecsMessageParser = pspecsMessageParser;
+        this.categorySpecificationService = categorySpecificationService;
     }
 
     /**
@@ -162,6 +173,32 @@ public class KafkaConnectDebeziumMessagesReceiver {
         }
     }
 
+    /**
+     * Process product offering updates from product-offering-service
+     *
+     * @param record {@link GenericData.Record}
+     * @param key {@link ConsumerRecord<Object, String>}
+     * @throws IOException {@link IOException}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pos}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
+    public void processProductOfferingServiceMessages(final GenericData.Record record,
+            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
+        logger.info("Received Product Offering Service Message: [{}].", record);
+        final Optional<String> operation = debeziumMessageParser.extractOperationType(
+                record);
+        switch (operation.get()) {
+            case OPERATION_CREATE:
+                processProductOfferingMessage(AFTER, record);
+                break;
+            case OPERATION_UPDATE:
+                processProductOfferingMessage(PATCH, record);
+                break;
+            default:
+                logger.info("Received following Debezium's Message: [{}].", record);
+                break;
+        }
+    }
+
     private void processAssociateCategoryCommandFromPSPECS(
             final ConsumerRecord<Object, String> key, final GenericData.Record record) {
         logger.info(
@@ -197,4 +234,25 @@ public class KafkaConnectDebeziumMessagesReceiver {
                 productId, record);
         specificationService.updateSpecifications(request);
     }
+
+    private void processProductOfferingMessage(final String operationType,
+            final GenericData.Record record) {
+
+        final String operation = record.get(operationType) //
+                .toString();
+        final JsonObject associateCategoryJson = new JsonParser().parse(operation) //
+                .getAsJsonObject();
+        final Set<String> attributeIds = new HashSet<>();
+        final String categoryId = associateCategoryJson.get("categoryId").getAsString();
+        final String offeringId = associateCategoryJson.get("offeringId").getAsString();
+        final JsonArray attributes = associateCategoryJson.get(
+                "attributes").getAsJsonArray();
+        if (attributes.size() > 0) {
+            attributes.forEach(attribute -> {
+                attributeIds.add(attribute.getAsString());
+            });
+        }
+        categorySpecificationService.save(categoryId, offeringId, attributeIds);
+    }
+
 }

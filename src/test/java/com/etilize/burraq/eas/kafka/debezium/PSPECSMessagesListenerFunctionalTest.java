@@ -37,6 +37,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
 import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
@@ -65,11 +66,15 @@ public class PSPECSMessagesListenerFunctionalTest extends AbstractIntegrationTes
     @Mock
     private ProductSpecificationService specificationService;
 
+    @Mock
+    private CategorySpecificationService categorySpecificationService;
+
     @Override
     public void before() {
         messageReceiver = new KafkaConnectDebeziumMessagesReceiver(
                 new DebeziumMessageParser(), mediaSpecificationsService,
-                specificationService, new PSPECSMessageParser());
+                specificationService, new PSPECSMessageParser(),
+                categorySpecificationService);
     }
 
     @Test

@@ -18,6 +18,7 @@ spring:
          topic.pms: product-media-service
          topic.psss: product-specifications-status-service
          topic.pmss: product-media-status-service
+         topic.pos: burraq.product-offering-service.offering_details
       group-id: export-aggregation-service
 info:
   version: ${project.version}

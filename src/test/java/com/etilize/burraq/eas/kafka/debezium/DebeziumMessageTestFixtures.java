@@ -1036,4 +1036,52 @@ public class DebeziumMessageTestFixtures {
                 .getAsLong());
         return command;
     }
+
+    /**
+     * Returns an instance of {@link GenericData.Record} which represents PMS AddProductLocaleMessage.
+     *
+     * @return {@link GenericData.Record}
+     * @throws IOException
+     */
+    public static GenericData.Record getProductOfferingMessage() throws IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pos_debezium_messages_schema.json"),
+                "UTF-8");
+        final String debeziumMessageJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH + "/pos_debezium_messages.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumMessageJsonObject).getAsJsonObject();
+        final GenericData.Record message = new GenericData.Record(schema);
+        message.put(OPERATION, object.get(OPERATION) //
+                .getAsString());
+        message.put(AFTER, object.get(AFTER) //
+                .getAsString());
+        message.put(SOURCE, object.get(SOURCE) //
+                .getAsJsonObject());
+        return message;
+    }
+
+    /**
+     * Returns {@link ConsumerRecord<String, String>} containing the mongodb object key.
+     *
+     * @return {@link ConsumerRecord<String, String>}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static ConsumerRecord<Object, String> getPOSDebeziumMessagesKeyObject()
+            throws FileNotFoundException, IOException {
+
+        final String debeziumMessageKeyJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pos_debezium_messages_key_schema.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageKeyJsonSchema);
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put("_id", "{\"_id\" : \"5c19f6fefcd96b3cdb07fdd4\"}");
+        return new ConsumerRecord<>("burraq.product-offering-service.offering_details",
+                0, 0, command, null);
+    }
 }
