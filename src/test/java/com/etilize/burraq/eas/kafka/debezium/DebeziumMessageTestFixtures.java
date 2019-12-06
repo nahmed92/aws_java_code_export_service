@@ -1081,7 +1081,7 @@ public class DebeziumMessageTestFixtures {
         final Schema schema = new Schema.Parser().parse(debeziumMessageKeyJsonSchema);
         final GenericData.Record command = new GenericData.Record(schema);
         command.put("_id", "{\"_id\" : \"5c19f6fefcd96b3cdb07fdd4\"}");
-        return new ConsumerRecord<>("burraq.product-offering-service.offering_details",
-                0, 0, command, null);
+        return new ConsumerRecord<>("burraq.product-offering-service.offering_details", 0,
+                0, command, null);
     }
 }

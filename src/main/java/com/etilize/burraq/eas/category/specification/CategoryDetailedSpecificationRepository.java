@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.category.specification;
 
+import java.util.List;
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -43,4 +44,12 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface CategoryDetailedSpecificationRepository extends
         DynamoDBCrudRepository<CategoryDetailedSpecification, CategorySpecificationKey>,
         CategoryDetailedSpecificationCustomRepository {
+
+    /**
+     * find by LocaleId
+     * @param localeId {@link String}
+     * @return {@link List<CategoryDetailedSpecification>}
+     */
+    List<CategoryDetailedSpecification> findByLocaleId(String localeId);
+
 }

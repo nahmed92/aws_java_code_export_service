@@ -51,7 +51,7 @@ public interface CategorySpecificationService {
     /**
      * It return attribute names by id for basic specs offering.
      *
-     * @param categoryId catgeoyr id
+     * @param categoryId category id
      * @return Map<String, String>
      */
     Map<String, String> findBasicSpecsOfferingAttributes(String categoryId);
@@ -59,7 +59,7 @@ public interface CategorySpecificationService {
     /**
      * It return attribute names by id for detailed specs offering.
      *
-     * @param categoryId catgeoyr id
+     * @param categoryId category id
      * @return Map<String, String>
      */
     Map<String, String> findDetailedSpecsOfferingAttributes(String categoryId);
@@ -67,7 +67,7 @@ public interface CategorySpecificationService {
     /**
      * It return attribute names by id for accessory specs offering.
      *
-     * @param categoryId catgeory id
+     * @param categoryId category id
      * @return Map<String, String>
      */
     Map<String, String> findAccessorySpecsOfferingAttributes(String categoryId);
@@ -89,4 +89,10 @@ public interface CategorySpecificationService {
      * @return boolean
      */
     boolean hasRichMediaOfferingAttribute(String categoryId, String attributeId);
+
+    /**
+     * Add category specs for newly added locale
+     * @param localeId {@link String}
+     */
+     void addLocale(String localeId);
 }

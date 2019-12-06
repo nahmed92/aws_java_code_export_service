@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
 import com.etilize.burraq.eas.category.Category;
 import com.etilize.burraq.eas.locale.LocaleService;
 import com.etilize.burraq.eas.taxonomy.TaxonomyService;
@@ -250,6 +251,53 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         return exists;
     }
 
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.category.specification.CategorySpecificationService#addLocale(java.lang.String)
+     */
+    public void addLocale(final String localeId) {
+        Assert.hasText(localeId, "localeId should not be null.");
+        basicCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
+                basisSpecs -> {
+                    //add locale to basic category structure
+                    final CategoryBasicSpecification localizedBasicSpecs = new CategoryBasicSpecification();
+                    populateLocalizedCategoryStructure(
+                            localeId, localizedBasicSpecs, basisSpecs);
+                    basicCategoryStructureRepository.save(localizedBasicSpecs);
+                });
+        detailedCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
+                detailedSpecs -> {
+                    //add locale to detailed category structure
+                    final CategoryDetailedSpecification localizedDetailedSpecs = new CategoryDetailedSpecification();
+                     populateLocalizedCategoryStructure(
+                            localeId, localizedDetailedSpecs, detailedSpecs);
+                    detailedCategoryStructureRepository.save(localizedDetailedSpecs);
+                });
+        accessoryCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
+                accessorySpecs -> {
+                    //add locale to Accessory category structure
+                    final CategoryAccessorySpecification localizedAccessorySpecs = new CategoryAccessorySpecification();     
+                    populateLocalizedCategoryStructure(
+                            localeId, localizedAccessorySpecs, accessorySpecs);
+                    accessoryCategoryStructureRepository.save(localizedAccessorySpecs);
+                });
+        basicMediaCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
+                basicMediaSpecs -> {
+                    //add locale to basic Media category structure
+                    final CategoryBasicMediaSpecification localizedBasicMediaSpecs = new CategoryBasicMediaSpecification();
+                    populateLocalizedCategoryStructure(
+                            localeId, localizedBasicMediaSpecs, basicMediaSpecs);
+                    basicMediaCategoryStructureRepository.save(localizedBasicMediaSpecs);
+                });
+        richMediaCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
+                richMediaSpecs -> {
+                    //add locale to Rich Media category structure
+                    final CategoryRichMediaSpecification localizedRichMediaSpecs = new CategoryRichMediaSpecification();
+                     populateLocalizedCategoryStructure(
+                            localeId, localizedRichMediaSpecs, richMediaSpecs);
+                    richMediaCategoryStructureRepository.save(localizedRichMediaSpecs);
+                });
+    }
+
     private void saveBasicCategoryStructure(final CategorySpecification categoryStructure,
             final List<String> localeIds) {
         final CategoryBasicSpecification basicCategoryStructure = new CategoryBasicSpecification();
@@ -264,22 +312,10 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         basicCategoryStructure.setLastUpdateDate(categoryStructure.getLastUpdateDate());
         basicCategoryStructureRepository.save(basicCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryBasicSpecification localizedCategoryStructure = new CategoryBasicSpecification();
-            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
-            localizedCategoryStructure.setCategoryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getCategoryName()));
-            localizedCategoryStructure.setLocaleId(localeId);
-            localizedCategoryStructure.setParentCategoryId(
-                    categoryStructure.getParentCategoryId());
-            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
-            localizedCategoryStructure.setIndustryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getIndustryName()));
-            localizedCategoryStructure.setAttributes(
-                    translateAttributes(categoryStructure.getIndustryId(), localeId,
-                            categoryStructure.getAttributes()));
-            basicCategoryStructureRepository.save(localizedCategoryStructure);
+            final CategoryBasicSpecification basicSpecs = new CategoryBasicSpecification();
+            populateLocalizedCategoryStructure(
+                    localeId, basicSpecs, categoryStructure);
+            basicCategoryStructureRepository.save(basicSpecs);
         });
     }
 
@@ -296,22 +332,10 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         detailedCategoryStructure.setAttributes(categoryStructure.getAttributes());
         detailedCategoryStructureRepository.save(detailedCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryDetailedSpecification localizedCategoryStructure = new CategoryDetailedSpecification();
-            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
-            localizedCategoryStructure.setCategoryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getCategoryName()));
-            localizedCategoryStructure.setLocaleId(localeId);
-            localizedCategoryStructure.setParentCategoryId(
-                    categoryStructure.getParentCategoryId());
-            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
-            localizedCategoryStructure.setIndustryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getIndustryName()));
-            localizedCategoryStructure.setAttributes(
-                    translateAttributes(categoryStructure.getIndustryId(), localeId,
-                            categoryStructure.getAttributes()));
-            detailedCategoryStructureRepository.save(localizedCategoryStructure);
+            final CategoryDetailedSpecification detailedSpecs = new CategoryDetailedSpecification(); 
+            populateLocalizedCategoryStructure(
+                    localeId, detailedSpecs, categoryStructure);
+            detailedCategoryStructureRepository.save(detailedSpecs);
         });
     }
 
@@ -328,22 +352,10 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         basicMediaCategoryStructure.setAttributes(categoryStructure.getAttributes());
         basicMediaCategoryStructureRepository.save(basicMediaCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryBasicMediaSpecification localizedCategoryStructure = new CategoryBasicMediaSpecification();
-            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
-            localizedCategoryStructure.setCategoryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getCategoryName()));
-            localizedCategoryStructure.setLocaleId(localeId);
-            localizedCategoryStructure.setParentCategoryId(
-                    categoryStructure.getParentCategoryId());
-            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
-            localizedCategoryStructure.setIndustryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getIndustryName()));
-            localizedCategoryStructure.setAttributes(
-                    translateAttributes(categoryStructure.getIndustryId(), localeId,
-                            categoryStructure.getAttributes()));
-            basicMediaCategoryStructureRepository.save(localizedCategoryStructure);
+            final CategoryBasicMediaSpecification basicMediaSpecs= new CategoryBasicMediaSpecification();
+            populateLocalizedCategoryStructure(
+                    localeId, basicMediaSpecs, categoryStructure);
+            basicMediaCategoryStructureRepository.save(basicMediaSpecs);
         });
     }
 
@@ -360,22 +372,10 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         richMediaCategoryStructure.setAttributes(categoryStructure.getAttributes());
         richMediaCategoryStructureRepository.save(richMediaCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryRichMediaSpecification localizedCategoryStructure = new CategoryRichMediaSpecification();
-            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
-            localizedCategoryStructure.setCategoryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getCategoryName()));
-            localizedCategoryStructure.setLocaleId(localeId);
-            localizedCategoryStructure.setParentCategoryId(
-                    categoryStructure.getParentCategoryId());
-            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
-            localizedCategoryStructure.setIndustryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getIndustryName()));
-            localizedCategoryStructure.setAttributes(
-                    translateAttributes(categoryStructure.getIndustryId(), localeId,
-                            categoryStructure.getAttributes()));
-            richMediaCategoryStructureRepository.save(localizedCategoryStructure);
+            final CategoryRichMediaSpecification richMediaSpecs = new CategoryRichMediaSpecification();
+            populateLocalizedCategoryStructure(
+                    localeId, richMediaSpecs, categoryStructure);
+            richMediaCategoryStructureRepository.save(richMediaSpecs);
         });
     }
 
@@ -393,23 +393,36 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
                 categoryStructure.getLastUpdateDate());
         accessoryCategoryStructureRepository.save(accessoryCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryAccessorySpecification localizedCategoryStructure = new CategoryAccessorySpecification();
-            localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
-            localizedCategoryStructure.setCategoryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getCategoryName()));
-            localizedCategoryStructure.setLocaleId(localeId);
-            localizedCategoryStructure.setParentCategoryId(
-                    categoryStructure.getParentCategoryId());
-            localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
-            localizedCategoryStructure.setIndustryName(
-                    translationService.translateText(categoryStructure.getIndustryId(),
-                            localeId, categoryStructure.getIndustryName()));
-            localizedCategoryStructure.setAttributes(
-                    translateAttributes(categoryStructure.getIndustryId(), localeId,
-                            categoryStructure.getAttributes()));
-            accessoryCategoryStructureRepository.save(localizedCategoryStructure);
+            final CategoryAccessorySpecification accessorySpecs = new CategoryAccessorySpecification(); 
+            populateLocalizedCategoryStructure(
+                    localeId, accessorySpecs, categoryStructure);
+            accessoryCategoryStructureRepository.save(accessorySpecs);
         });
+    }
+
+    /**
+     * @param localeId {@link String}
+     * @param localizedCategoryStructure {@link CategorySpecification}
+     * @param categoryStructure {@link CategorySpecification}
+     */
+    private void populateLocalizedCategoryStructure(final String localeId,
+            final CategorySpecification localizedCategoryStructure,
+            final CategorySpecification categoryStructure) {
+        localizedCategoryStructure.setCategoryId(categoryStructure.getCategoryId());
+        localizedCategoryStructure.setCategoryName(
+                translationService.translateText(categoryStructure.getIndustryId(),
+                        localeId, categoryStructure.getCategoryName()));
+        localizedCategoryStructure.setLocaleId(localeId);
+        localizedCategoryStructure.setParentCategoryId(
+                categoryStructure.getParentCategoryId());
+        localizedCategoryStructure.setIndustryId(categoryStructure.getIndustryId());
+        localizedCategoryStructure.setIndustryName(
+                translationService.translateText(categoryStructure.getIndustryId(),
+                        localeId, categoryStructure.getIndustryName()));
+        localizedCategoryStructure.setAttributes(
+                translateAttributes(categoryStructure.getIndustryId(), localeId,
+                        categoryStructure.getAttributes()));
+        localizedCategoryStructure.setLastUpdateDate(new Date());
     }
 
     private Map<String, String> findAttributeNames(final Set<String> attributeIds) {

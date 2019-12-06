@@ -19,6 +19,7 @@ spring:
          topic.psss: product-specifications-status-service
          topic.pmss: product-media-status-service
          topic.pos: burraq.product-offering-service.offering_details
+         topic.ls: burraq.locale-service.locales
       group-id: export-aggregation-service
 info:
   version: ${project.version}
@@ -52,5 +53,17 @@ spring:
       node: ${burraq.embedded.elastic.node}
       protocol: ${burraq.embedded.elastic.node.protocol}
       service-name: none
-      region: none      
-    
+      region: none
+
+---
+feign:
+   client:
+     config:
+       retry:
+         period: 1000
+         maxPeriod: 1000
+         maxAttempts: 3
+     default:
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: basic

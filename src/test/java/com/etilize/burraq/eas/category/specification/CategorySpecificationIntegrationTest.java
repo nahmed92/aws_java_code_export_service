@@ -128,8 +128,14 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
                 .thenReturn("Max.");
         when(translationService.translateText("industryId123", "enuk_UK", "Notebook")) //
                 .thenReturn("Notebook.");
+        when(translationService.translateText("industryId123", "enuk_UK", "Hardware")) //
+                .thenReturn("Hardware.");
         when(translationService.translateText("industryId123", "enuk_UK", "IT")) //
                 .thenReturn("I.T.");
+        when(translationService.translateText("industryId123", "enuk_UK", "Size")) //
+                .thenReturn("translated_Size");
+        when(translationService.translateText("industryId123", "enuk_UK", "Mfg Id")) //
+                .thenReturn("translated_Mfg Id");
     }
 
     @Test
@@ -168,5 +174,13 @@ public class CategorySpecificationIntegrationTest extends AbstractIntegrationTes
     public void shouldUpdateAccessoryCategoryStructure() {
         service.save("categoryId123", "ACCESSORY_SPECS",
                 Sets.newHashSet("colorId", "mfgPartNoId"));
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/category_structures/category_structures_add_locale.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/category_structures/category_structures_after_adding_new_locale.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate", "industryId" })
+    public void shouldAddCategoryStructureForNewLocale() {
+        service.addLocale("enuk_UK");
     }
 }
