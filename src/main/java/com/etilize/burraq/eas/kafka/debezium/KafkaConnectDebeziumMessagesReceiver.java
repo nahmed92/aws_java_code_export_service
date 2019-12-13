@@ -171,6 +171,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
                     request.getLocaleId(), request.getAttributeId(), request.getStatus(),
                     value);
         }
+        logger.info("product media service message processed sucessfully...");
     }
 
     /**
@@ -199,6 +200,31 @@ public class KafkaConnectDebeziumMessagesReceiver {
         }
     }
 
+    /**
+     * Process locale service message
+     *
+     * @param record {@link GenericData.Record}
+     * @param key {@link ConsumerRecord<Object, String>}
+     * @throws IOException {@link IOException}
+     */
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.ls}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
+    public void addLocaleMessages(final GenericData.Record record,
+            @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
+        logger.info("Received Locale Service Message: [{}].", record);
+        final Optional<String> operationType = debeziumMessageParser.extractOperationType(
+                record);
+        if (OPERATION_CREATE.equals(operationType.get())) {
+            final String operation = record.get(AFTER) //
+                    .toString();
+            final JsonObject localeJSON = new JsonParser().parse(operation) //
+                    .getAsJsonObject();
+            final String localeId = localeJSON.get("_id").getAsString();
+            // add locale in category
+            categorySpecificationService.addLocale(localeId);
+            logger.info("Add {} locale message processed sucessfully...", localeId);
+        }
+    }
+
     private void processAssociateCategoryCommandFromPSPECS(
             final ConsumerRecord<Object, String> key, final GenericData.Record record) {
         logger.info(
@@ -221,7 +247,9 @@ public class KafkaConnectDebeziumMessagesReceiver {
         final Optional<String> localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
                 record);
         if (productId.isPresent() && localeId.isPresent()) {
+            // add locale in product
             specificationService.addLocale(productId.get(), localeId.get());
+            logger.info("product add locale message processed sucessfully...");
         }
     }
 
@@ -233,6 +261,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
         final UpdateProductSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
                 productId, record);
         specificationService.updateSpecifications(request);
+        logger.info("update Specs message processed sucessfully...");
     }
 
     private void processProductOfferingMessage(final String operationType,
@@ -253,6 +282,6 @@ public class KafkaConnectDebeziumMessagesReceiver {
             });
         }
         categorySpecificationService.save(categoryId, offeringId, attributeIds);
+        logger.info("product offering message processed sucessfully...");
     }
-
 }

@@ -28,16 +28,21 @@
 
 package com.etilize.burraq.eas.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.etilize.burraq.eas.validation.FeignErrorDecoder;
 
+import feign.Request;
+import feign.Retryer;
 import feign.codec.ErrorDecoder;
 
 /**
  * This class handles Feign configurations and decoders
+ *
+ * https://github.com/OpenFeign/feign/blob/master/core/src/main/java/feign/Retryer.java
  *
  * @author Umar Zubair
  * @version 1.0
@@ -45,6 +50,21 @@ import feign.codec.ErrorDecoder;
 @Configuration
 @EnableFeignClients(basePackages = "com.etilize.burraq.eas")
 public class FeignConfig {
+
+    @Value("${feign.client.config.retry.period}")
+    private long period;
+
+    @Value("${feign.client.config.retry.maxPeriod}")
+    private long maxPeriod;
+
+    @Value("${feign.client.config.retry.maxAttempts}")
+    private int maxAttempts;
+
+    @Value("${feign.client.config.default.connectTimeout:60000}")
+    private int connectTimeout;
+
+    @Value("${feign.client.config.default.readTimeout:60000}")
+    private int readTimeout;
 
     /**
      * This method provides bean to decode feign errors
@@ -54,5 +74,15 @@ public class FeignConfig {
     @Bean
     public ErrorDecoder feignErrorDecoder() {
         return new FeignErrorDecoder();
+    }
+
+    @Bean
+    public Retryer retryer() {
+        return new Retryer.Default(period, maxPeriod, maxAttempts);
+    }
+
+    @Bean
+    public Request.Options options() {
+        return new Request.Options(connectTimeout, readTimeout);
     }
 }
