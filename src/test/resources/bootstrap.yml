@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: export-aggregation-service
+
+  profiles:
+    active: test
