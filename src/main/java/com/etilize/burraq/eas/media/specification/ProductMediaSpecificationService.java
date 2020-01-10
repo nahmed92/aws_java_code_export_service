@@ -56,4 +56,15 @@ public interface ProductMediaSpecificationService {
     void saveAttribute(String productId, String localeId, String attributeId,
             Status status, ProductMediaAttributeValue value);
 
+    /**
+     * It add Tag
+     *
+     * @param productId product id
+     * @param localeId locale id
+     * @param attributeId attribute id
+     * @param value {@link ProductMediaAttributeValue}, it is optional, will have url, height,width and tags only when status is ASSOCIATED or will have tags for any status
+     */
+    void saveTag(final String productId, final String localeId, final String attributeId,
+            final ProductMediaAttributeValue value);
+
 }

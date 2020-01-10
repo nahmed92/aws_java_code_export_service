@@ -94,5 +94,5 @@ public interface CategorySpecificationService {
      * Add category specs for newly added locale
      * @param localeId {@link String}
      */
-     void addLocale(String localeId);
+    void addLocale(String localeId);
 }

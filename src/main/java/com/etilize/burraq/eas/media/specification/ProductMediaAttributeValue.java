@@ -124,8 +124,7 @@ public class ProductMediaAttributeValue {
                 .append(getUrl()) //
                 .append(getTags()) //
                 .append(getHeight()) //
-                .append(getWidth()) //
-                .hashCode();
+                .append(getWidth()).hashCode();
     }
 
     /**

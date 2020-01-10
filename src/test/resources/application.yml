@@ -15,7 +15,7 @@ spring:
          topic.bacs: barcode-service
          topic.pcs: product-code-service
          topic.pas: product-accessory-service
-         topic.pms: product-media-service
+         topic.pms: burraq.product-media-service.media_specifications
          topic.psss: product-specifications-status-service
          topic.pmss: product-media-status-service
          topic.pos: burraq.product-offering-service.offering_details

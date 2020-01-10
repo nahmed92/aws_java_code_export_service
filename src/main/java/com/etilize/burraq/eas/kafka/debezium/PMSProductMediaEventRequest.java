@@ -32,6 +32,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.Status;
 
 /**
@@ -50,7 +51,7 @@ public class PMSProductMediaEventRequest {
 
     private final Status status;
 
-    private final String value;
+    private final ProductMediaAttributeValue value;
 
     /**
      * Constructor to instantiate object.
@@ -59,10 +60,11 @@ public class PMSProductMediaEventRequest {
      * @param localeId {@link String} localeId
      * @param attributeId {@link String} attributeId
      * @param status {@link Status} status
-     * @param value {@link String} value
+     * @param value {@link ProductMediaAttributeValue} value
      */
     public PMSProductMediaEventRequest(final String productId, final String localeId,
-            final String attributeId, final Status status, final String value) {
+            final String attributeId, final Status status,
+            final ProductMediaAttributeValue value) {
         this.productId = productId;
         this.localeId = localeId;
         this.attributeId = attributeId;
@@ -99,9 +101,9 @@ public class PMSProductMediaEventRequest {
     }
 
     /**
-     * @return {@link String} value
+     * @return {@link ProductMediaAttributeValue} value
      */
-    public String getValue() {
+    public ProductMediaAttributeValue getValue() {
         return value;
     }
 

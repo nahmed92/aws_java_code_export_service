@@ -156,22 +156,20 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void processProductMediaServiceMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         logger.info("Received Product Media Service Message: [{}].", record);
-        if (debeziumMessageParser.isAddProductLocaleMessageFromPMS(record)) {// It means AddProductLocaleMessage
-            final PMSAddProductLocaleRequest pmsAddProductLocaleRequest = debeziumMessageParser.getPMSAddProductLocaleRequest(
-                    record, key);
-            mediaSpecificationService.addLocale(pmsAddProductLocaleRequest.getProductId(),
-                    pmsAddProductLocaleRequest.getLocaleId());
-        } else {// It means ProductMediaEvent
-            final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
-                    record, key);
-            final ProductMediaAttributeValue value = new ProductMediaAttributeValue();
-            // TODO need take care cases, when height, width and tags are also coming.
-            value.setUrl(request.getValue());
+        final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
+                record, key);
+        if (request.getStatus() == null && request.getValue().getTags() != null
+                && !request.getValue().getTags().isEmpty()) {
+            mediaSpecificationService.saveTag(request.getProductId(),
+                    request.getLocaleId(), request.getAttributeId(), request.getValue());
+            logger.info("Update Tag for product {}", request.getProductId());
+
+        } else {
             mediaSpecificationService.saveAttribute(request.getProductId(),
                     request.getLocaleId(), request.getAttributeId(), request.getStatus(),
-                    value);
+                    request.getValue());
+            logger.info("Update Attribute for product {}", request.getProductId());
         }
-        logger.info("product media service message processed sucessfully...");
     }
 
     /**
@@ -247,9 +245,13 @@ public class KafkaConnectDebeziumMessagesReceiver {
         final Optional<String> localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
                 record);
         if (productId.isPresent() && localeId.isPresent()) {
-            // add locale in product
+            // add locale in product specification
             specificationService.addLocale(productId.get(), localeId.get());
-            logger.info("product add locale message processed sucessfully...");
+            logger.info("product specification add locale processed sucessfully...");
+            // add locale in product specification
+            mediaSpecificationService.addLocale(productId.get(), localeId.get());
+            logger.info(
+                    "product media specification add locale processed sucessfully...");
         }
     }
 

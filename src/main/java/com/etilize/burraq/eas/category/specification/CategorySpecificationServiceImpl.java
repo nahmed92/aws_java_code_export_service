@@ -260,40 +260,40 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
                 basisSpecs -> {
                     //add locale to basic category structure
                     final CategoryBasicSpecification localizedBasicSpecs = new CategoryBasicSpecification();
-                    populateLocalizedCategoryStructure(
-                            localeId, localizedBasicSpecs, basisSpecs);
+                    populateLocalizedCategoryStructure(localeId, localizedBasicSpecs,
+                            basisSpecs);
                     basicCategoryStructureRepository.save(localizedBasicSpecs);
                 });
         detailedCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
                 detailedSpecs -> {
                     //add locale to detailed category structure
                     final CategoryDetailedSpecification localizedDetailedSpecs = new CategoryDetailedSpecification();
-                     populateLocalizedCategoryStructure(
-                            localeId, localizedDetailedSpecs, detailedSpecs);
+                    populateLocalizedCategoryStructure(localeId, localizedDetailedSpecs,
+                            detailedSpecs);
                     detailedCategoryStructureRepository.save(localizedDetailedSpecs);
                 });
         accessoryCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
                 accessorySpecs -> {
                     //add locale to Accessory category structure
-                    final CategoryAccessorySpecification localizedAccessorySpecs = new CategoryAccessorySpecification();     
-                    populateLocalizedCategoryStructure(
-                            localeId, localizedAccessorySpecs, accessorySpecs);
+                    final CategoryAccessorySpecification localizedAccessorySpecs = new CategoryAccessorySpecification();
+                    populateLocalizedCategoryStructure(localeId, localizedAccessorySpecs,
+                            accessorySpecs);
                     accessoryCategoryStructureRepository.save(localizedAccessorySpecs);
                 });
         basicMediaCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
                 basicMediaSpecs -> {
                     //add locale to basic Media category structure
                     final CategoryBasicMediaSpecification localizedBasicMediaSpecs = new CategoryBasicMediaSpecification();
-                    populateLocalizedCategoryStructure(
-                            localeId, localizedBasicMediaSpecs, basicMediaSpecs);
+                    populateLocalizedCategoryStructure(localeId, localizedBasicMediaSpecs,
+                            basicMediaSpecs);
                     basicMediaCategoryStructureRepository.save(localizedBasicMediaSpecs);
                 });
         richMediaCategoryStructureRepository.findByLocaleId(LOCALE_EN_US).forEach(
                 richMediaSpecs -> {
                     //add locale to Rich Media category structure
                     final CategoryRichMediaSpecification localizedRichMediaSpecs = new CategoryRichMediaSpecification();
-                     populateLocalizedCategoryStructure(
-                            localeId, localizedRichMediaSpecs, richMediaSpecs);
+                    populateLocalizedCategoryStructure(localeId, localizedRichMediaSpecs,
+                            richMediaSpecs);
                     richMediaCategoryStructureRepository.save(localizedRichMediaSpecs);
                 });
     }
@@ -313,8 +313,7 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         basicCategoryStructureRepository.save(basicCategoryStructure);
         localeIds.forEach(localeId -> {
             final CategoryBasicSpecification basicSpecs = new CategoryBasicSpecification();
-            populateLocalizedCategoryStructure(
-                    localeId, basicSpecs, categoryStructure);
+            populateLocalizedCategoryStructure(localeId, basicSpecs, categoryStructure);
             basicCategoryStructureRepository.save(basicSpecs);
         });
     }
@@ -332,9 +331,9 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         detailedCategoryStructure.setAttributes(categoryStructure.getAttributes());
         detailedCategoryStructureRepository.save(detailedCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryDetailedSpecification detailedSpecs = new CategoryDetailedSpecification(); 
-            populateLocalizedCategoryStructure(
-                    localeId, detailedSpecs, categoryStructure);
+            final CategoryDetailedSpecification detailedSpecs = new CategoryDetailedSpecification();
+            populateLocalizedCategoryStructure(localeId, detailedSpecs,
+                    categoryStructure);
             detailedCategoryStructureRepository.save(detailedSpecs);
         });
     }
@@ -352,9 +351,9 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         basicMediaCategoryStructure.setAttributes(categoryStructure.getAttributes());
         basicMediaCategoryStructureRepository.save(basicMediaCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryBasicMediaSpecification basicMediaSpecs= new CategoryBasicMediaSpecification();
-            populateLocalizedCategoryStructure(
-                    localeId, basicMediaSpecs, categoryStructure);
+            final CategoryBasicMediaSpecification basicMediaSpecs = new CategoryBasicMediaSpecification();
+            populateLocalizedCategoryStructure(localeId, basicMediaSpecs,
+                    categoryStructure);
             basicMediaCategoryStructureRepository.save(basicMediaSpecs);
         });
     }
@@ -373,8 +372,8 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         richMediaCategoryStructureRepository.save(richMediaCategoryStructure);
         localeIds.forEach(localeId -> {
             final CategoryRichMediaSpecification richMediaSpecs = new CategoryRichMediaSpecification();
-            populateLocalizedCategoryStructure(
-                    localeId, richMediaSpecs, categoryStructure);
+            populateLocalizedCategoryStructure(localeId, richMediaSpecs,
+                    categoryStructure);
             richMediaCategoryStructureRepository.save(richMediaSpecs);
         });
     }
@@ -393,9 +392,9 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
                 categoryStructure.getLastUpdateDate());
         accessoryCategoryStructureRepository.save(accessoryCategoryStructure);
         localeIds.forEach(localeId -> {
-            final CategoryAccessorySpecification accessorySpecs = new CategoryAccessorySpecification(); 
-            populateLocalizedCategoryStructure(
-                    localeId, accessorySpecs, categoryStructure);
+            final CategoryAccessorySpecification accessorySpecs = new CategoryAccessorySpecification();
+            populateLocalizedCategoryStructure(localeId, accessorySpecs,
+                    categoryStructure);
             accessoryCategoryStructureRepository.save(accessorySpecs);
         });
     }
