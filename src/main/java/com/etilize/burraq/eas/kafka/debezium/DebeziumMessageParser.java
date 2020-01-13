@@ -32,6 +32,7 @@ import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,6 +42,7 @@ import java.util.Set;
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.Status;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -70,7 +72,8 @@ public class DebeziumMessageParser {
     }
 
     /**
-     * Extracts {@link Optional<String>} update operation type i.e. either "Add Product Locale" or "Update Product Specifications".
+     * Extracts {@link Optional<String>} update operation type i.e. either "Add Product
+     * Locale" or "Update Product Specifications".
      *
      * @param record {@link GenericData.Record} Debezium generated update specs command.
      * @return {@link Optional<String>} update operation type.
@@ -150,7 +153,7 @@ public class DebeziumMessageParser {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void setValueInQueryParameter(final Map<String, Object> map,
-            boolean isSet) {
+            final boolean isSet) {
         if (map.get(VALUE_FIELD) instanceof LinkedHashMap) {
             setValueFromMap(map, isSet);
         } else //repeatable values/units
@@ -160,7 +163,8 @@ public class DebeziumMessageParser {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void setValueFromMap(final Map<String, Object> map, boolean isSet) {
+    private static void setValueFromMap(final Map<String, Object> map,
+            final boolean isSet) {
         if (null != ((LinkedHashMap) map.get(VALUE_FIELD)).get(UNIT_FIELD)) {
             map.put(VALUE_FIELD, ((LinkedHashMap) map.get(VALUE_FIELD)).get(UNIT_FIELD));
         } else if (null != ((LinkedHashMap) map.get(VALUE_FIELD)).get("exception")) {
@@ -242,28 +246,6 @@ public class DebeziumMessageParser {
     }
 
     /**
-     * Extracts out {@link PMSAddProductLocaleRequest} object from Apache Kafka Message
-     *
-     * @param record {@link GenericData.Record} Apache kafka value message
-     * @param key {@link ConsumerRecord<Object, String>} Apache Kafka message key
-     * @return {@link PMSAddProductLocaleRequest}
-     */
-    public PMSAddProductLocaleRequest getPMSAddProductLocaleRequest(
-            final GenericData.Record record, final ConsumerRecord<Object, String> key) {
-        final String patch = record.get(PATCH) //
-                .toString();
-        final JsonObject setJO = new JsonParser().parse(patch) //
-                .getAsJsonObject() //
-                .get(SET) //
-                .getAsJsonObject();
-        return new PMSAddProductLocaleRequest(getProductIdFromDebeziumMessageKey(key),
-                setJO.entrySet() //
-                        .iterator() //
-                        .next() //
-                        .getKey());
-    }
-
-    /**
      * Returns an instance of {@link PMSProductMediaEventRequest}
      *
      * @param record {@link GenericData.Record} Apache kafka value message
@@ -272,35 +254,87 @@ public class DebeziumMessageParser {
      */
     public PMSProductMediaEventRequest getPMSProductMediaEventRequest(
             final GenericData.Record record, final ConsumerRecord<Object, String> key) {
+        Status status = null;
+        String localeId = null;
+        String attributeId = null;
+        final ProductMediaAttributeValue attributeValue = new ProductMediaAttributeValue();
         final String patch = record.get(PATCH) //
                 .toString();
-        final JsonObject setJO = new JsonParser().parse(patch) //
+        // when tag and image attribute set
+        final JsonElement setJOElement = new JsonParser().parse(patch) //
                 .getAsJsonObject() //
-                .get(SET) //
-                .getAsJsonObject();
+                .get(SET);
+        // when attributes are unset on delete/Exception
+        final JsonElement unSetJOElement = new JsonParser().parse(patch) //
+                .getAsJsonObject() //
+                .get(UNSET);
+
         final String productId = getProductIdFromDebeziumMessageKey(key);
-        final String localeId = setJO.keySet() //
-                .iterator() //
-                .next() //
-                .split("\\.")[0];
-        final String attributeId = setJO.keySet() //
-                .iterator() //
-                .next() //
-                .split("\\.")[1];
-        Status status = null;
-        String value = null;
-        for (final String item : setJO.keySet()) {
-            if (item.endsWith("status")) {
-                status = Status.valueOf(setJO.get(item) //
-                        .getAsString());
-            } else if (item.endsWith("url")) {
-                value = setJO.get(item) //
-                        .isJsonNull() ? null : setJO.get(item) //
-                                .getAsString();
+
+        if (setJOElement != null) {
+            final JsonObject setJO = setJOElement //
+                    .getAsJsonObject();
+            localeId = setJO.keySet() //
+                    .iterator() //
+                    .next() //
+                    .split("\\.")[0];
+            attributeId = setJO.keySet() //
+                    .iterator() //
+                    .next() //
+                    .split("\\.")[1];
+
+            for (final String item : setJO.keySet()) {
+                if (item.endsWith("status")) {
+                    status = Status.valueOf(setJO.get(item) //
+                            .getAsString());
+                } else if (item.endsWith("tags")) {
+                    attributeValue.setTags((setJO.get(item) //
+                            .isJsonNull() ? null : getTags((JsonArray) setJO.get(item))));
+                } else if (item.endsWith("url")) {
+                    attributeValue.setUrl(setJO.get(item) //
+                            .isJsonNull() ? null : setJO.get(item) //
+                                    .getAsString());
+                } else if (item.endsWith("height")) {
+                    attributeValue.setHeight(setJO.get(item) //
+                            .isJsonNull() ? null : setJO.get(item) //
+                                    .getAsInt());
+                } else if (item.endsWith("width")) {
+                    attributeValue.setWidth(setJO.get(item) //
+                            .isJsonNull() ? null : setJO.get(item) //
+                                    .getAsInt());
+                }
             }
+        } else if (unSetJOElement != null) {
+            final JsonObject unSetJO = unSetJOElement//
+                    .getAsJsonObject();
+            localeId = unSetJO.keySet() //
+                    .iterator() //
+                    .next() //
+                    .split("\\.")[0];
+            attributeId = unSetJO.keySet() //
+                    .iterator() //
+                    .next() //
+                    .split("\\.")[1];
+
+            for (final String item : unSetJO.keySet()) {
+                if (item.endsWith("status")) {
+                    status = Status.valueOf(unSetJO.get(item) //
+                            .getAsString());
+                } else if (item.endsWith("tags")) {
+                    attributeValue.setTags((unSetJO.get(item) //
+                            .isJsonNull() ? null
+                                    : getTags((JsonArray) unSetJO.get(item))));
+                }
+            }
+            // In case of Delete no status comes in message
+            // therefore removing on basis of unset Patch value
+            if (status == null) {
+                status = Status.DELETED;
+            }
+
         }
         return new PMSProductMediaEventRequest(productId, localeId, attributeId, status,
-                value);
+                attributeValue);
     }
 
     /**
@@ -321,5 +355,19 @@ public class DebeziumMessageParser {
                         .getAsString(),
                 associateCategoryJson.get(CATEGORY_ID) //
                         .getAsString());
+    }
+
+    /**
+     * convert JSONARRAY into Set<String>
+     *
+     * @param array {@link JsonArray}
+     * @return {@link Set<String>}
+     */
+    private Set<String> getTags(final JsonArray array) {
+        final Set<String> tags = new HashSet<String>();
+        array.forEach(obj -> {
+            tags.add(obj.getAsString());
+        });
+        return tags;
     }
 }

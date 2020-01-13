@@ -42,6 +42,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
+
 import static org.hamcrest.MatcherAssert.*;
 
 /**
@@ -119,17 +121,6 @@ public class DebeziumMessageParserTest {
         final boolean flag = parser.isAddProductLocaleMessageFromPMS(
                 addProductLocaleMessageObject);
         assertThat(flag, is(false));
-    }
-
-    @Test
-    public void shouldReturnPMSAddProductLocaleRequest()
-            throws FileNotFoundException, IOException {
-        final GenericData.Record addProductLocaleMessageObject = DebeziumMessageTestFixtures.getPMSAddLocaleMessageValueObject();
-        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();
-        final PMSAddProductLocaleRequest addLocale = parser.getPMSAddProductLocaleRequest(
-                addProductLocaleMessageObject, key);
-        assertThat(addLocale.getProductId(), is("mp5"));
-        assertThat(addLocale.getLocaleId(), is("en_UK"));
     }
 
     @Test

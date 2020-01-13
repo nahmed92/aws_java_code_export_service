@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.assertj.core.util.Sets;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -74,6 +75,7 @@ public class PMSMessagesListenerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Ignore("Not Adding Locale at PMS Message, Now adding at time of PSPECS message")
     public void shouldProcessAddProductLocaleMessageFromPMS() throws IOException {
         final GenericData.Record addProductLocaleMessage = DebeziumMessageTestFixtures.getPMSAddLocaleMessageValueObject();
         final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getPMSDebeziumMessagesKeyObject();

@@ -28,14 +28,16 @@
 
 package com.etilize.burraq.eas.kafka.debezium;
 
-import static com.etilize.burraq.eas.media.specification.Status.*;
-import static org.hamcrest.Matchers.*;
-
 import java.text.ParseException;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.junit.Test;
+import static com.etilize.burraq.eas.media.specification.Status.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
+import org.junit.Test;
+import org.springframework.util.ObjectUtils;
+
+import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
@@ -44,8 +46,6 @@ import com.openpojo.validation.rule.impl.NoPublicFieldsExceptStaticFinalRule;
 import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
 import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
 import com.openpojo.validation.test.impl.GetterTester;
-
-import static org.hamcrest.MatcherAssert.*;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -80,7 +80,7 @@ public class PMSProductMediaEventRequestPojoTest {
     @Test
     public void shouldContainToString() throws ParseException {
         final PMSProductMediaEventRequest pMSProductMediaEventRequest = new PMSProductMediaEventRequest(
-                "mp5", "en_US", "1", ASSOCIATED, "value");
+                "mp5", "en_US", "1", ASSOCIATED, new ProductMediaAttributeValue());
         assertThat(ObjectUtils.identityToString(pMSProductMediaEventRequest),
                 not(pMSProductMediaEventRequest.toString()));
     }

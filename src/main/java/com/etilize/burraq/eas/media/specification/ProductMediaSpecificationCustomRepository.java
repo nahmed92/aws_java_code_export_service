@@ -28,6 +28,8 @@
 
 package com.etilize.burraq.eas.media.specification;
 
+import static com.etilize.burraq.eas.utils.Utils.*;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -90,11 +92,11 @@ public interface ProductMediaSpecificationCustomRepository {
         updateExp.append(
                 String.format("SET %s=%s", LAST_UPDATE_DATE, COLON_LAST_UPDATE_DATE));
         final Map<String, Object> map = Maps.newHashMap();
+        if (value.getTags() != null && !value.getTags().isEmpty()) {
+            map.put("tags", value.getTags());
+        }
         if (StringUtils.isNotBlank(value.getUrl())) {
             map.put("url", value.getUrl());
-        }
-        if (value.getTags() != null) {
-            map.put("tags", value.getTags());
         }
         if (value.getHeight() != null) {
             map.put("height", value.getHeight());
@@ -104,29 +106,6 @@ public interface ProductMediaSpecificationCustomRepository {
         }
         valueMap.withMap(":value", map);
         updateExp.append(String.format(", %s.#attrId=:value ", ATTRIBUTES));
-        System.out.println(value);
-        /*if (StringUtils.isNotBlank(value.getUrl())) {
-            valueMap.withString(":url", value.getUrl());
-            nameMap.with("#url", "url");
-            updateExp.append(String.format(", %s.#attrId.#url=:url ", ATTRIBUTES));
-        }
-        if (value.getTags()!=null) {
-            valueMap.withList(":tags", value.getTags());
-            nameMap.with("#tags", "tags");
-            updateExp.append(String.format(", %s.#attrId.#tags=:tags ", ATTRIBUTES));
-        }
-        if (value.getHeight()!=null) {
-            valueMap.withNumber(":height", value.getHeight());
-            nameMap.with("#height", "height");
-            updateExp.append(String.format(", %s.#attrId.#height=:height ", ATTRIBUTES));
-        }
-        if (value.getWidth()!=null) {
-            valueMap.withNumber(":width", value.getWidth());
-            nameMap.with("#width", "width");
-            updateExp.append(String.format(", %s.#attrId.#width=:width ", ATTRIBUTES));
-        }*/
-        System.out.println(valueMap);
-        System.out.println(updateExp);
 
         final UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey(ID, id) //
                 .withUpdateExpression(updateExp.toString()) //

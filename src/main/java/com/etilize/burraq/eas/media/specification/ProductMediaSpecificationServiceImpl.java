@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,14 +146,23 @@ public class ProductMediaSpecificationServiceImpl
                     updateAttribute(productId, localeId, attributeId, value);
                 }
                 break;
-            case PENDING:
             case EXCEPTION:
             case DELETED:
+            case PENDING:
                 removeAttribute(productId, localeId, attributeId);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void saveTag(final String productId, final String localeId,
+            final String attributeId, final ProductMediaAttributeValue value) {
+        Assert.hasText(productId, PRODUCT_ID_IS_REQUIRED);
+        Assert.hasText(localeId, LOCALE_ID_IS_REQUIRED);
+        Assert.hasText(attributeId, ATTRIBUTE_ID_IS_REQUIRED);
+        updateAttribute(productId, localeId, attributeId, value);
     }
 
     private void updateAttribute(final String productId, final String localeId,
@@ -179,9 +189,68 @@ public class ProductMediaSpecificationServiceImpl
         } else {
             final String id = generateId(productId, localeId);
             if (isOfferedInRich) {
+                final Optional<ProductRichMediaSpecification> productRichMediaSpecification = detailedSpecificationRepository.findById(
+                        id);
+                // tags and attribute fields receive in two different message
+                // when tag message received attribute is empty, it create map with StringSet value
+                // when Associated message received fetch attribute map to get tags and merge in associated attribute
+                if (productRichMediaSpecification.isPresent()) {
+                    if (!productRichMediaSpecification.get().getAttributes().isEmpty()
+                            && productRichMediaSpecification.get().getAttributes().get(
+                                    attributeId) != null) {
+                        if (value.getTags() == null) {
+                            value.setTags(
+                                    productRichMediaSpecification.get().getAttributes().get(
+                                            attributeId).getTags());
+                            // handle scenario of tags change
+                        } else if (!value.getTags().containsAll(
+                                productRichMediaSpecification.get().getAttributes().get(
+                                        attributeId).getTags())) {
+                            value.setHeight(
+                                    productRichMediaSpecification.get().getAttributes().get(
+                                            attributeId).getHeight());
+                            value.setWidth(
+                                    productRichMediaSpecification.get().getAttributes().get(
+                                            attributeId).getWidth());
+                            value.setUrl(
+                                    productRichMediaSpecification.get().getAttributes().get(
+                                            attributeId).getUrl());
+                        }
+                    }
+                }
                 detailedSpecificationRepository.updateAttribute(id, attributeId, value);
+
             }
             if (isOfferedInBasic) {
+                final Optional<ProductBasicMediaSpecification> productBasicMediaSpecification = basicSpecificationRepository.findById(
+                        id);
+                // tags and attribute fields receive in two different message
+                // when tag message received attribute is empty, it create map with StringSet value in empty
+                // when Associated message received fetch attribute map to get tags and merge in associated attribute
+                if (productBasicMediaSpecification.isPresent()) {
+                    if (!productBasicMediaSpecification.get().getAttributes().isEmpty()
+                            && productBasicMediaSpecification.get().getAttributes().get(
+                                    attributeId) != null) {
+                        if (value.getTags() == null) {
+                            value.setTags(
+                                    productBasicMediaSpecification.get().getAttributes().get(
+                                            attributeId).getTags());
+                            // handle scenario of tags change
+                        } else if (!value.getTags().containsAll(
+                                productBasicMediaSpecification.get().getAttributes().get(
+                                        attributeId).getTags())) {
+                            value.setHeight(
+                                    productBasicMediaSpecification.get().getAttributes().get(
+                                            attributeId).getHeight());
+                            value.setWidth(
+                                    productBasicMediaSpecification.get().getAttributes().get(
+                                            attributeId).getWidth());
+                            value.setUrl(
+                                    productBasicMediaSpecification.get().getAttributes().get(
+                                            attributeId).getUrl());
+                        }
+                    }
+                }
                 basicSpecificationRepository.updateAttribute(id, attributeId, value);
             }
         }
