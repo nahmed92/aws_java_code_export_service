@@ -148,7 +148,6 @@ public class ProductMediaSpecificationServiceImpl
                 break;
             case EXCEPTION:
             case DELETED:
-            case PENDING:
                 removeAttribute(productId, localeId, attributeId);
                 break;
             default:
