@@ -178,10 +178,38 @@ public class ProductMediaSpecificationServiceImpl
             specsStatuses.forEach(specsStatus -> {
                 final String id = generateId(productId, specsStatus.getLocaleId());
                 if (isOfferedInRich) {
+                    final Optional<ProductRichMediaSpecification> productRichMediaSpecification = detailedSpecificationRepository.findById(
+                            id);
+                    // tags and attribute fields receive in two different message
+                    // when tag message received attribute is empty, it create map with StringSet value
+                    // when Associated message received fetch attribute map to get tags and merge in associated attribute
+                    if (productRichMediaSpecification.isPresent()) {
+                        if (!productRichMediaSpecification.get().getAttributes().isEmpty()
+                                && productRichMediaSpecification.get().getAttributes().get(
+                                        attributeId) != null) {
+                            populateProductMediaAttributeValue(
+                                    productRichMediaSpecification.get(), attributeId,
+                                    value);
+                        }
+                    }
                     detailedSpecificationRepository.updateAttribute(id, attributeId,
                             value);
                 }
                 if (isOfferedInBasic) {
+                    final Optional<ProductBasicMediaSpecification> productBasicMediaSpecification = basicSpecificationRepository.findById(
+                            id);
+                    // tags and attribute fields receive in two different message
+                    // when tag message received attribute is empty, it create map with StringSet value in empty
+                    // when Associated message received fetch attribute map to get tags and merge in associated attribute
+                    if (productBasicMediaSpecification.isPresent()) {
+                        if (!productBasicMediaSpecification.get().getAttributes().isEmpty()
+                                && productBasicMediaSpecification.get().getAttributes().get(
+                                        attributeId) != null) {
+                            populateProductMediaAttributeValue(
+                                    productBasicMediaSpecification.get(), attributeId,
+                                    value);
+                        }
+                    }
                     basicSpecificationRepository.updateAttribute(id, attributeId, value);
                 }
             });
@@ -197,24 +225,8 @@ public class ProductMediaSpecificationServiceImpl
                     if (!productRichMediaSpecification.get().getAttributes().isEmpty()
                             && productRichMediaSpecification.get().getAttributes().get(
                                     attributeId) != null) {
-                        if (value.getTags() == null) {
-                            value.setTags(
-                                    productRichMediaSpecification.get().getAttributes().get(
-                                            attributeId).getTags());
-                            // handle scenario of tags change
-                        } else if (!value.getTags().containsAll(
-                                productRichMediaSpecification.get().getAttributes().get(
-                                        attributeId).getTags())) {
-                            value.setHeight(
-                                    productRichMediaSpecification.get().getAttributes().get(
-                                            attributeId).getHeight());
-                            value.setWidth(
-                                    productRichMediaSpecification.get().getAttributes().get(
-                                            attributeId).getWidth());
-                            value.setUrl(
-                                    productRichMediaSpecification.get().getAttributes().get(
-                                            attributeId).getUrl());
-                        }
+                        populateProductMediaAttributeValue(
+                                productRichMediaSpecification.get(), attributeId, value);
                     }
                 }
                 detailedSpecificationRepository.updateAttribute(id, attributeId, value);
@@ -230,28 +242,30 @@ public class ProductMediaSpecificationServiceImpl
                     if (!productBasicMediaSpecification.get().getAttributes().isEmpty()
                             && productBasicMediaSpecification.get().getAttributes().get(
                                     attributeId) != null) {
-                        if (value.getTags() == null) {
-                            value.setTags(
-                                    productBasicMediaSpecification.get().getAttributes().get(
-                                            attributeId).getTags());
-                            // handle scenario of tags change
-                        } else if (!value.getTags().containsAll(
-                                productBasicMediaSpecification.get().getAttributes().get(
-                                        attributeId).getTags())) {
-                            value.setHeight(
-                                    productBasicMediaSpecification.get().getAttributes().get(
-                                            attributeId).getHeight());
-                            value.setWidth(
-                                    productBasicMediaSpecification.get().getAttributes().get(
-                                            attributeId).getWidth());
-                            value.setUrl(
-                                    productBasicMediaSpecification.get().getAttributes().get(
-                                            attributeId).getUrl());
-                        }
+                        populateProductMediaAttributeValue(
+                                productBasicMediaSpecification.get(), attributeId, value);
                     }
                 }
                 basicSpecificationRepository.updateAttribute(id, attributeId, value);
             }
+        }
+    }
+
+    private void populateProductMediaAttributeValue(
+            final ProductMediaSpecification productMediaSpecification,
+            final String attributeId, final ProductMediaAttributeValue value) {
+        if (value.getTags() == null) {
+            value.setTags(
+                    productMediaSpecification.getAttributes().get(attributeId).getTags());
+            // handle scenario of tags change
+        } else if (!value.getTags().containsAll(
+                productMediaSpecification.getAttributes().get(attributeId).getTags())) {
+            value.setHeight(productMediaSpecification.getAttributes().get(
+                    attributeId).getHeight());
+            value.setWidth(productMediaSpecification.getAttributes().get(
+                    attributeId).getWidth());
+            value.setUrl(
+                    productMediaSpecification.getAttributes().get(attributeId).getUrl());
         }
     }
 
