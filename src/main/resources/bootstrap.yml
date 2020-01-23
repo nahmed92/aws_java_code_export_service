@@ -21,3 +21,11 @@ spring:
   cloud:
     config:
       uri: ${SPRING_CONFIG_URI:http://burraq-config-service:8888}
+---
+spring:
+  profiles: staging-K8S
+  application:
+    name: export-aggregation-service
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://burraq-config-service:8888}
