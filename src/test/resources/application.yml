@@ -4,10 +4,28 @@ spring:
   profiles:
     active: test
   kafka:
+    properties:
+      ssl:
+        endpoint:
+          identification:
+            algorithm: http
+      security:
+        protocol: PLAINTEXT
+      sasl:
+        mechanism: PLAIN
+        request.timeout.ms: 20000
+        retry.backoff.ms: 500
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="USER_NAME" password="SECRET";
+    jaas:
+      control-flag: required
+      enabled: true
     bootstrap-servers: ${spring.embedded.kafka.brokers}
     consumer:
       properties:
          schema.registry.url: http://localhost:8081
+         basic.auth.credentials.source: USER_INFO
+         basic.auth.user.info: USER_NAME:SECRET
          username: <username-key>
          password: <password-secret-key>
          topic.pspecs: burraq.product-specifications-service.specifications
