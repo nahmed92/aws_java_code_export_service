@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.config;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
+import static org.apache.kafka.clients.CommonClientConfigs.SECURITY_PROTOCOL_CONFIG;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +66,30 @@ public class KafkaListenerContainerConfig {
     @Value("${spring.kafka.consumer.properties.schema.registry.url}")
     private String schemaRegistryURL;
 
+    @Value("${spring.kafka.consumer.properties.basic.auth.credentials.source}")
+    private String basicAuthCredentialsSource;
+
+    @Value("${spring.kafka.consumer.properties.basic.auth.user.info}")
+    private String basicAuthUserInfo;
+
+    @Value("${spring.kafka.properties.ssl.endpoint.identification.algorithm}")
+    private String sslIdedntificationAlgorithm;
+
+    @Value("${spring.kafka.properties.security.protocol}")
+    private String securityProtocol;
+
+    @Value("${spring.kafka.properties.sasl.mechanism}")
+    private String saslMechanism;
+
+    @Value("${spring.kafka.properties.sasl.jaas.config}")
+    private String saslJaasConfig;
+
+    @Value("${spring.kafka.properties.sasl.request.timeout.ms}")
+    private String saslRequestTimeout;
+
+    @Value("${spring.kafka.properties.sasl.retry.backoff.ms}")
+    private String saslRetryBackOffMs;
+
     /**
      * Produces {@link ConcurrentKafkaListenerContainerFactory} instance for {@link UpdateTextTranslationEvent}
      *
@@ -77,6 +102,7 @@ public class KafkaListenerContainerConfig {
         props.put(GROUP_ID_CONFIG, kafkaGroupId);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
+        addSecurityConfigsToKafkaConsumer(props);
         final ConcurrentKafkaListenerContainerFactory<byte[], byte[]> cklcf = new ConcurrentKafkaListenerContainerFactory<>();
         cklcf.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
         return cklcf;
@@ -94,7 +120,10 @@ public class KafkaListenerContainerConfig {
         props.put(GROUP_ID_CONFIG, kafkaGroupId);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        addSecurityConfigsToKafkaConsumer(props);
         props.put("schema.registry.url", schemaRegistryURL);
+        props.put("basic.auth.credentials.source", basicAuthCredentialsSource);
+        props.put("basic.auth.user.info", basicAuthUserInfo);
         final ConcurrentKafkaListenerContainerFactory<byte[], byte[]> cklcf = new ConcurrentKafkaListenerContainerFactory<>();
         cklcf.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
         return cklcf;
@@ -113,8 +142,18 @@ public class KafkaListenerContainerConfig {
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        addSecurityConfigsToKafkaConsumer(props);
         final ConcurrentKafkaListenerContainerFactory<String, String> cklcf = new ConcurrentKafkaListenerContainerFactory<>();
         cklcf.setConsumerFactory(new DefaultKafkaConsumerFactory<>(props));
         return cklcf;
+    }
+
+    private void addSecurityConfigsToKafkaConsumer(final Map<String, Object> props) {
+        props.put("ssl.endpoint.identification.algorithm", sslIdedntificationAlgorithm);
+        props.put(SECURITY_PROTOCOL_CONFIG, securityProtocol);
+        props.put("sasl.mechanism", saslMechanism);
+        props.put("sasl.jaas.config", saslJaasConfig);
+        props.put("sasl.request.timeout.ms", saslRequestTimeout);
+        props.put("sasl.retry.backoff.ms", saslRetryBackOffMs);
     }
 }
