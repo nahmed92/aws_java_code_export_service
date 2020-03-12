@@ -1,0 +1,1 @@
+{"type":"record","name":"Key","namespace":"burraq.product_specifications_service.specifications","fields":[{"name":"id","type":"string"}],"connect.name":"burraq.product_specifications_service.specifications.Key"}

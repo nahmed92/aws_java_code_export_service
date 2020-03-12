@@ -29,7 +29,6 @@
 package com.etilize.burraq.eas.specification;
 
 import static com.etilize.burraq.eas.ExportAggregationConstants.*;
-
 import static com.etilize.burraq.eas.utils.Utils.*;
 
 import java.util.Date;
@@ -242,6 +241,88 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public Optional<Product> findProductByProductId(final String productId) {
         return basicSpecificationRepository.findProductById(
                 generateId(productId, LOCALE_EN));
+    }
+
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.specification.ProductSpecificationService#updateProductCategory(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updateProductCategory(final String productId, final String categoryId) {
+        final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
+                productId);
+        // Get Basic category Attribute
+        final Map<String, String> basicOfferingAttribute = categoryStructureService.findBasicSpecsOfferingAttributes(
+                categoryId);
+        // Get detailed category Attribute
+        final Map<String, String> detailedOfferingAttribute = categoryStructureService.findDetailedSpecsOfferingAttributes(
+                categoryId);
+        // Get Accessory category Attribute
+        final Map<String, String> accessoryAttribute = categoryStructureService.findAccessorySpecsOfferingAttributes(
+                categoryId);
+
+        specsStatuses.forEach(specsStatus -> {
+            final String id = generateId(productId, specsStatus.getLocaleId());
+            final Optional<ProductSpecification> productBasicSpecs = basicSpecificationRepository.findOne(
+                    id);
+            if (productBasicSpecs.isPresent()) {
+                final ProductBasicSpecification basicSpecs = (ProductBasicSpecification) productBasicSpecs.get();
+                final Map<String, Object> commonAttribute = getCategoriesCommonAttribute(
+                        basicSpecs.getAttributes(), basicOfferingAttribute);
+                basicSpecs.setAttributes(Maps.newHashMap());
+                basicSpecs.setCategoryId(categoryId);
+                basicSpecs.setLastUpdateDate(new Date());
+                basicSpecificationRepository.save(basicSpecs);
+                basicSpecificationRepository.saveAttributes(id, commonAttribute);
+            }
+
+            final Optional<ProductSpecification> productDetailedSpecs = detailedSpecificationRepository.findOne(
+                    id);
+            if (productDetailedSpecs.isPresent()) {
+                final ProductDetailedSpecification detailedSpecs = (ProductDetailedSpecification) productDetailedSpecs.get();
+                final Map<String, Object> commonAttribute = getCategoriesCommonAttribute(
+                        detailedSpecs.getAttributes(), detailedOfferingAttribute);
+                detailedSpecs.setAttributes(Maps.newHashMap());
+                detailedSpecs.setCategoryId(categoryId);
+                detailedSpecs.setLastUpdateDate(new Date());
+                detailedSpecificationRepository.save(detailedSpecs);
+                detailedSpecificationRepository.saveAttributes(id, commonAttribute);
+            }
+
+            final Optional<ProductSpecification> productAcessorySpecs = accessorySpecificationRepository.findOne(
+                    id);
+            if (productAcessorySpecs.isPresent()) {
+                final ProductAccessorySpecification acessorySpecs = (ProductAccessorySpecification) productAcessorySpecs.get();
+                final Map<String, Object> commonAttribute = getCategoriesCommonAttribute(
+                        acessorySpecs.getAttributes(), accessoryAttribute);
+                acessorySpecs.setAttributes(Maps.newHashMap());
+                acessorySpecs.setCategoryId(categoryId);
+                acessorySpecs.setLastUpdateDate(new Date());
+                accessorySpecificationRepository.save(acessorySpecs);
+                accessorySpecificationRepository.saveAttributes(id, commonAttribute);
+            }
+            // update MetaData
+            final Optional<ProductMetaData> productMetaData = productMetaDataRepository.findById(
+                    id);
+            if (productMetaData.isPresent()) {
+               final ProductMetaData metaData = productMetaData.get();
+                metaData.setCategoryId(categoryId);
+                metaData.setLastUpdateDate(new Date());
+                productMetaDataRepository.save(metaData);
+            }
+        });
+    }
+
+    private Map<String, Object> getCategoriesCommonAttribute(
+            final Map<String, Object> specificationAttribute,
+            final Map<String, String> offeringAttribute) {
+        Map<String, Object> attributes = Maps.newHashMap();
+        specificationAttribute.entrySet().stream().forEach(entry -> {
+            if (offeringAttribute.get(entry.getKey()) != null) {
+                attributes.put(entry.getKey(), entry.getValue());
+            }
+
+        });
+        return attributes;
     }
 
     /**
