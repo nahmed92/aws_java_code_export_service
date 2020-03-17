@@ -42,8 +42,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.etilize.burraq.eas.category.specification.CategoryBasicMediaSpecificationRepository;
+import com.etilize.burraq.eas.category.specification.CategoryRichMediaSpecificationRepository;
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
 import com.etilize.burraq.eas.specification.Product;
+import com.etilize.burraq.eas.specification.ProductAccessorySpecification;
+import com.etilize.burraq.eas.specification.ProductBasicSpecification;
+import com.etilize.burraq.eas.specification.ProductDetailedSpecification;
+import com.etilize.burraq.eas.specification.ProductMetaData;
+import com.etilize.burraq.eas.specification.ProductSpecification;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
@@ -162,6 +169,57 @@ public class ProductMediaSpecificationServiceImpl
         Assert.hasText(localeId, LOCALE_ID_IS_REQUIRED);
         Assert.hasText(attributeId, ATTRIBUTE_ID_IS_REQUIRED);
         updateAttribute(productId, localeId, attributeId, value);
+    }
+
+    /* (non-Javadoc)
+     * @see com.etilize.burraq.eas.specification.ProductSpecificationService#updateProductCategory(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updateProductCategory(final String productId, final String categoryId) {
+        final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
+                productId);
+        // Get Basic Media category Attribute
+        final Set<String> basicMediaOfferingAttribute = categoryStructureService.findBasicMediaSpecsOfferingAttributes(
+                categoryId).keySet();
+        // Get Rich category Attribute
+        final Set<String> richMediaOfferingAttribute = categoryStructureService.findRichMediaSpecsOfferingAttributes(
+                categoryId).keySet();
+        specsStatuses.forEach(specsStatus -> {
+            final String id = generateId(productId, specsStatus.getLocaleId());
+            final Optional<ProductBasicMediaSpecification> productBasicMediaSpecs = basicSpecificationRepository.findById(
+                    id);
+            if (productBasicMediaSpecs.isPresent()) {
+                final ProductBasicMediaSpecification basicMediaSpecs = productBasicMediaSpecs.get();
+                final Map<String, ProductMediaAttributeValue> commonAttribute = getCategoriesCommonAttribute(
+                        basicMediaSpecs.getAttributes(), basicMediaOfferingAttribute);
+                basicMediaSpecs.setAttributes(commonAttribute);
+                basicMediaSpecs.setLastUpdateDate(new Date());
+                basicSpecificationRepository.save(basicMediaSpecs);
+            }
+            final Optional<ProductRichMediaSpecification> richBasicMediaSpecs = detailedSpecificationRepository.findById(
+                    id);
+            if (richBasicMediaSpecs.isPresent()) {
+                final ProductRichMediaSpecification richMediaSpecs = richBasicMediaSpecs.get();
+                final Map<String, ProductMediaAttributeValue> commonAttribute = getCategoriesCommonAttribute(
+                        richMediaSpecs.getAttributes(), richMediaOfferingAttribute);
+                richMediaSpecs.setAttributes(commonAttribute);
+                richMediaSpecs.setLastUpdateDate(new Date());
+                detailedSpecificationRepository.save(richMediaSpecs);
+            }
+        });
+    }
+
+    private Map<String, ProductMediaAttributeValue> getCategoriesCommonAttribute(
+            final Map<String, ProductMediaAttributeValue> mediaAttributeByAttributeId,
+            final Set<String> offeringAttribute) {
+        final Map<String, ProductMediaAttributeValue> attributes = Maps.newHashMap();
+        mediaAttributeByAttributeId.entrySet().stream().forEach(entry -> {
+            if (offeringAttribute.contains(entry.getKey())) {
+                attributes.put(entry.getKey(), entry.getValue());
+            }
+
+        });
+        return attributes;
     }
 
     private void updateAttribute(final String productId, final String localeId,

@@ -43,6 +43,7 @@ import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
 import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
@@ -335,5 +336,21 @@ public class ProductMediaSpecificationServiceIntegrationTest
     public void shouldNotDeleteAttributeWhenUpdatedForNonENWithStatusASSOCIATED() {
         service.saveAttribute("product123", "en_US", "maxId", Status.ASSOCIATED, null);
         verify(specsStatusRepository, never()).findAllByProductId("product123");
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/media_specifications/media_specification_category_update.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @ShouldMatchDataSet(location = "/datasets/media_specifications/media_specification_category_after_update.json")
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldUpdateMediaProductCategory() {
+        when(categoryStructureService.findBasicMediaSpecsOfferingAttributes(
+                "categoryId456")) //
+                        .thenReturn(
+                                ImmutableMap.of("maxId", "maxvalue", "largeId", "test"));
+        when(categoryStructureService.findRichMediaSpecsOfferingAttributes(
+                "categoryId456")) //
+                        .thenReturn(
+                                ImmutableMap.of("maxId", "maxvalue", "largeId", "test"));
+        service.updateProductCategory("product123", "categoryId456");
     }
 }

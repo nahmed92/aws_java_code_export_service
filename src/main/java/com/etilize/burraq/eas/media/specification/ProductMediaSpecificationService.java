@@ -67,4 +67,12 @@ public interface ProductMediaSpecificationService {
     void saveTag(final String productId, final String localeId, final String attributeId,
             final ProductMediaAttributeValue value);
 
+    /**
+     * update product category on category change message
+     *
+     * @param productId {@link String}
+     * @param categoryId {@link String}
+     */
+    void updateProductCategory(String productId, String categoryId);
+
 }

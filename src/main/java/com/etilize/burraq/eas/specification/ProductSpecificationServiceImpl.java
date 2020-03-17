@@ -304,7 +304,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             final Optional<ProductMetaData> productMetaData = productMetaDataRepository.findById(
                     id);
             if (productMetaData.isPresent()) {
-               final ProductMetaData metaData = productMetaData.get();
+                final ProductMetaData metaData = productMetaData.get();
                 metaData.setCategoryId(categoryId);
                 metaData.setLastUpdateDate(new Date());
                 productMetaDataRepository.save(metaData);
