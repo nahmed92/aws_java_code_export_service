@@ -35,6 +35,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.avro.generic.GenericData;
@@ -43,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
+import com.google.common.collect.Maps;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -147,6 +149,24 @@ public class DebeziumMessageParserTest {
         assertThat(pspecsAssociateCategoryCommandRequest.getProductId(), is("ppsh"));
         assertThat(pspecsAssociateCategoryCommandRequest.getIndustryId(), is("ind1"));
         assertThat(pspecsAssociateCategoryCommandRequest.getCategoryId(), is("cat1"));
+    }
+
+    @Test
+    public void shouldExtractCategoryIdFromUpdateMessage() throws IOException {
+        final Optional<String> categoryIdOptional = parser.extractCategoryIdFromUpdateAttributeMessage(
+                DebeziumMessageTestFixtures.getUpdateProductCategoryIdMessageData());
+        assertThat(categoryIdOptional.isPresent(), is(true));
+        assertThat(categoryIdOptional.get(), is("update category id"));
+    }
+
+    @Test
+    public void shouldExtractUpdateOperationTypeAsUpdateProductCategory()
+            throws FileNotFoundException, IOException {
+        final Optional<String> operationTypeOptional = parser.extractUpdateOperationType(
+                DebeziumMessageTestFixtures.getUpdateProductCategoryIdMessageData());
+        assertThat(operationTypeOptional.isPresent(), is(true));
+        assertThat(operationTypeOptional.get(),
+                is(UPDATE_OPERATION_UPDATE_PRODUCT_CATEGORY_ID));
     }
 
 }

@@ -33,6 +33,7 @@ import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 
 import java.io.IOException;
 import java.util.HashSet;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,7 +48,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
-import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.UpdateProductSpecificationRequest;
@@ -121,6 +121,9 @@ public class KafkaConnectDebeziumMessagesReceiver {
                 case OPERATION_UPDATE:
                     switch (debeziumMessageParser.extractUpdateOperationType(
                             record).get()) {
+                        case UPDATE_OPERATION_UPDATE_PRODUCT_CATEGORY_ID:
+                            updateProductCategoryId(productId, record);
+                            break;
                         case UPDATE_OPERATION_ADD_PRODUCT_LOCALE:
                             logger.info(
                                     "Recieved Add Product Specification Locale Message:[{}]",
@@ -286,4 +289,16 @@ public class KafkaConnectDebeziumMessagesReceiver {
         categorySpecificationService.save(categoryId, offeringId, attributeIds);
         logger.info("product offering message processed sucessfully...");
     }
+
+    private void updateProductCategoryId(final String productId,
+            final GenericData.Record record) {
+        logger.info("update Category for productId [" + productId + "]");
+        final Optional<String> categoryId = debeziumMessageParser.extractCategoryIdFromUpdateAttributeMessage(
+                record);
+        if (categoryId.isPresent()) {
+            specificationService.updateProductCategory(productId, categoryId.get());
+        }
+
+    }
+
 }

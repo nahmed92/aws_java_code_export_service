@@ -70,4 +70,12 @@ public interface ProductSpecificationService {
      * @return Optional<Product>
      */
     Optional<Product> findProductByProductId(String productId);
+
+    /**
+     * update product category on category change message
+     *
+     * @param productId {@link String}
+     * @param categoryId {@link String}
+     */
+    void updateProductCategory(String productId, String categoryId);
 }

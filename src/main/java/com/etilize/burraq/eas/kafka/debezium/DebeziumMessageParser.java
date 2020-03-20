@@ -93,12 +93,17 @@ public class DebeziumMessageParser {
             final Set<Entry<String, JsonElement>> entrySet = setJson.entrySet();
             for (final Entry<String, JsonElement> entry : entrySet) {
                 if (!(entry.getValue() instanceof JsonArray)) {
-                    final JsonObject localvalueJson = new JsonParser().parse(
-                            entry.getValue().toString()).getAsJsonObject();
-                    if (localvalueJson.entrySet().size() == 0) {
-                        updateOperationType = Optional.of(
-                                UPDATE_OPERATION_ADD_PRODUCT_LOCALE);
-                        return updateOperationType;
+                    if (entry.getKey() //
+                            .equals(CATEGORY_ID)) {// it means it is update category id case
+                        return Optional.of(UPDATE_OPERATION_UPDATE_PRODUCT_CATEGORY_ID);
+                    } else {
+                        final JsonObject localvalueJson = new JsonParser().parse(
+                                entry.getValue().toString()).getAsJsonObject();
+                        if (localvalueJson.entrySet().size() == 0) {
+                            updateOperationType = Optional.of(
+                                    UPDATE_OPERATION_ADD_PRODUCT_LOCALE);
+                            return updateOperationType;
+                        }
                     }
                 }
                 updateOperationType = Optional.of(
@@ -370,4 +375,25 @@ public class DebeziumMessageParser {
         });
         return tags;
     }
+
+    /**
+     * Extracts {@link Optional<String>} categoryId from Debezium originated message.
+     *
+     * @param record {@link GenericData.Record} Debezium generated command.
+     * @return {@link Optional<String>} categoryId.
+     */
+    public Optional<String> extractCategoryIdFromUpdateAttributeMessage(
+            final GenericData.Record record) {
+        Optional<String> categoryId = Optional.empty();
+        if (record.get(PATCH) != null) {
+            final JsonObject patchJo = new JsonParser().parse(
+                    record.get(PATCH).toString()).getAsJsonObject();
+            categoryId = Optional.of(patchJo.get(SET) //
+                    .getAsJsonObject() //
+                    .get(CATEGORY_ID) //
+                    .getAsString());
+        }
+        return categoryId;
+    }
+
 }

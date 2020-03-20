@@ -46,7 +46,6 @@ import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRep
 import com.etilize.burraq.eas.specification.value.Value;
 import com.etilize.burraq.eas.taxonomy.TaxonomyService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
-import com.etilize.burraq.eas.translation.TranslationService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -158,10 +157,22 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
         when(categoryStructureService.findBasicSpecsOfferingAttributes("categoryId123")) //
                 .thenReturn(ImmutableMap.of("mfgId", "Mfg", "mfgPartNoId", "Mfg Part No",
                         "sizeId", "Size"));
+        when(categoryStructureService.findBasicSpecsOfferingAttributes("categoryId456")) //
+                .thenReturn(
+                        ImmutableMap.of("mfgId", "Mfg", "mfgPartNoId", "Mfg Part No"));
 
         when(categoryStructureService.findDetailedSpecsOfferingAttributes(
                 "categoryId123")) //
                         .thenReturn(getDetailedOfferingAttributeMap());
+
+        when(categoryStructureService.findDetailedSpecsOfferingAttributes(
+                "categoryId456")) //
+                        .thenReturn(getDetailedOfferingAttributeMap());
+
+        when(categoryStructureService.findAccessorySpecsOfferingAttributes(
+                "categoryId456")) //
+                        .thenReturn(ImmutableMap.of("mfgId", "Mfg"));
+
     }
 
     private Map<String, String> getDetailedOfferingAttributeMap() {
@@ -299,5 +310,13 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
         attr.setIsRepeatable(isRepeatable);
         attr.setScope(scope);
         return attr;
+    }
+
+    @Test
+    @ShouldMatchDataSet(location = "/datasets/specifications/specification_for_category_after_update.json")
+    @UsingDataSet(locations = "/datasets/specifications/specification_for_category_update.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @IgnorePropertyValue(properties = { "lastUpdateDate" })
+    public void shouldupdateProductCategory() {
+        service.updateProductCategory("product123", "categoryId456");
     }
 }

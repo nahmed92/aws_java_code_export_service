@@ -28,9 +28,11 @@
 
 package com.etilize.burraq.eas.kafka.debezium;
 
+import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,9 +43,8 @@ import com.etilize.burraq.eas.category.specification.CategorySpecificationServic
 import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.test.AbstractIntegrationTest;
+import com.google.common.collect.Maps;
 import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
-import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.dynamodb.DynamoFlexibleComparisonStrategy;
@@ -97,5 +98,22 @@ public class PSPECSMessagesListenerFunctionalTest extends AbstractIntegrationTes
                 .addLocale("ppsh", "en_US");
         messageReceiver.processProductSpecificationUpdates(addProductLocaleMessage, key);
         verify(specificationService, times(1)).addLocale("ppsh", "en_US");
+    }
+
+    @Test
+    public void shouldUpdateProductCategoryForAllLocales() throws IOException {
+        final String industryId = "industry123";
+        final String productId = "123";
+        final String updateCategoryId = "update category id";
+        //Given
+        final GenericData.Record message = DebeziumMessageTestFixtures.getUpdateProductCategoryIdMessageData();
+        final ConsumerRecord<Object, String> key = DebeziumMessageTestFixtures.getSpecificationUpdateCommandKeyData();
+        //When
+        final Map<String, Object> metaData = Maps.newLinkedHashMap();
+        metaData.put(INDUSTRY_ID, industryId);
+        metaData.put(CATEGORY_ID, "originalCategoryId");
+        messageReceiver.processProductSpecificationUpdates(message, key);
+        verify(specificationService, times(1)).updateProductCategory(productId,
+                updateCategoryId);
     }
 }

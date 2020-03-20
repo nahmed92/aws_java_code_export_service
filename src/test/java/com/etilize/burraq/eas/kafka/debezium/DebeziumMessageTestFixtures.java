@@ -1084,4 +1084,34 @@ public class DebeziumMessageTestFixtures {
         return new ConsumerRecord<>("burraq.product-offering-service.offering_details", 0,
                 0, command, null);
     }
+
+    /**
+     * Returns an {@link GenericData.Record} instance initialized with default values.
+     *
+     * @return {@link GenericData.Record}
+     * @throws FileNotFoundException in case of error during file reading.
+     * @throws IOException in case of IO errors during file reading.
+     */
+    public static GenericData.Record getUpdateProductCategoryIdMessageData()
+            throws FileNotFoundException, IOException {
+        final String debeziumMessageJsonSchema = FileUtils.readFileToString(
+                ResourceUtils.getFile(
+                        DATA_SET_PATH + "/pspecs_debezium_messages_json_schema.json"),
+                "UTF-8");
+        final String debeziumAddLocaleCommandJsonObject = FileUtils.readFileToString(
+                ResourceUtils.getFile(DATA_SET_PATH
+                        + "/update_product_category_id_debezium_value_json_object.json"),
+                "UTF-8");
+        final Schema schema = new Schema.Parser().parse(debeziumMessageJsonSchema);
+        final JsonObject object = new JsonParser().parse(
+                debeziumAddLocaleCommandJsonObject).getAsJsonObject();
+        final GenericData.Record command = new GenericData.Record(schema);
+        command.put(OPERATION, OPERATION_UPDATE);
+        command.put(AFTER, null);
+        command.put(PATCH, object.get(PATCH).getAsString());
+        command.put(SOURCE, object.get(SOURCE).getAsJsonObject());
+        command.put(TS_MS, object.get(TS_MS).getAsLong());
+        return command;
+    }
+
 }
