@@ -214,6 +214,36 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
     }
 
     @Override
+    public Map<String, String> findBasicMediaSpecsOfferingAttributes(
+            final String categoryId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategorySpecificationKey key = new CategorySpecificationKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<CategoryBasicMediaSpecification> category = basicMediaCategoryStructureRepository.findById(
+                key);
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+        }
+        return attributes;
+    }
+
+    @Override
+    public Map<String, String> findRichMediaSpecsOfferingAttributes(
+            final String categoryId) {
+        Map<String, String> attributes = Maps.newHashMap();
+        final CategorySpecificationKey key = new CategorySpecificationKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        final Optional<CategoryRichMediaSpecification> category = richMediaCategoryStructureRepository.findById(
+                key);
+        if (category.isPresent()) {
+            attributes = category.get().getAttributes();
+        }
+        return attributes;
+    }
+
+    @Override
     public boolean hasBasicMediaOfferingAttribute(final String categoryId,
             final String attributeId) {
         Map<String, String> attributes = Maps.newHashMap();

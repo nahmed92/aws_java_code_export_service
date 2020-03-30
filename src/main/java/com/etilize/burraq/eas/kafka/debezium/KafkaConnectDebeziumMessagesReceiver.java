@@ -297,6 +297,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
                 record);
         if (categoryId.isPresent()) {
             specificationService.updateProductCategory(productId, categoryId.get());
+            mediaSpecificationService.updateProductCategory(productId, categoryId.get());
         }
 
     }

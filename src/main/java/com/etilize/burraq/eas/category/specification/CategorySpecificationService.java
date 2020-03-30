@@ -95,4 +95,19 @@ public interface CategorySpecificationService {
      * @param localeId {@link String}
      */
     void addLocale(String localeId);
+
+    /**
+     * find Attribute of Basic Media Repository
+     * @param categoryId {@link String}
+     * @return {@link Map<String,String>}
+     */
+
+    Map<String, String> findBasicMediaSpecsOfferingAttributes(String categoryId);
+
+    /**
+     * find Attribute of Rich Media Repository
+     * @param categoryId {@link String}
+     * @return {@link Map<String,String>}
+     */
+    Map<String, String> findRichMediaSpecsOfferingAttributes(String categoryId);
 }
