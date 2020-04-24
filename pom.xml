@@ -33,7 +33,7 @@
         <jackson.version>2.9.3</jackson.version>
         <avro-utils-version>1.0.0-SNAPSHOT</avro-utils-version>
         <spring-cloud-stream-dependency.version>Elmhurst.RELEASE</spring-cloud-stream-dependency.version>
-        <kafka-avro-serializer.version>2.0.1</kafka-avro-serializer.version>
+        <kafka-avro-serializer.version>5.1.2</kafka-avro-serializer.version>
         <dynamodb.spring.boot.version>1.0.2-SNAPSHOT</dynamodb.spring.boot.version>
         <elasticsearch.version>6.5.0</elasticsearch.version>
     </properties>
@@ -95,7 +95,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
