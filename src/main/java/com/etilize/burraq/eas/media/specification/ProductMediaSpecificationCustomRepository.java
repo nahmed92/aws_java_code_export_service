@@ -28,12 +28,12 @@
 
 package com.etilize.burraq.eas.media.specification;
 
-import static com.etilize.burraq.eas.utils.Utils.*;
-
 import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
@@ -56,6 +56,9 @@ public interface ProductMediaSpecificationCustomRepository {
     String COLON_LAST_UPDATE_DATE = ":" + LAST_UPDATE_DATE;
 
     String ATTRIBUTES = "attributes";
+
+    Logger logger = LoggerFactory.getLogger(
+            ProductMediaSpecificationCustomRepository.class);
 
     /**
      * Adds attribute's value in attributes
@@ -84,6 +87,9 @@ public interface ProductMediaSpecificationCustomRepository {
      */
     default UpdateItemSpec updateAttributeItem(final String id, final String attributeId,
             final ProductMediaAttributeValue value) {
+        logger.info("updateAttributeItem id: [{}], attributeId: [{}], value: [{}].", id,
+                attributeId, value);
+
         final NameMap nameMap = new NameMap();
         final ValueMap valueMap = new ValueMap() //
                 .withLong(COLON_LAST_UPDATE_DATE, new Date().getTime());
@@ -111,6 +117,7 @@ public interface ProductMediaSpecificationCustomRepository {
                 .withUpdateExpression(updateExp.toString()) //
                 .withNameMap(nameMap) //
                 .withValueMap(valueMap);
+        logger.info("updateAttributeItem updateItemSpec: [{}]", updateItemSpec);
         return updateItemSpec;
     }
 

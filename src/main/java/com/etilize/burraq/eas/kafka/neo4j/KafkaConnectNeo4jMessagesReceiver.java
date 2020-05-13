@@ -88,22 +88,26 @@ public class KafkaConnectNeo4jMessagesReceiver {
     public void processBarcodeMessages(final Message<String> message)
             throws IllegalStateException {
         logger.info("Received message from barcode-service [{}]", message);
-
-        final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
-                new JsonParser().parse(
-                        message.getPayload().toString()).getAsJsonObject());
-        if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
-            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
-                barcodeService.save(parsedMessage.getProductId(), //
-                        parsedMessage.getType(), //
-                        parsedMessage.getCode(), //
-                        parsedMessage.getCustomerId());
-            } else {
-                barcodeService.delete(parsedMessage.getProductId(), //
-                        parsedMessage.getType(), //
-                        parsedMessage.getCode(), //
-                        parsedMessage.getCustomerId());
+        try {
+            final BarcodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseBarcodeKafkaMessage(
+                    new JsonParser().parse(
+                            message.getPayload().toString()).getAsJsonObject());
+            if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+                if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                    barcodeService.save(parsedMessage.getProductId(), //
+                            parsedMessage.getType(), //
+                            parsedMessage.getCode(), //
+                            parsedMessage.getCustomerId());
+                } else {
+                    barcodeService.delete(parsedMessage.getProductId(), //
+                            parsedMessage.getType(), //
+                            parsedMessage.getCode(), //
+                            parsedMessage.getCustomerId());
+                }
             }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -117,20 +121,27 @@ public class KafkaConnectNeo4jMessagesReceiver {
     public void processProductCodeServiceMessages(final Message<String> message)
             throws IllegalStateException {
         logger.info("Received message from product-code-service [{}]", message);
-        final ProductCodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
-                new JsonParser().parse(
-                        message.getPayload().toString()).getAsJsonObject());
-        if (parsedMessage != null && RECORD_TYPE.equals(parsedMessage.getRecordType())) {
-            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
-                customerCodeService.save(parsedMessage.getProductId(), //
-                        parsedMessage.getMarket(), //
-                        parsedMessage.getCode(), parsedMessage.getCustomerId());
-            } else {
-                customerCodeService.delete(parsedMessage.getProductId(), //
-                        parsedMessage.getMarket(), //
-                        parsedMessage.getCode(), parsedMessage.getCustomerId());
+        try {
+            final ProductCodeKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseProductCodeKafkaMessage(
+                    new JsonParser().parse(
+                            message.getPayload().toString()).getAsJsonObject());
+            if (parsedMessage != null
+                    && RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+                if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                    customerCodeService.save(parsedMessage.getProductId(), //
+                            parsedMessage.getMarket(), //
+                            parsedMessage.getCode(), parsedMessage.getCustomerId());
+                } else {
+                    customerCodeService.delete(parsedMessage.getProductId(), //
+                            parsedMessage.getMarket(), //
+                            parsedMessage.getCode(), parsedMessage.getCustomerId());
+                }
             }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 
     /**
@@ -143,19 +154,25 @@ public class KafkaConnectNeo4jMessagesReceiver {
     public void processProductAsseccoryServiceMessages(final Message<String> message)
             throws IllegalStateException {
         logger.info("Received message from product-accessories-service [{}]", message);
-        final AccessoryKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
-                new JsonParser().parse(
-                        message.getPayload().toString()).getAsJsonObject());
-        if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
-            if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
-                accessoryService.save(parsedMessage.getProductId(), //
-                        parsedMessage.getMarketId(), //
-                        parsedMessage.getAccessoryId());
-            } else {
-                accessoryService.delete(parsedMessage.getProductId(), //
-                        parsedMessage.getMarketId(), //
-                        parsedMessage.getAccessoryId());
+        try {
+            final AccessoryKafkaMesssagePojo parsedMessage = KafkaMessageParserNeo4jUtility.parseAccessoriesKafkaMessage(
+                    new JsonParser().parse(
+                            message.getPayload().toString()).getAsJsonObject());
+            if (RECORD_TYPE.equals(parsedMessage.getRecordType())) {
+                if (OPERATION_TYPE.equals(parsedMessage.getOperationType())) {
+                    accessoryService.save(parsedMessage.getProductId(), //
+                            parsedMessage.getMarketId(), //
+                            parsedMessage.getAccessoryId());
+                } else {
+                    accessoryService.delete(parsedMessage.getProductId(), //
+                            parsedMessage.getMarketId(), //
+                            parsedMessage.getAccessoryId());
+                }
             }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 }

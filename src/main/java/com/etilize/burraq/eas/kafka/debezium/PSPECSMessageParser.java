@@ -127,8 +127,7 @@ public class PSPECSMessageParser {
                 request.addUpdatedAttributes(attributeId, convertToValue(entrySetValue));
             }
         } else if (isUpdateExceptionCodeOperation(entrySetValue)) { // It means exception code
-            request.addRemovedAttributeIds(entrySetValue.get(EXCEPTION) //
-                    .getAsString());
+            request.addRemovedAttributeIds(attributeId);
         }
     }
 

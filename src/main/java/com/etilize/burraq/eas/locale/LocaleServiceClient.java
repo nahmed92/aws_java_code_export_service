@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.locale;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
@@ -46,6 +47,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("locale-service")
 public interface LocaleServiceClient {
 
+    String LOCALE_SERVICE_CACHE = "locale-service-cache";
+
     /**
      * Method to get locale by id
      *
@@ -53,6 +56,7 @@ public interface LocaleServiceClient {
      * @return locale
      */
     @GetMapping("/locales/{id}")
+    @Cacheable(LOCALE_SERVICE_CACHE)
     Resource<Locale> findById(@PathVariable("id") String id);
 
     /**
@@ -66,6 +70,7 @@ public interface LocaleServiceClient {
      * @return locales
      */
     @GetMapping("/locales")
+    @Cacheable(LOCALE_SERVICE_CACHE)
     PagedResources<Resource<Locale>> findBy(
             @RequestParam(value = "market", required = false) String market,
             @RequestParam(value = "language", required = false) String language,

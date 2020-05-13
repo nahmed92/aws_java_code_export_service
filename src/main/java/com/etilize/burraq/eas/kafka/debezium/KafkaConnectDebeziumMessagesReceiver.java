@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,42 +110,49 @@ public class KafkaConnectDebeziumMessagesReceiver {
     @KafkaListener(topics = "${spring.kafka.consumer.properties.topic.pspecs}", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "getDebeziumMessagesListenerContainerFactory")
     public void processProductSpecificationUpdates(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
-        final String productId = debeziumMessageParser.getProductIdFromDebeziumMessageKey(
-                key);
-        final Optional<String> operation = debeziumMessageParser.extractOperationType(
-                record);
-        if (operation.isPresent()) {
-            switch (operation.get()) {
-                case OPERATION_CREATE:
-                    processAssociateCategoryCommandFromPSPECS(key, record);
-                    break;
-                case OPERATION_UPDATE:
-                    switch (debeziumMessageParser.extractUpdateOperationType(
-                            record).get()) {
-                        case UPDATE_OPERATION_UPDATE_PRODUCT_CATEGORY_ID:
-                            updateProductCategoryId(productId, record);
-                            break;
-                        case UPDATE_OPERATION_ADD_PRODUCT_LOCALE:
-                            logger.info(
-                                    "Recieved Add Product Specification Locale Message:[{}]",
-                                    record);
-                            processUpdateSpecificationAttributeCommandForAddLocale(
-                                    productId, record);
-                            break;
-                        case UPDATE_OPERATION_UPDATE_PRODUCT_SPECIFICATION:
-                            logger.info(
-                                    "Recieved Update Product Specification Message:[{}]",
-                                    record);
-                            processUpdateSpecificationAttributeCommand(productId, record);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    logger.info("Received following Debezium's Message: [{}].", record);
-                    break;
+        try {
+            final String productId = debeziumMessageParser.getProductIdFromDebeziumMessageKey(
+                    key);
+            final Optional<String> operation = debeziumMessageParser.extractOperationType(
+                    record);
+            if (operation.isPresent()) {
+                switch (operation.get()) {
+                    case OPERATION_CREATE:
+                        processAssociateCategoryCommandFromPSPECS(key, record);
+                        break;
+                    case OPERATION_UPDATE:
+                        switch (debeziumMessageParser.extractUpdateOperationType(
+                                record).get()) {
+                            case UPDATE_OPERATION_UPDATE_PRODUCT_CATEGORY_ID:
+                                updateProductCategoryId(productId, record);
+                                break;
+                            case UPDATE_OPERATION_ADD_PRODUCT_LOCALE:
+                                logger.info(
+                                        "Recieved Add Product Specification Locale Message:[{}]",
+                                        record);
+                                processUpdateSpecificationAttributeCommandForAddLocale(
+                                        productId, record);
+                                break;
+                            case UPDATE_OPERATION_UPDATE_PRODUCT_SPECIFICATION:
+                                logger.info(
+                                        "Recieved Update Product Specification Message:[{}]",
+                                        record);
+                                processUpdateSpecificationAttributeCommand(productId,
+                                        record);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        logger.info("Received following Debezium's Message: [{}].",
+                                record);
+                        break;
+                }
             }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -159,20 +167,32 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void processProductMediaServiceMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         logger.info("Received Product Media Service Message: [{}].", record);
-        final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
-                record, key);
-        if (request.getStatus() == null && request.getValue().getTags() != null
-                && !request.getValue().getTags().isEmpty()) {
-            mediaSpecificationService.saveTag(request.getProductId(),
-                    request.getLocaleId(), request.getAttributeId(), request.getValue());
-            logger.info("Update Tag for product {}", request.getProductId());
+        try {
+            final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
+                    record, key);
+            if (request.getStatus() == null && request.getValue().getTags() != null
+                    && !request.getValue().getTags().isEmpty()) {
+                mediaSpecificationService.saveTag(request.getProductId(),
+                        request.getLocaleId(), request.getAttributeId(),
+                        request.getValue());
+                logger.info("Update Tag for product {}", request.getProductId());
 
-        } else {
-            mediaSpecificationService.saveAttribute(request.getProductId(),
-                    request.getLocaleId(), request.getAttributeId(), request.getStatus(),
-                    request.getValue());
-            logger.info("Update Attribute for product {}", request.getProductId());
+            } else {
+                if (request.getStatus() != null) {
+                    mediaSpecificationService.saveAttribute(request.getProductId(),
+                            request.getLocaleId(), request.getAttributeId(),
+                            request.getStatus(), request.getValue());
+                } else {
+                    logger.info("Status is not given for product {}",
+                            request.getProductId());
+                }
+                logger.info("Update Attribute for product {}", request.getProductId());
+            }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 
     /**
@@ -186,19 +206,25 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void processProductOfferingServiceMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         logger.info("Received Product Offering Service Message: [{}].", record);
-        final Optional<String> operation = debeziumMessageParser.extractOperationType(
-                record);
-        switch (operation.get()) {
-            case OPERATION_CREATE:
-                processProductOfferingMessage(AFTER, record);
-                break;
-            case OPERATION_UPDATE:
-                processProductOfferingMessage(PATCH, record);
-                break;
-            default:
-                logger.info("Received following Debezium's Message: [{}].", record);
-                break;
+        try {
+            final Optional<String> operation = debeziumMessageParser.extractOperationType(
+                    record);
+            switch (operation.get()) {
+                case OPERATION_CREATE:
+                    processProductOfferingMessage(AFTER, record);
+                    break;
+                case OPERATION_UPDATE:
+                    processProductOfferingMessage(PATCH, record);
+                    break;
+                default:
+                    logger.info("Received following Debezium's Message: [{}].", record);
+                    break;
+            }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 
     /**
@@ -212,18 +238,24 @@ public class KafkaConnectDebeziumMessagesReceiver {
     public void addLocaleMessages(final GenericData.Record record,
             @Header(KafkaHeaders.MESSAGE_KEY) final ConsumerRecord<Object, String> key) {
         logger.info("Received Locale Service Message: [{}].", record);
-        final Optional<String> operationType = debeziumMessageParser.extractOperationType(
-                record);
-        if (OPERATION_CREATE.equals(operationType.get())) {
-            final String operation = record.get(AFTER) //
-                    .toString();
-            final JsonObject localeJSON = new JsonParser().parse(operation) //
-                    .getAsJsonObject();
-            final String localeId = localeJSON.get("_id").getAsString();
-            // add locale in category
-            categorySpecificationService.addLocale(localeId);
-            logger.info("Add {} locale message processed sucessfully...", localeId);
+        try {
+            final Optional<String> operationType = debeziumMessageParser.extractOperationType(
+                    record);
+            if (OPERATION_CREATE.equals(operationType.get())) {
+                final String operation = record.get(AFTER) //
+                        .toString();
+                final JsonObject localeJSON = new JsonParser().parse(operation) //
+                        .getAsJsonObject();
+                final String localeId = localeJSON.get("_id").getAsString();
+                // add locale in category
+                categorySpecificationService.addLocale(localeId);
+                logger.info("Add {} locale message processed sucessfully...", localeId);
+            }
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 
     private void processAssociateCategoryCommandFromPSPECS(
@@ -248,11 +280,11 @@ public class KafkaConnectDebeziumMessagesReceiver {
         final Optional<String> localeId = debeziumMessageParser.extractProductLocaleFromAddLocaleCommand(
                 record);
         if (productId.isPresent() && localeId.isPresent()) {
+            // add locale in product media specification
+            mediaSpecificationService.addLocale(productId.get(), localeId.get());
             // add locale in product specification
             specificationService.addLocale(productId.get(), localeId.get());
             logger.info("product specification add locale processed sucessfully...");
-            // add locale in product specification
-            mediaSpecificationService.addLocale(productId.get(), localeId.get());
             logger.info(
                     "product media specification add locale processed sucessfully...");
         }

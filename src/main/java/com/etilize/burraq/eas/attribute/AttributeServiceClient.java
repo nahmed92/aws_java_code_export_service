@@ -28,15 +28,12 @@
 
 package com.etilize.burraq.eas.attribute;
 
-import java.util.Map;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Feign client for attribute-service
@@ -48,6 +45,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("attribute-service")
 public interface AttributeServiceClient {
 
+    String ATTRIBUTE_SERVICE_CACHE = "attribute-service-cache";
+
     /**
      * Method to get an attribute by Id
      *
@@ -55,17 +54,6 @@ public interface AttributeServiceClient {
      * @return attribute for given id
      */
     @GetMapping("/attributes/{id}")
+    @Cacheable(ATTRIBUTE_SERVICE_CACHE)
     Resource<Attribute> findById(@PathVariable("id") String id);
-
-    /**
-     * Method to get attributes by matching specific values for fields.
-     * Querydsl is used in ATS. Any field of attribute class can be used for search.
-     * page, size and sort parameters can be sent through map as well.
-     *
-     * @param queryMap key (field) value (value to search) pair
-     * @return attributes
-     */
-    @GetMapping("/attributes")
-    PagedResources<Resource<Attribute>> findBy(
-            @RequestParam Map<String, Object> queryMap);
 }
