@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.media.attribute;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient("media-attribute-service")
 public interface MediaAttributeServiceClient {
 
+    String MEDIA_ATTRIBUTE_SERVICE_CACHE = "media-attribute-service-cache";
+
     /**
      * Method to get a media attribute by Id
      *
@@ -51,5 +54,6 @@ public interface MediaAttributeServiceClient {
      * @return media attribute for given id
      */
     @GetMapping("/media_attributes/{id}")
+    @Cacheable(MEDIA_ATTRIBUTE_SERVICE_CACHE)
     Resource<MediaAttribute> findById(@PathVariable("id") String id);
 }

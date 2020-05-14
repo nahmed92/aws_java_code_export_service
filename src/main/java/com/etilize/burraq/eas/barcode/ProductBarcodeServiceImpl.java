@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.barcode;
 
 import static com.etilize.burraq.eas.utils.Utils.*;
+import static com.etilize.burraq.eas.ExportAggregationConstants.*;
 
 import java.util.Date;
 import java.util.List;
@@ -92,6 +93,18 @@ public class ProductBarcodeServiceImpl implements ProductBarcodeService {
         codes.put(customerId, Sets.newHashSet(code));
         final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
                 productId);
+        if (specsStatuses.isEmpty()) {
+            // when barcode message comes first
+            final String id = generateId(productId, LOCALE_EN);
+            final ProductBarcode barcode = new ProductBarcode();
+            barcode.setId(id);
+            barcode.setLocaleId(LOCALE_EN);
+            barcode.setProductId(productId);
+            barcode.setType(type);
+            barcode.setCodes(codes);
+            barcode.setLastUpdateDate(new Date());
+            barcodeRepository.link(barcode);
+        }
         specsStatuses.forEach(specsStatus -> {
             final String id = generateId(productId, specsStatus.getLocaleId());
             final ProductBarcode barcode = new ProductBarcode();

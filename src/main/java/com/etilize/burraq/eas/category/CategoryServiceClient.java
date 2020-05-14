@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.category;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient("category-service")
 public interface CategoryServiceClient {
 
+    String CATEGORY_SERVICE_CACHE = "category-service-cache";
+
     /**
      * Method to get category by Id
      *
@@ -51,5 +54,6 @@ public interface CategoryServiceClient {
      * @return category resource for given id
      */
     @GetMapping("categories/{id}")
+    @Cacheable(CATEGORY_SERVICE_CACHE)
     Resource<Category> findById(@PathVariable("id") String id);
 }

@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.industry;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient("industry-service")
 public interface IndustryServiceClient {
 
+    String INDUSTRY_SERVICE_CACHE = "industry-service-cache";
+
     /**
      * Method to get industry by Id
      *
@@ -51,5 +54,6 @@ public interface IndustryServiceClient {
      * @return industry resource for given id
      */
     @GetMapping("industries/{id}")
+    @Cacheable(INDUSTRY_SERVICE_CACHE)
     Resource<Industry> findById(@PathVariable("id") String id);
 }

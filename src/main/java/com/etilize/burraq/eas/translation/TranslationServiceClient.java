@@ -28,6 +28,7 @@
 
 package com.etilize.burraq.eas.translation;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import org.springframework.stereotype.Component;
@@ -43,12 +44,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient("translation-service")
 public interface TranslationServiceClient {
 
+    String TRANSLATION_SERVICE_CACHE = "translation-service-cache";
+
     /**
      * It will translate text using end point /texts/translate
      * @param request {@link TextTranslationRequest}
      * @return {@link TranslationResponse}
      */
     @PostMapping(consumes = "application/json", path = "/texts/translate")
+    @Cacheable(TRANSLATION_SERVICE_CACHE)
     TranslationResponse translateText(TextTranslationRequest request);
 
     /**
@@ -57,5 +61,6 @@ public interface TranslationServiceClient {
      * @return {@link TranslationResponse}
      */
     @PostMapping(consumes = "application/json", path = "/units/translate")
+    @Cacheable(TRANSLATION_SERVICE_CACHE)
     TranslationResponse translateUnit(UnitTranslationRequest request);
 }

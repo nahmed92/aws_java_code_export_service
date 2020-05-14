@@ -92,24 +92,30 @@ public class KafkaConnectRedisMessagesReceiver {
                 .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
                         .get(KAFKA_RECEIVED_MESSAGE_KEY) //
                         .toString() : ""; //NOSONAR
-        if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
-                || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
-            final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
-            requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
-                    message.getPayload());
-            if (requestPayload.isPresent()) {
-                final KafkaConnectRedisUpsertMessagePayload payload = requestPayload.get();
-                final String productId = payload.getKey() //
-                        .split(":")[1];
-                specificationStatusService.save(productId, payload.getField(),
-                        payload.getValue());
+        try {
+            if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
+                    || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
+                final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
+                requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
+                        message.getPayload());
+                if (requestPayload.isPresent()) {
+                    final KafkaConnectRedisUpsertMessagePayload payload = requestPayload.get();
+                    final String productId = payload.getKey() //
+                            .split(":")[1];
+                    specificationStatusService.save(productId, payload.getField(),
+                            payload.getValue());
+                }
+            } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all specifications statuses
+                final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
+                        message.getPayload()) //
+                        .get();
+                specificationStatusService.deleteAllByProductId(id);
             }
-        } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all specifications statuses
-            final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
-                    message.getPayload()) //
-                    .get();
-            specificationStatusService.deleteAllByProductId(id);
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 
     /**
@@ -128,23 +134,29 @@ public class KafkaConnectRedisMessagesReceiver {
                 .containsKey(KAFKA_RECEIVED_MESSAGE_KEY) ? message.getHeaders() //
                         .get(KAFKA_RECEIVED_MESSAGE_KEY) //
                         .toString() : ""; //NOSONAR
-        if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
-                || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
-            final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
-            requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
-                    message.getPayload());
-            if (requestPayload.isPresent()) {
-                final KafkaConnectRedisUpsertMessagePayload payload = requestPayload.get();
-                final String productId = payload.getKey() //
-                        .split(":")[1];
-                mediaStatusService.save(productId, payload.getField(),
-                        payload.getValue());
+        try {
+            if (kafkaReceivedMessageKey.endsWith(HASH_SET_COMMAND)
+                    || kafkaReceivedMessageKey.endsWith(HASH_SET_NX_COMMAND)) {// Case for Add Or Update
+                final Optional<KafkaConnectRedisUpsertMessagePayload> requestPayload;
+                requestPayload = psssMessageDecoder.convertJsonToKafkaConnectRedisUpsertMessagePayload(
+                        message.getPayload());
+                if (requestPayload.isPresent()) {
+                    final KafkaConnectRedisUpsertMessagePayload payload = requestPayload.get();
+                    final String productId = payload.getKey() //
+                            .split(":")[1];
+                    mediaStatusService.save(productId, payload.getField(),
+                            payload.getValue());
+                }
+            } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all media statuses
+                final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
+                        message.getPayload()) //
+                        .get();
+                mediaStatusService.deleteAllByProductId(id);
             }
-        } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all media statuses
-            final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
-                    message.getPayload()) //
-                    .get();
-            mediaStatusService.deleteAllByProductId(id);
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
+
     }
 }

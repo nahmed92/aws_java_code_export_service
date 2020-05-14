@@ -122,21 +122,26 @@ public class ProductMediaSpecificationServiceImpl
         Assert.hasText(localeId, LOCALE_ID_IS_REQUIRED);
 
         final String id = generateId(productId, localeId);
-        final ProductRichMediaSpecification detialedSpecs = new ProductRichMediaSpecification();
-        detialedSpecs.setId(id);
-        detialedSpecs.setAttributes(getDetailedSpecAtributesOfEN(productId, localeId));
-        detialedSpecs.setLocaleId(localeId);
-        detialedSpecs.setProductId(productId);
-        detialedSpecs.setLastUpdateDate(new Date());
-        detailedSpecificationRepository.save(detialedSpecs);
+        if (!detailedSpecificationRepository.existsById(id)) {
+            final ProductRichMediaSpecification detialedSpecs = new ProductRichMediaSpecification();
+            detialedSpecs.setId(id);
+            detialedSpecs.setAttributes(
+                    getDetailedSpecAtributesOfEN(productId, localeId));
+            detialedSpecs.setLocaleId(localeId);
+            detialedSpecs.setProductId(productId);
+            detialedSpecs.setLastUpdateDate(new Date());
+            detailedSpecificationRepository.save(detialedSpecs);
+        }
 
-        final ProductBasicMediaSpecification basicSpecs = new ProductBasicMediaSpecification();
-        basicSpecs.setId(id);
-        basicSpecs.setAttributes(getBasicSpecAtributesOfEN(productId, localeId));
-        basicSpecs.setLocaleId(localeId);
-        basicSpecs.setProductId(productId);
-        basicSpecs.setLastUpdateDate(new Date());
-        basicSpecificationRepository.save(basicSpecs);
+        if (!basicSpecificationRepository.existsById(id)) {
+            final ProductBasicMediaSpecification basicSpecs = new ProductBasicMediaSpecification();
+            basicSpecs.setId(id);
+            basicSpecs.setAttributes(getBasicSpecAtributesOfEN(productId, localeId));
+            basicSpecs.setLocaleId(localeId);
+            basicSpecs.setProductId(productId);
+            basicSpecs.setLastUpdateDate(new Date());
+            basicSpecificationRepository.save(basicSpecs);
+        }
     }
 
     @Override

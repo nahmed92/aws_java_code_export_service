@@ -126,9 +126,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public void createProduct(final String productId, final String industryId,
             final String categoryId) {
         final String id = generateId(productId, LOCALE_EN);
-        final Optional<ProductDetailedSpecification> specs = detailedSpecificationRepository.findById(
-                id);
-        if (!specs.isPresent()) {
+        if (!productMetaDataRepository.existsById(id)) {
             final ProductDetailedSpecification detialedSpecs = new ProductDetailedSpecification();
             detialedSpecs.setId(id);
             detialedSpecs.setAttributes(Maps.newHashMap());
@@ -150,61 +148,50 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public void addLocale(final String productId, final String localeId) {
         if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
             final String id = generateId(productId, localeId);
-            final Optional<ProductSpecification> detailedSpecsForEN = getDetailedSpecification(
-                    productId, LOCALE_EN);
-            if (detailedSpecsForEN.isPresent()) {
+            final Optional<ProductMetaData> metadataForEN = getProductMetaData(productId,
+                    LOCALE_EN);
+            if (metadataForEN.isPresent()) {
                 final ProductDetailedSpecification detialedSpecs = new ProductDetailedSpecification();
                 detialedSpecs.setId(id);
-                detialedSpecs.setCategoryId(detailedSpecsForEN.get().getCategoryId());
-                detialedSpecs.setIndustryId(detailedSpecsForEN.get().getIndustryId());
+                detialedSpecs.setCategoryId(metadataForEN.get().getCategoryId());
+                detialedSpecs.setIndustryId(metadataForEN.get().getIndustryId());
                 detialedSpecs.setLocaleId(localeId);
                 detialedSpecs.setProductId(productId);
                 detialedSpecs.setLastUpdateDate(new Date());
                 detailedSpecificationRepository.save(detialedSpecs);
-                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
                         productId, localeId, detailedSpecificationRepository,
-                        detailedSpecsForEN.get().getAttributes());
+                        getDetailedSpecification(productId, LOCALE_EN).get().getAttributes());
                 detailedSpecificationRepository.saveAttributes(id, inheretedAttributes);
-            }
-
-            final Optional<ProductSpecification> basicSpecsForEN = getBasicSpecification(
-                    productId, LOCALE_EN);
-            if (basicSpecsForEN.isPresent()) {
+                */
                 final ProductBasicSpecification basicSpecs = new ProductBasicSpecification();
                 basicSpecs.setId(id);
-                basicSpecs.setCategoryId(basicSpecsForEN.get().getCategoryId());
-                basicSpecs.setIndustryId(basicSpecsForEN.get().getIndustryId());
+                basicSpecs.setCategoryId(metadataForEN.get().getCategoryId());
+                basicSpecs.setIndustryId(metadataForEN.get().getIndustryId());
                 basicSpecs.setLocaleId(localeId);
                 basicSpecs.setProductId(productId);
                 basicSpecs.setLastUpdateDate(new Date());
                 basicSpecificationRepository.save(basicSpecs);
-                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
                         productId, localeId, basicSpecificationRepository,
-                        basicSpecsForEN.get().getAttributes());
+                        getBasicSpecification(productId, LOCALE_EN).get().getAttributes());
                 basicSpecificationRepository.saveAttributes(id, inheretedAttributes);
-            }
-
-            final Optional<ProductSpecification> accessorySpecsForEN = getAccessorySpecification(
-                    productId, LOCALE_EN);
-            if (accessorySpecsForEN.isPresent()) {
+                */
                 final ProductAccessorySpecification accessorySpecs = new ProductAccessorySpecification();
                 accessorySpecs.setId(id);
-                accessorySpecs.setCategoryId(accessorySpecsForEN.get().getCategoryId());
-                accessorySpecs.setIndustryId(accessorySpecsForEN.get().getIndustryId());
+                accessorySpecs.setCategoryId(metadataForEN.get().getCategoryId());
+                accessorySpecs.setIndustryId(metadataForEN.get().getIndustryId());
                 accessorySpecs.setLocaleId(localeId);
                 accessorySpecs.setProductId(productId);
                 accessorySpecs.setLastUpdateDate(new Date());
                 accessorySpecificationRepository.save(accessorySpecs);
-                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
                         productId, localeId, accessorySpecificationRepository,
-                        accessorySpecsForEN.get().getAttributes());
+                        getAccessorySpecification(productId, LOCALE_EN).get().getAttributes());
                 accessorySpecificationRepository.saveAttributes(id, inheretedAttributes);
-            }
+                */
 
-            //Adding entry on productMetata table
-            final Optional<ProductMetaData> metadataForEN = getProductMetaData(productId,
-                    LOCALE_EN);
-            if (metadataForEN.isPresent()) {
+                //Adding entry on productMetata table
                 final ProductMetaData productMetaData = new ProductMetaData();
                 productMetaData.setId(id);
                 productMetaData.setCategoryId(metadataForEN.get().getCategoryId());

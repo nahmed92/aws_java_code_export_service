@@ -91,7 +91,9 @@ spring:
       protocol: http
       service-name: none
       region: none
-      
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
 ---
 feign:
    client:
