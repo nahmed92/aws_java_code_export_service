@@ -42,15 +42,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.etilize.burraq.eas.category.specification.CategoryBasicMediaSpecificationRepository;
-import com.etilize.burraq.eas.category.specification.CategoryRichMediaSpecificationRepository;
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
+import com.etilize.burraq.eas.media.status.ProductMediaStatus;
+import com.etilize.burraq.eas.media.status.ProductMediaStatusRepository;
 import com.etilize.burraq.eas.specification.Product;
-import com.etilize.burraq.eas.specification.ProductAccessorySpecification;
-import com.etilize.burraq.eas.specification.ProductBasicSpecification;
-import com.etilize.burraq.eas.specification.ProductDetailedSpecification;
-import com.etilize.burraq.eas.specification.ProductMetaData;
-import com.etilize.burraq.eas.specification.ProductSpecification;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatusRepository;
@@ -78,7 +73,7 @@ public class ProductMediaSpecificationServiceImpl
 
     private final ProductRichMediaSpecificationRepository detailedSpecificationRepository;
 
-    private final ProductSpecificationStatusRepository specsStatusRepository;
+    private final ProductMediaStatusRepository mediaStatusRepository;
 
     private final CategorySpecificationService categoryStructureService;
 
@@ -91,7 +86,7 @@ public class ProductMediaSpecificationServiceImpl
      * @param specificationService specificationService
      * @param basicSpecificationRepository basicSpecificationRepository
      * @param detailedSpecificationRepository detailedSpecificationRepository
-     * @param specsStatusRepository specsStatusRepository
+     * @param mediaStatusRepository mediaStatusRepository
      */
     @Autowired
     public ProductMediaSpecificationServiceImpl(
@@ -99,7 +94,7 @@ public class ProductMediaSpecificationServiceImpl
             final ProductSpecificationService specificationService,
             final ProductBasicMediaSpecificationRepository basicSpecificationRepository,
             final ProductRichMediaSpecificationRepository detailedSpecificationRepository,
-            final ProductSpecificationStatusRepository specsStatusRepository) {
+            final ProductMediaStatusRepository mediaStatusRepository) {
         Assert.notNull(categoryStructureService,
                 "categoryStructureService should not be null.");
         Assert.notNull(specificationService, "specificationService should not be null.");
@@ -107,13 +102,13 @@ public class ProductMediaSpecificationServiceImpl
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
                 "detailedSpecificationRepository should not be null.");
-        Assert.notNull(specsStatusRepository,
-                "specsStatusRepository should not be null.");
+        Assert.notNull(mediaStatusRepository,
+                "mediaStatusRepository should not be null.");
         this.categoryStructureService = categoryStructureService;
         this.specificationService = specificationService;
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
-        this.specsStatusRepository = specsStatusRepository;
+        this.mediaStatusRepository = mediaStatusRepository;
     }
 
     @Override
@@ -152,6 +147,11 @@ public class ProductMediaSpecificationServiceImpl
         Assert.hasText(localeId, LOCALE_ID_IS_REQUIRED);
         Assert.hasText(attributeId, ATTRIBUTE_ID_IS_REQUIRED);
         Assert.notNull(status, STATUS_IS_REQUIRED);
+
+        if (!basicSpecificationRepository.existsById(generateId(productId, localeId))) {
+            // it is required because some times PMS attribute messages comes before add locale in data migration.
+            addLocale(productId, localeId);
+        }
         switch (status) {
             case ASSOCIATED:
                 if (value != null && StringUtils.isNotBlank(value.getUrl())) {
@@ -181,7 +181,7 @@ public class ProductMediaSpecificationServiceImpl
      */
     @Override
     public void updateProductCategory(final String productId, final String categoryId) {
-        final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
+        final List<ProductMediaStatus> specsStatuses = mediaStatusRepository.findAllByProductId(
                 productId);
         // Get Basic Media category Attribute
         final Set<String> basicMediaOfferingAttribute = categoryStructureService.findBasicMediaSpecsOfferingAttributes(
@@ -236,7 +236,7 @@ public class ProductMediaSpecificationServiceImpl
         final boolean isOfferedInRich = categoryStructureService.hasRichMediaOfferingAttribute(
                 product.getCategoryId(), attributeId);
         if (LOCALE_EN.equalsIgnoreCase(localeId)) {
-            final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
+            final List<ProductMediaStatus> specsStatuses = mediaStatusRepository.findAllByProductId(
                     productId);
             specsStatuses.forEach(specsStatus -> {
                 final String id = generateId(productId, specsStatus.getLocaleId());
@@ -341,7 +341,7 @@ public class ProductMediaSpecificationServiceImpl
         final boolean isOfferedInRich = categoryStructureService.hasRichMediaOfferingAttribute(
                 product.getCategoryId(), attributeId);
         if (LOCALE_EN.equalsIgnoreCase(localeId)) {
-            final List<ProductSpecificationStatus> specsStatuses = specsStatusRepository.findAllByProductId(
+            final List<ProductMediaStatus> specsStatuses = mediaStatusRepository.findAllByProductId(
                     productId);
             specsStatuses.forEach(specsStatus -> {
                 final String id = generateId(productId, specsStatus.getLocaleId());

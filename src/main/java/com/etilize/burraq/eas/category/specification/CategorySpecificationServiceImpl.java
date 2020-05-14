@@ -37,6 +37,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -55,6 +57,8 @@ import com.google.common.collect.Maps;
  */
 @Service
 public class CategorySpecificationServiceImpl implements CategorySpecificationService {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String CATGEORY_ID_IS_REQUIRED = "categoryId is required";
 
@@ -130,6 +134,45 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         Assert.hasText(categoryId, CATGEORY_ID_IS_REQUIRED);
         Assert.hasText(offeringId, OFFERING_ID_IS_REQUIRED);
         Assert.notEmpty(attributeIds, ATTRIBUTE_IDS_IS_REQUIRED);
+
+        final CategorySpecificationKey key = new CategorySpecificationKey();
+        key.setCategoryId(categoryId);
+        key.setLocaleId(LOCALE_EN_US);
+        switch (offeringId) {
+            case OFFERING_BASIC_SPECS:
+                if (basicCategoryStructureRepository.existsById(key)) {
+                    logger.info("Basic Offerings not being saved as offering already exists in en_US");
+                    return;
+                }
+                break;
+            case OFFERING_DETAILED_SPECS:
+                if (detailedCategoryStructureRepository.existsById(key)) {
+                    logger.info("Detail Offerings not being saved as offering already exists in en_US");
+                    return;
+                }
+                break;
+            case OFFERING_BASIC_MEDIA:
+                if (basicMediaCategoryStructureRepository.existsById(key)) {
+                    logger.info("Basic Media Offerings not being saved as offering already exists in en_US");
+                    return;
+                }
+                break;
+            case OFFERING_RICH_MEDIA:
+                if (richMediaCategoryStructureRepository.existsById(key)) {
+                    logger.info("Rich Media Offerings not being saved as offering already exists in en_US");
+                    return;
+                }
+                break;
+            case OFFERING_ACCESSORY_SPECS:
+                if (accessoryCategoryStructureRepository.existsById(key)) {
+                    logger.info("Accessory Offerings not being saved as offering already exists in en_US");
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+
         final List<String> localeIds = localeService.findAllLocaleIds();
         localeIds.remove(LOCALE_EN_US);
         localeIds.remove(LOCALE_EN);

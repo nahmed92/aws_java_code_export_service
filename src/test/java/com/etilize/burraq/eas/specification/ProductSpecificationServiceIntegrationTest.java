@@ -92,13 +92,18 @@ public class ProductSpecificationServiceIntegrationTest extends AbstractIntegrat
     @Autowired
     private ProductMetaDataRepository productMetaDataRepository;
 
+
+    @Autowired
+    private ProductSpecificationsServiceClient productSpecificationServiceClient;
+
     @Override
     public void before() {
         service = new ProductSpecificationServiceImpl(basicSpecificationRepository,
                 detailedSpecificationRepository, taxonomyService,
                 categoryStructureService, specificationStatusRepository,
                 accessorySpecificationRepository, productMetaDataRepository,
-                localeService);
+                localeService,
+                productSpecificationServiceClient);
         when(taxonomyService.findAttributeById("mfgPartNoId")) //
                 .thenReturn(getAttribute("Mfg Part No", "industryId123", Type.TEXT, false,
                         false, Scope.INTERNATIONAL));

@@ -29,6 +29,7 @@
 package com.etilize.burraq.eas.kafka.debezium;
 
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageKeys.*;
+
 import static com.etilize.burraq.eas.kafka.debezium.DebeziumMessageProperties.*;
 
 import java.io.IOException;
@@ -38,7 +39,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,23 +170,25 @@ public class KafkaConnectDebeziumMessagesReceiver {
         try {
             final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
                     record, key);
-            if (request.getStatus() == null && request.getValue().getTags() != null
-                    && !request.getValue().getTags().isEmpty()) {
-                mediaSpecificationService.saveTag(request.getProductId(),
-                        request.getLocaleId(), request.getAttributeId(),
-                        request.getValue());
-                logger.info("Update Tag for product {}", request.getProductId());
-
-            } else {
-                if (request.getStatus() != null) {
-                    mediaSpecificationService.saveAttribute(request.getProductId(),
+            if (request!=null) {
+                if (request.getStatus() == null && request.getValue().getTags() != null
+                        && !request.getValue().getTags().isEmpty()) {
+                    mediaSpecificationService.saveTag(request.getProductId(),
                             request.getLocaleId(), request.getAttributeId(),
-                            request.getStatus(), request.getValue());
+                            request.getValue());
+                    logger.info("Update Tag for product {}", request.getProductId());
+
                 } else {
-                    logger.info("Status is not given for product {}",
-                            request.getProductId());
+                    if (request.getStatus() != null) {
+                        mediaSpecificationService.saveAttribute(request.getProductId(),
+                                request.getLocaleId(), request.getAttributeId(),
+                                request.getStatus(), request.getValue());
+                    } else {
+                        logger.info("Status is not given for product {}",
+                                request.getProductId());
+                    }
+                    logger.info("Update Attribute for product {}", request.getProductId());
                 }
-                logger.info("Update Attribute for product {}", request.getProductId());
             }
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);
@@ -297,6 +299,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
                 record);
         final UpdateProductSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
                 productId, record);
+        logger.info("Update Producut Specifications data [{}]",request);
         specificationService.updateSpecifications(request);
         logger.info("update Specs message processed sucessfully...");
     }

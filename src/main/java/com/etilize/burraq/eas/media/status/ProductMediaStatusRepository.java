@@ -28,9 +28,13 @@
 
 package com.etilize.burraq.eas.media.status;
 
+import java.util.List;
+
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.rest.core.annotation.RestResource;
+
+import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 
 /**
  * It represents dynamodb repository for {@link ProductMediaStatus}.
@@ -42,6 +46,14 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @RestResource(exported = false)
 public interface ProductMediaStatusRepository
         extends DynamoDBCrudRepository<ProductMediaStatus, String> {
+
+
+    /**
+     * It return all records matching with productId
+     * @param productId productId
+     * @return List<ProductMediaStatus>
+     */
+    List<ProductMediaStatus> findAllByProductId(String productId);
 
     /**
      * It deletes all media statuses matching product id.

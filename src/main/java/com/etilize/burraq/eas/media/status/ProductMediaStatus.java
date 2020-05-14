@@ -38,9 +38,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.etilize.burraq.eas.base.AbstractDynamoEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This class represents POJO for media status.
@@ -53,6 +55,8 @@ public class ProductMediaStatus extends AbstractDynamoEntity {
 
     public static final String TABLE_NAME = "product-media-statuses";
 
+    @JsonIgnore
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "product-media-status-index")
     private String productId;
 
     private String localeId;

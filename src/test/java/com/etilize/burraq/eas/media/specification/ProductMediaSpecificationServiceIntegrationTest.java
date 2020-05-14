@@ -38,6 +38,8 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.etilize.burraq.eas.category.specification.CategorySpecificationService;
+import com.etilize.burraq.eas.media.status.ProductMediaStatus;
+import com.etilize.burraq.eas.media.status.ProductMediaStatusRepository;
 import com.etilize.burraq.eas.specification.Product;
 import com.etilize.burraq.eas.specification.ProductSpecificationService;
 import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
@@ -67,7 +69,7 @@ public class ProductMediaSpecificationServiceIntegrationTest
     private CategorySpecificationService categoryStructureService;
 
     @Mock
-    private ProductSpecificationStatusRepository specsStatusRepository;
+    private ProductMediaStatusRepository specsStatusRepository;
 
     @Mock
     private ProductSpecificationService specificationService;
@@ -85,12 +87,12 @@ public class ProductMediaSpecificationServiceIntegrationTest
         service = new ProductMediaSpecificationServiceImpl(categoryStructureService,
                 specificationService, basicSpecificationRepository,
                 detailedSpecificationRepository, specsStatusRepository);
-        final ProductSpecificationStatus specsStatus1 = new ProductSpecificationStatus();
+        final ProductMediaStatus specsStatus1 = new ProductMediaStatus();
         specsStatus1.setId("product123-en_US");
         specsStatus1.setStatusId("NEW");
         specsStatus1.setLocaleId("en_US");
         specsStatus1.setProductId("product123");
-        final ProductSpecificationStatus specsStatus2 = new ProductSpecificationStatus();
+        final ProductMediaStatus specsStatus2 = new ProductMediaStatus();
         specsStatus2.setId("product123-en");
         specsStatus2.setStatusId("NEW");
         specsStatus2.setLocaleId("en");

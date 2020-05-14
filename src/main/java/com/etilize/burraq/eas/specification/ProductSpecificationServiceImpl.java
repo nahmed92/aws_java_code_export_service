@@ -79,6 +79,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
 
     private final LocaleService localeService;
 
+    private final ProductSpecificationsServiceClient productSpecificationsServiceClient;
+
     /**
      * Constructs with dependencies
      *
@@ -89,6 +91,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
      * @param specsStatusRepository {@link ProductSpecificationStatusRepository}
      * @param productMetaDataRepository {@link ProductMetaDataRepository}
      * @param localeService {@link LocaleService}
+     * @param productSpecificationsServiceClient {@link ProductSpecificationsServiceClient}
      */
     @Autowired
     public ProductSpecificationServiceImpl(
@@ -99,7 +102,8 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
             final ProductSpecificationStatusRepository specsStatusRepository,
             final ProductAccessorySpecificationRepository accessorySpecificationRepository,
             final ProductMetaDataRepository productMetaDataRepository,
-            final LocaleService localeService) {
+            final LocaleService localeService,
+            final ProductSpecificationsServiceClient productSpecificationsServiceClient) {
         Assert.notNull(basicSpecificationRepository,
                 "basicSpecificationRepository should not be null.");
         Assert.notNull(detailedSpecificationRepository,
@@ -112,6 +116,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         Assert.notNull(productMetaDataRepository,
                 "productMetaDataRepository should not be null.");
         Assert.notNull(localeService, "localeService should not be null.");
+        Assert.notNull(productSpecificationsServiceClient, "productSpecificationsServiceClient should not be null.");
         this.basicSpecificationRepository = basicSpecificationRepository;
         this.detailedSpecificationRepository = detailedSpecificationRepository;
         this.taxonomyService = taxonomyService;
@@ -120,6 +125,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         this.accessorySpecificationRepository = accessorySpecificationRepository;
         this.productMetaDataRepository = productMetaDataRepository;
         this.localeService = localeService;
+        this.productSpecificationsServiceClient = productSpecificationsServiceClient;
     }
 
     @Override
@@ -146,6 +152,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
 
     @Override
     public void addLocale(final String productId, final String localeId) {
+        if (!productMetaDataRepository.existsById(generateId(productId, LOCALE_EN))) {
+            final Specification specs = productSpecificationsServiceClient.findByIdAndLocaleId(productId, "DummyLocaleId").getContent();
+            createProduct(productId, specs.getIndustryId(), specs.getCategoryId());
+        }
         if (!LOCALE_EN.equalsIgnoreCase(localeId)) {
             final String id = generateId(productId, localeId);
             final Optional<ProductMetaData> metadataForEN = getProductMetaData(productId,
@@ -159,11 +169,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 detialedSpecs.setProductId(productId);
                 detialedSpecs.setLastUpdateDate(new Date());
                 detailedSpecificationRepository.save(detialedSpecs);
-                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                detailedSpecificationRepository.saveAttributes(id,  getInheretedAttributes(
                         productId, localeId, detailedSpecificationRepository,
-                        getDetailedSpecification(productId, LOCALE_EN).get().getAttributes());
-                detailedSpecificationRepository.saveAttributes(id, inheretedAttributes);
-                */
+                        getDetailedSpecification(productId, LOCALE_EN).get().getAttributes()));
+
                 final ProductBasicSpecification basicSpecs = new ProductBasicSpecification();
                 basicSpecs.setId(id);
                 basicSpecs.setCategoryId(metadataForEN.get().getCategoryId());
@@ -172,11 +181,10 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 basicSpecs.setProductId(productId);
                 basicSpecs.setLastUpdateDate(new Date());
                 basicSpecificationRepository.save(basicSpecs);
-                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                basicSpecificationRepository.saveAttributes(id, getInheretedAttributes(
                         productId, localeId, basicSpecificationRepository,
-                        getBasicSpecification(productId, LOCALE_EN).get().getAttributes());
-                basicSpecificationRepository.saveAttributes(id, inheretedAttributes);
-                */
+                        getBasicSpecification(productId, LOCALE_EN).get().getAttributes()));
+
                 final ProductAccessorySpecification accessorySpecs = new ProductAccessorySpecification();
                 accessorySpecs.setId(id);
                 accessorySpecs.setCategoryId(metadataForEN.get().getCategoryId());
@@ -185,11 +193,9 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
                 accessorySpecs.setProductId(productId);
                 accessorySpecs.setLastUpdateDate(new Date());
                 accessorySpecificationRepository.save(accessorySpecs);
-                /*                final Map<String, Object> inheretedAttributes = getInheretedAttributes(
+                accessorySpecificationRepository.saveAttributes(id, getInheretedAttributes(
                         productId, localeId, accessorySpecificationRepository,
-                        getAccessorySpecification(productId, LOCALE_EN).get().getAttributes());
-                accessorySpecificationRepository.saveAttributes(id, inheretedAttributes);
-                */
+                        getAccessorySpecification(productId, LOCALE_EN).get().getAttributes()));
 
                 //Adding entry on productMetata table
                 final ProductMetaData productMetaData = new ProductMetaData();
