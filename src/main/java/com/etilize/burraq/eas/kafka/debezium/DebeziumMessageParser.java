@@ -41,6 +41,8 @@ import java.util.Set;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.etilize.burraq.eas.media.specification.ProductMediaAttributeValue;
 import com.etilize.burraq.eas.media.specification.Status;
@@ -56,6 +58,8 @@ import com.google.gson.JsonParser;
  * @since 1.0
  */
 public class DebeziumMessageParser {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Extracts {@link Optional<String>} operation type from Debezium originated message.
@@ -263,6 +267,10 @@ public class DebeziumMessageParser {
         String localeId = null;
         String attributeId = null;
         final ProductMediaAttributeValue attributeValue = new ProductMediaAttributeValue();
+        if (record.get(PATCH)==null) {
+            logger.info("patch is null, No need to handle this case: [{}].", record);
+            return null;
+        }
         final String patch = record.get(PATCH) //
                 .toString();
         // when tag and image attribute set
@@ -279,14 +287,17 @@ public class DebeziumMessageParser {
         if (setJOElement != null) {
             final JsonObject setJO = setJOElement //
                     .getAsJsonObject();
-            localeId = setJO.keySet() //
-                    .iterator() //
-                    .next() //
-                    .split("\\.")[0];
-            attributeId = setJO.keySet() //
-                    .iterator() //
-                    .next() //
-                    .split("\\.")[1];
+            final String[] args = setJO.keySet() //
+                .iterator() //
+                .next() //
+                .split("\\.");
+            if (args.length<2) {
+                logger.info("locale+attribute is not there, No need to handle this case: [{}].", record);
+                return null;
+            }
+
+            localeId = args[0];
+            attributeId = args[1];
 
             for (final String item : setJO.keySet()) {
                 if (item.endsWith("status")) {

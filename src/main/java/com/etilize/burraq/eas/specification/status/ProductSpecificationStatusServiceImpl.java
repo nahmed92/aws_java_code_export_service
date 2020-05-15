@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.etilize.burraq.eas.specification.ProductSpecificationService;
+
 /**
  * It implements {@link ProductSpecificationStatusService}
  *
@@ -54,16 +56,22 @@ public class ProductSpecificationStatusServiceImpl
 
     private final ProductSpecificationStatusRepository repository;
 
+    private final ProductSpecificationService productSpecificationService;
+
     /**
      * Constructs with dependencies
      *
      * @param repository {@link ProductSpecificationStatusRepository}
+     * @param productSpecificationService {@link ProductSpecificationService}
      */
     @Autowired
     public ProductSpecificationStatusServiceImpl(
-            final ProductSpecificationStatusRepository repository) {
+            final ProductSpecificationStatusRepository repository,
+            final ProductSpecificationService productSpecificationService) {
         Assert.notNull(repository, "repository should not be null.");
+        Assert.notNull(repository, "productSpecificationService should not be null.");
         this.repository = repository;
+        this.productSpecificationService = productSpecificationService;
     }
 
     @Override
@@ -74,6 +82,9 @@ public class ProductSpecificationStatusServiceImpl
         Assert.hasText(statusId, STATUSID_IS_REQUIRED);
 
         final String id = generateId(productId, localeId);
+        if (!repository.existsById(id)) {
+            productSpecificationService.addLocale(productId, localeId);
+        }
         final ProductSpecificationStatus status = new ProductSpecificationStatus();
         status.setId(id);
         status.setLocaleId(localeId);

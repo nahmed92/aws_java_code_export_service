@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.etilize.burraq.eas.media.specification.ProductMediaSpecificationService;
+
 /**
  * It implements {@link ProductMediaStatusService}
  *
@@ -53,15 +55,21 @@ public class ProductMediaStatusServiceImpl implements ProductMediaStatusService 
 
     private final ProductMediaStatusRepository repository;
 
+    private final ProductMediaSpecificationService productMediaSpecificationService;
+
     /**
      * Constructs with dependencies
      *
      * @param repository {@link ProductMediaStatusRepository}
+     * @param productMediaSpecificationService {@link ProductMediaSpecificationService}
      */
     @Autowired
-    public ProductMediaStatusServiceImpl(final ProductMediaStatusRepository repository) {
+    public ProductMediaStatusServiceImpl(final ProductMediaStatusRepository repository,
+            final ProductMediaSpecificationService productMediaSpecificationService) {
         Assert.notNull(repository, "repository should not be null.");
+        Assert.notNull(productMediaSpecificationService, "productMediaSpecificationService should not be null.");
         this.repository = repository;
+        this.productMediaSpecificationService = productMediaSpecificationService;
     }
 
     @Override
@@ -70,8 +78,10 @@ public class ProductMediaStatusServiceImpl implements ProductMediaStatusService 
         Assert.hasText(productId, PRODICTID_IS_REQUIRED);
         Assert.hasText(localeId, LOCALEID_IS_REQUIRED);
         Assert.hasText(statusId, STATUSID_IS_REQUIRED);
-
         final String id = generateId(productId, localeId);
+        if (!repository.existsById(id)) {
+            productMediaSpecificationService.addLocale(productId, localeId);
+        }
         final ProductMediaStatus status = new ProductMediaStatus();
         status.setId(id);
         status.setLocaleId(localeId);
