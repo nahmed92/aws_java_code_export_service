@@ -140,34 +140,19 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         key.setLocaleId(LOCALE_EN_US);
         switch (offeringId) {
             case OFFERING_BASIC_SPECS:
-                if (basicCategoryStructureRepository.existsById(key)) {
-                    logger.info("Basic Offerings not being saved as offering already exists in en_US");
-                    return;
-                }
+                logger.info("Basic Offerings : [{}] in en_US",basicCategoryStructureRepository.existsById(key));
                 break;
             case OFFERING_DETAILED_SPECS:
-                if (detailedCategoryStructureRepository.existsById(key)) {
-                    logger.info("Detail Offerings not being saved as offering already exists in en_US");
-                    return;
-                }
+                logger.info("Detail Offerings : [{}] in en_US",detailedCategoryStructureRepository.existsById(key));
                 break;
             case OFFERING_BASIC_MEDIA:
-                if (basicMediaCategoryStructureRepository.existsById(key)) {
-                    logger.info("Basic Media Offerings not being saved as offering already exists in en_US");
-                    return;
-                }
+                logger.info("Basic Media Offerings : [{}] in en_US",basicMediaCategoryStructureRepository.existsById(key));
                 break;
             case OFFERING_RICH_MEDIA:
-                if (richMediaCategoryStructureRepository.existsById(key)) {
-                    logger.info("Rich Media Offerings not being saved as offering already exists in en_US");
-                    return;
-                }
+                logger.info("Rich Media Offerings : [{}] in en_US",richMediaCategoryStructureRepository.existsById(key));
                 break;
             case OFFERING_ACCESSORY_SPECS:
-                if (accessoryCategoryStructureRepository.existsById(key)) {
-                    logger.info("Accessory Offerings not being saved as offering already exists in en_US");
-                    return;
-                }
+                logger.info("Accessory Offerings : [{}] in en_US",accessoryCategoryStructureRepository.existsById(key));
                 break;
             default:
                 break;
