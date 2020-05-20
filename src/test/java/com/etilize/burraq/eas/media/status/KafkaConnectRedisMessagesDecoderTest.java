@@ -31,6 +31,7 @@ package com.etilize.burraq.eas.media.status;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -140,5 +141,41 @@ public class KafkaConnectRedisMessagesDecoderTest extends AbstractIntegrationTes
                 base64EncodedDeleteMessagePayload);
         assertThat(productId.isPresent(), is(true));
         assertThat(productId.get(), is("m1garand"));
+    }
+
+    @Test
+    public void shouldGetAllLocalesStatusFromKeyStringValueHashForCreateMediaStatusFromPMSS() {
+
+        final String base64EncodedMessagePayloadFromPMSS = "{ \"db\":{ "
+                + "      \"dbNumber\":0, " + "      \"dbsize\":2450, "
+                + "      \"expires\":0 " + "   }, " + "   \"valueRdbType\":13, "
+                + "   \"expiredType\":\"NONE\", " + "   \"expiredValue\":null, "
+                + "   \"evictType\":\"NONE\", " + "   \"evictValue\":null, "
+                + "   \"key\":\"cHJvZHVjdF9tZWRpYV9zdGF0dXNlczozZGM3YzlkYS0zNmQ0LTQwNTYtOGZiMC02YjMxNzBmYjcxNDY=\", "
+                + "   \"value\":{ " + "      \"ZW4=\":\"TkVX\", "
+                + "      \"ZW51a19GUg==\":\"TkVX\", " + "      \"ZnJfRlI=\":\"TkVX\" "
+                + "   }, " + "   \"expiredSeconds\":null, " + "   \"expiredMs\":null "
+                + "}";
+
+        final List<Optional<KafkaConnectRedisUpsertMessagePayload>> payload = kafkaConnectRedisMessageDecoder.convertJsonToKafkaConnectRedisKeyStringValueHashMessagePayload(
+                base64EncodedMessagePayloadFromPMSS);
+
+        KafkaConnectRedisUpsertMessagePayload productSpecificationsStatusMessagePayload = payload.get(
+                0).get();
+        assertThat(productSpecificationsStatusMessagePayload.getKey(),
+                is("product_media_statuses:3dc7c9da-36d4-4056-8fb0-6b3170fb7146"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("en"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("NEW"));
+
+        productSpecificationsStatusMessagePayload = payload.get(1).get();
+        assertThat(productSpecificationsStatusMessagePayload.getKey(),
+                is("product_media_statuses:3dc7c9da-36d4-4056-8fb0-6b3170fb7146"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("enuk_FR"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("NEW"));
+        productSpecificationsStatusMessagePayload = payload.get(2).get();
+        assertThat(productSpecificationsStatusMessagePayload.getKey(),
+                is("product_media_statuses:3dc7c9da-36d4-4056-8fb0-6b3170fb7146"));
+        assertThat(productSpecificationsStatusMessagePayload.getField(), is("fr_FR"));
+        assertThat(productSpecificationsStatusMessagePayload.getValue(), is("NEW"));
     }
 }

@@ -267,7 +267,7 @@ public class DebeziumMessageParser {
         String localeId = null;
         String attributeId = null;
         final ProductMediaAttributeValue attributeValue = new ProductMediaAttributeValue();
-        if (record.get(PATCH)==null) {
+        if (record.get(PATCH) == null) {
             logger.info("patch is null, No need to handle this case: [{}].", record);
             return null;
         }
@@ -288,11 +288,13 @@ public class DebeziumMessageParser {
             final JsonObject setJO = setJOElement //
                     .getAsJsonObject();
             final String[] args = setJO.keySet() //
-                .iterator() //
-                .next() //
-                .split("\\.");
-            if (args.length<2) {
-                logger.info("locale+attribute is not there, No need to handle this case: [{}].", record);
+                    .iterator() //
+                    .next() //
+                    .split("\\.");
+            if (args.length < 2) {
+                logger.info(
+                        "locale+attribute is not there, No need to handle this case: [{}].",
+                        record);
                 return null;
             }
 
