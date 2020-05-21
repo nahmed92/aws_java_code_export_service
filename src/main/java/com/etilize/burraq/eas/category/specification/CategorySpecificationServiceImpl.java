@@ -141,31 +141,36 @@ public class CategorySpecificationServiceImpl implements CategorySpecificationSe
         switch (offeringId) {
             case OFFERING_BASIC_SPECS:
                 if (basicCategoryStructureRepository.existsById(key)) {
-                    logger.info("Basic Offerings not being saved as offering already exists in en_US");
+                    logger.info(
+                            "Basic Offerings not being saved as offering already exists in en_US");
                     return;
                 }
                 break;
             case OFFERING_DETAILED_SPECS:
                 if (detailedCategoryStructureRepository.existsById(key)) {
-                    logger.info("Detail Offerings not being saved as offering already exists in en_US");
+                    logger.info(
+                            "Detail Offerings not being saved as offering already exists in en_US");
                     return;
                 }
                 break;
             case OFFERING_BASIC_MEDIA:
                 if (basicMediaCategoryStructureRepository.existsById(key)) {
-                    logger.info("Basic Media Offerings not being saved as offering already exists in en_US");
+                    logger.info(
+                            "Basic Media Offerings not being saved as offering already exists in en_US");
                     return;
                 }
                 break;
             case OFFERING_RICH_MEDIA:
                 if (richMediaCategoryStructureRepository.existsById(key)) {
-                    logger.info("Rich Media Offerings not being saved as offering already exists in en_US");
+                    logger.info(
+                            "Rich Media Offerings not being saved as offering already exists in en_US");
                     return;
                 }
                 break;
             case OFFERING_ACCESSORY_SPECS:
                 if (accessoryCategoryStructureRepository.existsById(key)) {
-                    logger.info("Accessory Offerings not being saved as offering already exists in en_US");
+                    logger.info(
+                            "Accessory Offerings not being saved as offering already exists in en_US");
                     return;
                 }
                 break;

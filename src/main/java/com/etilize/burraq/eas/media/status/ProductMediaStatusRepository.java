@@ -47,7 +47,6 @@ import com.etilize.burraq.eas.specification.status.ProductSpecificationStatus;
 public interface ProductMediaStatusRepository
         extends DynamoDBCrudRepository<ProductMediaStatus, String> {
 
-
     /**
      * It return all records matching with productId
      * @param productId productId

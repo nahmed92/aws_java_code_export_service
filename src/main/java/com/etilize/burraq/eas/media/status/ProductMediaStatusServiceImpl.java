@@ -67,7 +67,8 @@ public class ProductMediaStatusServiceImpl implements ProductMediaStatusService 
     public ProductMediaStatusServiceImpl(final ProductMediaStatusRepository repository,
             final ProductMediaSpecificationService productMediaSpecificationService) {
         Assert.notNull(repository, "repository should not be null.");
-        Assert.notNull(productMediaSpecificationService, "productMediaSpecificationService should not be null.");
+        Assert.notNull(productMediaSpecificationService,
+                "productMediaSpecificationService should not be null.");
         this.repository = repository;
         this.productMediaSpecificationService = productMediaSpecificationService;
     }
