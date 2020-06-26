@@ -170,7 +170,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
         try {
             final PMSProductMediaEventRequest request = debeziumMessageParser.getPMSProductMediaEventRequest(
                     record, key);
-            if (request!=null) {
+            if (request != null) {
                 if (request.getStatus() == null && request.getValue().getTags() != null
                         && !request.getValue().getTags().isEmpty()) {
                     mediaSpecificationService.saveTag(request.getProductId(),
@@ -187,7 +187,8 @@ public class KafkaConnectDebeziumMessagesReceiver {
                         logger.info("Status is not given for product {}",
                                 request.getProductId());
                     }
-                    logger.info("Update Attribute for product {}", request.getProductId());
+                    logger.info("Update Attribute for product {}",
+                            request.getProductId());
                 }
             }
         } catch (final Exception e) {
@@ -299,7 +300,7 @@ public class KafkaConnectDebeziumMessagesReceiver {
                 record);
         final UpdateProductSpecificationRequest request = pspecsMessageParser.getUpdateSpecificationRequest(
                 productId, record);
-        logger.info("Update Producut Specifications data [{}]",request);
+        logger.info("Update Producut Specifications data [{}]", request);
         specificationService.updateSpecifications(request);
         logger.info("update Specs message processed sucessfully...");
     }

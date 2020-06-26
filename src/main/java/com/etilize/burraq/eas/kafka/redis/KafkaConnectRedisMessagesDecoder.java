@@ -31,10 +31,14 @@ package com.etilize.burraq.eas.kafka.redis;
 import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessageProperties.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -89,6 +93,49 @@ public class KafkaConnectRedisMessagesDecoder {
                                     .getAsString()));
         }
         return productSpecificationsStatusUpsertMessagePayload;
+    }
+
+    /**
+     * Converts base 64 encoded Json string payload to {@link KafkaConnectRedisUpsertMessagePayload},
+     * <br>following is the sample base 64 encoded json message.</br>
+     * <br>Encoded:</br>
+     * <p>{"key":"cHJvZHVjdF9zdGF0dXNlczpwc3NzNjU=","field":"ZGVfREU=","value":"QWx0"}</p>
+     * Decoded:
+     * <p>{"key":"product_statuses:psss65","field":"de_DE","value":"Alt"}</p>
+     *
+     * @param message {@link String} Json payload
+     * @return {@link KafkaConnectRedisUpsertMessagePayload} null when message is not related to "product_statuses"
+     */
+    public List<Optional<KafkaConnectRedisUpsertMessagePayload>> convertJsonToKafkaConnectRedisKeyStringValueHashMessagePayload(
+            final String message) {
+
+        List<Optional<KafkaConnectRedisUpsertMessagePayload>> statusMessagePayloadList = new ArrayList<>();
+
+        Optional<KafkaConnectRedisUpsertMessagePayload> productSpecificationsStatusUpsertMessagePayload = Optional.empty();
+
+        final JsonObject payloadJson = jsonParser.parse(message) //
+                .getAsJsonObject();
+        final String key = this.decodeBase64String(payloadJson.get(KEY) //
+                .getAsString());
+
+        // Verify it is "product_statuses" (from PSSS) or "product_media_statuses" message from (PMSS)
+        if (key.startsWith(PRODUCT_STATUSES) || key.startsWith(PRODUCT_MEDIA_STATUSES)) {
+
+            final JsonObject valueJson = jsonParser.parse(payloadJson.get(VALUE) //
+                    .toString()) //
+                    .getAsJsonObject();
+            ;
+            for (final Entry<String, JsonElement> entry : valueJson.entrySet()) {
+                productSpecificationsStatusUpsertMessagePayload = Optional.of(
+                        new KafkaConnectRedisUpsertMessagePayload(key,
+                                this.decodeBase64String(entry.getKey()),
+                                this.decodeBase64String(entry.getValue().getAsString())));
+                statusMessagePayloadList.add(
+                        productSpecificationsStatusUpsertMessagePayload);
+            }
+
+        }
+        return statusMessagePayloadList;
     }
 
     /**

@@ -47,6 +47,8 @@ public interface KafkaConnectRedisMessageProperties {
 
     String HASH_SET_NX_COMMAND = "HSetNxCommand";
 
+    String KEY_STRING_VALUE_HASH_COMMAND = "KeyStringValueHash";
+
     String H_DEL_COMMAND = "HDelCommand";
 
     String PRODUCT_ID = "productId";

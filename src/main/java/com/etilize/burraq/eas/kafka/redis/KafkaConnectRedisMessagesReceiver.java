@@ -31,6 +31,7 @@ package com.etilize.burraq.eas.kafka.redis;
 import static com.etilize.burraq.eas.kafka.redis.KafkaConnectRedisMessageProperties.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -105,6 +106,23 @@ public class KafkaConnectRedisMessagesReceiver {
                     specificationStatusService.save(productId, payload.getField(),
                             payload.getValue());
                 }
+            } else if (kafkaReceivedMessageKey.endsWith(KEY_STRING_VALUE_HASH_COMMAND)) {
+                logger.info("Processing KeyStringValueHash command for PSSS");
+                final List<Optional<KafkaConnectRedisUpsertMessagePayload>> requestPayloadList;
+                requestPayloadList = psssMessageDecoder.convertJsonToKafkaConnectRedisKeyStringValueHashMessagePayload(
+                        message.getPayload());
+                for (Optional<KafkaConnectRedisUpsertMessagePayload> payloadOptional : requestPayloadList) {
+                    if (payloadOptional.isPresent()) {
+                        final KafkaConnectRedisUpsertMessagePayload payload = payloadOptional.get();
+                        final String productId = payload.getKey() //
+                                .split(":")[1];
+                        logger.info(
+                                "Parsed Product Specifications Status message: productId: {} localeId:{} status: {}",
+                                productId, payload.getField(), payload.getValue());
+                        specificationStatusService.save(productId, payload.getField(),
+                                payload.getValue());
+                    }
+                }
             } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all specifications statuses
                 final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
                         message.getPayload()) //
@@ -146,6 +164,23 @@ public class KafkaConnectRedisMessagesReceiver {
                             .split(":")[1];
                     mediaStatusService.save(productId, payload.getField(),
                             payload.getValue());
+                }
+            } else if (kafkaReceivedMessageKey.endsWith(KEY_STRING_VALUE_HASH_COMMAND)) {
+                logger.info("Processing KeyStringValueHash command for PMSS");
+                final List<Optional<KafkaConnectRedisUpsertMessagePayload>> requestPayloadList;
+                requestPayloadList = psssMessageDecoder.convertJsonToKafkaConnectRedisKeyStringValueHashMessagePayload(
+                        message.getPayload());
+                for (Optional<KafkaConnectRedisUpsertMessagePayload> payloadOptional : requestPayloadList) {
+                    if (payloadOptional.isPresent()) {
+                        final KafkaConnectRedisUpsertMessagePayload payload = payloadOptional.get();
+                        final String productId = payload.getKey() //
+                                .split(":")[1];
+                        logger.info(
+                                "Parsed Product Media Status message: productId: {} localeId:{} status: {}",
+                                productId, payload.getField(), payload.getValue());
+                        mediaStatusService.save(productId, payload.getField(),
+                                payload.getValue());
+                    }
                 }
             } else if (kafkaReceivedMessageKey.endsWith(H_DEL_COMMAND)) {// Case for delete all media statuses
                 final String id = psssMessageDecoder.extractProductIdFromDeleteMessage(
